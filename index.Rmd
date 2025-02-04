@@ -1,0 +1,62 @@
+---
+title: "Osa Conservation: Movement report"
+author:
+  - Chris Beirne
+site: bookdown::test-bookdown
+output: bookdown::gitbook
+documentclass: book
+biblio-style: apalike
+link-citations: yes
+editor_options: 
+  chunk_output_type: console
+---
+
+# Device Status
+
+This document summarizes the movement locations for all active devices within Osa Conservation's movement ecology project. 
+
+```{r c01, echo=F, message=F, include=F}
+knitr::opts_chunk$set(echo = FALSE, message=F, warning=F)
+
+#library(rgdal) 
+library(move) 
+library(dplyr)
+library(leaflet)
+library(units)
+library(sf)
+library(viridis)
+library(kableExtra)
+library(lubridate)
+library(plotly)
+## Load packages for google drive ----
+library(googledrive)
+library(purrr)
+library(readxl)
+library(geosphere)
+library(foreach)
+library(suncalc)
+#library(leaflet.opacity)
+library(leaflet.extras)
+
+#drive_auth()
+googledrive::drive_auth(path = Sys.getenv("GOOGLE_AUTHENTICATION_CREDENTIALS"))
+data_path <- "data"
+dir.create(data_path) 
+#test2
+# For when the trapping effort file is sorted
+# googledrive::drive_auth(path = Sys.getenv("GOOGLE_AUTHENTICATION_CREDENTIALS"))
+# 
+# ## Find Google Drive folder 'Centre Circle Data & Info'
+drive_download(as_id("19xnEVq_EH3xkZe-Up3iK6hXROm3LUu9rITm7FCI1-9A"),
+                path="data/bird_data.xlsx")
+counts <- read_excel("data/bird_data.xlsx",
+                      sheet="Bird_count_data")
+counts_df<- as.data.frame(counts)
+```
+
+
+```{r}
+ counts_df[1:10,] %>% kbl()  
+```
+
+
