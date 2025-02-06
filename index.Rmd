@@ -1,5 +1,5 @@
 ---
-title: "Osa Conservation: Movement report"
+title: "Osa Conservation: Piro Restoration Experiment"
 author:
   - Chris Beirne
 site: bookdown::test-bookdown
@@ -11,15 +11,13 @@ editor_options:
   chunk_output_type: console
 ---
 
-# Device Status
+# Map of survey locations
 
-This document summarizes the movement locations for all active devices within Osa Conservation's movement ecology project. 
+This document summarizes the movement locations for all active devices within Osa Conservation's movement ecology project.
 
 ```{r c01, echo=F, message=F, include=F}
 knitr::opts_chunk$set(echo = FALSE, message=F, warning=F)
 
-#library(rgdal) 
-library(move) 
 library(dplyr)
 library(leaflet)
 library(units)
@@ -28,24 +26,46 @@ library(viridis)
 library(kableExtra)
 library(lubridate)
 library(plotly)
-## Load packages for google drive ----
 library(googledrive)
 library(purrr)
 library(readxl)
-library(geosphere)
-library(foreach)
-library(suncalc)
-#library(leaflet.opacity)
 library(leaflet.extras)
 
 #drive_auth()
 googledrive::drive_auth(path = Sys.getenv("GOOGLE_AUTHENTICATION_CREDENTIALS"))
 data_path <- "data"
-dir.create(data_path) 
+dir.create(data_path, overwrite=TRUE) 
 #test2
 # For when the trapping effort file is sorted
 # googledrive::drive_auth(path = Sys.getenv("GOOGLE_AUTHENTICATION_CREDENTIALS"))
 # 
+```
+
+```{r, echo=F, message=F, warning=F}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+knitr::include_graphics("./images/Banner_osa_and Earthwatch_mid.png")
+```
+
+The following represents the data exploration for the data collected during the collaboration between Osa Conservation and Earthwatch for the project entitled:
+
+*A multi-taxa approach comparing the success of active tropical rainforest restoration with old-growth forest in Costa Rica.*
+
+Also known as:
+
+The Piro Restoration Experiment
+
+### Study area and survey locations
+
+
+
+
+
+
+
+
+# Bird data
+
+```{r}
 # ## Find Google Drive folder 'Centre Circle Data & Info'
 drive_download(as_id("19xnEVq_EH3xkZe-Up3iK6hXROm3LUu9rITm7FCI1-9A"),
                 path="data/bird_data.xlsx")
@@ -53,10 +73,3 @@ counts <- read_excel("data/bird_data.xlsx",
                       sheet="Bird_count_data")
 counts_df<- as.data.frame(counts)
 ```
-
-
-```{r}
- counts_df[1:10,] %>% kbl()  
-```
-
-

@@ -2,7 +2,7 @@ name: scheduleRenderbook
 on:     
   push:
   schedule:     
-     - cron: "10 * * * *"  
+     - cron: "15 8 * * *"  
 
 
 jobs:
@@ -22,14 +22,10 @@ jobs:
           TINYTEX_INSTALLER: TinyTeX
       - name: Install rmarkdown
         run: Rscript -e 'install.packages(c("rmarkdown","bookdown"))'
-#      - name: Install rgdal
-#        run: Rscript -e "install.packages('rgdal', type='mac.binary')"  
       - name: Install units
         run: Rscript -e "install.packages('units')"
       - name: Install leaflet
         run: Rscript -e "install.packages('leaflet')"
-      - name: Install move
-        run: Rscript -e "install.packages('move')"
       - name: Install dplyr
         run: Rscript -e "install.packages('dplyr')"
       - name: Install sf
@@ -42,22 +38,17 @@ jobs:
         run: Rscript -e "install.packages('lubridate')"
       - name: Install plotly
         run: Rscript -e "install.packages('plotly')"
-      - name: Install raster
-        run: Rscript -e "install.packages('raster', type='mac.binary')"
       - name: Install googledrive
         run: Rscript -e "install.packages('googledrive')"
       - name: Install purrr
         run: Rscript -e "install.packages('purrr')"
       - name: Install readxl
         run: Rscript -e "install.packages('readxl')"
-      - name: Install geosphere
-        run: Rscript -e "install.packages('geosphere')"
       - name: Install foreach
         run: Rscript -e "install.packages('foreach')"
       - name: Install leaflet.extras
         run: Rscript -e "install.packages('leaflet.extras')"
-      - name: Install suncalc
-        run: Rscript -e "install.packages('suncalc')"
+
       - name: Render Book
         env: 
           GOOGLE_AUTHENTICATION_CREDENTIALS: ${{ secrets.GOOGLE_AUTHENTICATION_CREDENTIALS }}
