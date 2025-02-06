@@ -53,13 +53,12 @@ The following represents the data exploration for the data collected during the 
 Also known as:
 
 The Piro Restoration Experiment
-
+ 
 ### Study area and survey locations
 
-```{r}
+```{r, c02}
 #Import the shapefiles for the maps
 dir.create("shapefiles")
-googledrive::drive_auth()
 shp_folder <- drive_ls(path = as_id("1MhlqBbWVCaSoSiltC3SlGsEvltsVZvkC"), recursive=T)
 
 for(i in 1:nrow(shp_folder))
