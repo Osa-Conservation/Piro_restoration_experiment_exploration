@@ -48,15 +48,17 @@ knitr::include_graphics("./images/Banner_osa_and Earthwatch_mid.png")
 
 The following represents the data exploration for the data collected during the collaboration between Osa Conservation and Earthwatch for the project entitled:
 
-*A multi-taxa approach comparing the success of active tropical rainforest restoration with old-growth forest in Costa Rica.*
+**A multi-taxa approach comparing the success of active tropical rainforest restoration with old-growth forest in Costa Rica.**
 
 Also known as:
 
 The Piro Restoration Experiment
-  
+
+The centralized document for the protocols used in this experiment lives [here](https://docs.google.com/document/d/11z94NQX6Oz3Eoyfs-HaDUQQkKXT1yKlZnzrT5vFTTcM/edit?usp=sharing).
+
 ### Study area and survey locations
 
-```{r, c02, include=F, message=F, warning=F}
+```{r, c02, include=F, message=F, warning=F, results="hide}
 #Import the shapefiles for the maps
 dir.create("shapefiles")
 shp_folder <- drive_ls(path = as_id("1MhlqBbWVCaSoSiltC3SlGsEvltsVZvkC"), recursive=T)
@@ -108,9 +110,9 @@ locs_db <- read_excel("data/Piro_Restoration_Experiment_PLOT_MASTERLIST.xlsx", s
 
 ```
 
-The following map shows the locations of all the surveys included withing this project. 
+The following map shows the locations of all the surveys included within this project to date. 
 
-```{r map4, echo=T, class.source="Rmain"}
+```{r map4, echo=F, class.source="Rmain"}
 
 # # First, set a single categorical variable of interest from station covariates for summary graphs. If you do not have an appropriate category use "project_id".
 # category <- "feature_type"
