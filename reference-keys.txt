@@ -1,3 +1,7 @@
 map-of-survey-locations
 study-area-and-survey-locations
+survey-timeline
 bird-data
+bat-data
+small-mammal-data
+camera-trap-data
