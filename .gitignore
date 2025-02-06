@@ -51,3 +51,7 @@ rsconnect/
 
 # Remove the data folder
 data/
+
+
+# Remove the data folder
+shapefiles/
