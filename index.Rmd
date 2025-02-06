@@ -58,7 +58,7 @@ The centralized document for the protocols used in this experiment lives [here](
 
 ### Study area and survey locations
 
-```{r, c02, include=F, message=F, warning=F, results="hide}
+```{r, c02, include=F, message=F, warning=F, results="hide"}
 #Import the shapefiles for the maps
 dir.create("shapefiles")
 shp_folder <- drive_ls(path = as_id("1MhlqBbWVCaSoSiltC3SlGsEvltsVZvkC"), recursive=T)
