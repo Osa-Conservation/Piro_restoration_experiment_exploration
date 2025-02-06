@@ -53,10 +53,10 @@ The following represents the data exploration for the data collected during the 
 Also known as:
 
 The Piro Restoration Experiment
- 
+  
 ### Study area and survey locations
 
-```{r, c02}
+```{r, c02, include=F, message=F, warning=F}
 #Import the shapefiles for the maps
 dir.create("shapefiles")
 shp_folder <- drive_ls(path = as_id("1MhlqBbWVCaSoSiltC3SlGsEvltsVZvkC"), recursive=T)
@@ -108,7 +108,7 @@ locs_db <- read_excel("data/Piro_Restoration_Experiment_PLOT_MASTERLIST.xlsx", s
 
 ```
 
-
+The following map shows the locations of all the surveys included withing this project. 
 
 ```{r map4, echo=T, class.source="Rmain"}
 
@@ -125,13 +125,16 @@ locs_db <- read_excel("data/Piro_Restoration_Experiment_PLOT_MASTERLIST.xlsx", s
 m <- leaflet() %>%
   addProviderTiles(providers$Esri.WorldImagery, group="Satellite") %>%  
   addTiles(group="Base") %>%     # Include a basemap option too
-  addPolylines(data = trails, group = "roads", color="brown") %>% 
-  addPolygons(data=plots, popup=plots$plot_id, group="Plots") %>% 
+  addPolylines(data = trails, group = "trails", color="brown") %>% 
+  addPolygons(data=plots, popup=plots$plot_id, group="plots") %>% 
   addCircleMarkers(lng=locs_db$longitude, lat=locs_db$latitude,
                    # Co lour the markers depending on the 'feature type'
                    #color=dep$colours,
                    # Add a popup of the placename and feature_type together
-                   popup=paste(locs_db$plot_id, locs_db$original_treatment)) %>%
+                   popup=paste(locs_db$plot_id, locs_db$original_treatment,
+                        "<br>Long:",locs_db$longitude,
+                        "<br>Lat:",locs_db$latitude),
+                   group="survey_locs") %>%
   ## Add a legend explaining what is going on
   # addLegend("topleft", colors = col.cat,  labels = levels(dep[,category]),
   #                  title = category,
@@ -140,14 +143,17 @@ m <- leaflet() %>%
   # 
   # add a layer control box to toggle between the layers
   addLayersControl(
-                    baseGroups = c("Satellite", "Base"))
+                    baseGroups = c("Base", "Satellite"),
+                    overlayGroups = c("plots","trails", "survey_locs"),
+                    options = layersControlOptions(collapsed = FALSE)
+      ) %>%
+  addFullscreenControl()
 
 m
 
 ```
 
-
-
+### Survey timeline
 
 
 # Bird data
@@ -160,3 +166,13 @@ counts <- read_excel("data/bird_data.xlsx",
                       sheet="Bird_count_data")
 counts_df<- as.data.frame(counts)
 ```
+
+# Bat data
+
+
+# Small mammal data
+
+
+# Camera trap data
+
+
