@@ -34,7 +34,7 @@ library(leaflet.extras)
 #drive_auth()
 googledrive::drive_auth(path = Sys.getenv("GOOGLE_AUTHENTICATION_CREDENTIALS"))
 data_path <- "data"
-dir.create(data_path, overwrite=TRUE) 
+dir.create(data_path) 
 #test2
 # For when the trapping effort file is sorted
 # googledrive::drive_auth(path = Sys.getenv("GOOGLE_AUTHENTICATION_CREDENTIALS"))
@@ -56,8 +56,96 @@ The Piro Restoration Experiment
 
 ### Study area and survey locations
 
+```{r}
+#Import the shapefiles for the maps
+dir.create("shapefiles")
+googledrive::drive_auth()
+shp_folder <- drive_ls(path = as_id("1MhlqBbWVCaSoSiltC3SlGsEvltsVZvkC"), recursive=T)
+
+for(i in 1:nrow(shp_folder))
+{
+  # if it has a file extension download it
+  if(substr(shp_folder$name[i], (nchar(shp_folder$name[i]) - 3),(nchar(shp_folder$name[i]) - 3))==".")
+  {
+  drive_download(file = as_id(shp_folder$id[i]), path = paste0("shapefiles/", shp_folder$name[i]), overwrite = TRUE)
+  }
+}
+
+trails <- st_read("shapefiles/trails_osa.shp")
+trails<- st_zm(trails, drop = TRUE, what = "ZM")
+plots <- st_read("shapefiles/Restoration_experiment_original.shp")
+plots <- st_transform(plots, 4326)
+plots<- st_zm(plots, drop = TRUE, what = "ZM")
+# Update the column name
+colnames(plots)[colnames(plots)=="plotID"] <- "plot_id"
+
+roads <- st_read("shapefiles/roads_osa.shp")
+
+# Import the plot locations
+dir.create("data")
+data_folder <- drive_ls(path = as_id("1dnLGAUTC0IQ9dSzC4l354whRrBXLNOM1"), recursive=F)
+# Subset to just the datafolders
+data_folder <- data_folder[substr(data_folder$name,1,4)=="Piro",]
+
+# Remove the shortcut folders and replace them with the real file 
+data_folder <- data_folder[!(data_folder$name %in% c("Piro_Restoration_Experiment_BATBOX_DATABASE", "Piro_Restoration_Experiment_BIRD_DATABASE")),]
+
+for(i in 1:nrow(data_folder))
+{
+  drive_download(file = as_id(data_folder$id[i]), path = paste0("data/", data_folder$name[i]), overwrite = TRUE)
+}
+
+# Also grab the bird and batbox databases
+
+drive_download(file = as_id("19xnEVq_EH3xkZe-Up3iK6hXROm3LUu9rITm7FCI1-9A"), path = paste0("data/", "Piro_Restoration_Experiment_BIRD_DATABASE"), overwrite = TRUE)
+
+drive_download(file = as_id("1mI3RhnR0WiuaK3TFnnF46xugKDRttKR8xe-lNCpeeXA"), path = paste0("data/", "Piro_Restoration_Experiment_BATBOX_DATABASE"), overwrite = TRUE)
+
+# Read in the plot locations master list
+
+locs_db <- read_excel("data/Piro_Restoration_Experiment_PLOT_MASTERLIST.xlsx", sheet="survey_locations")  
 
 
+
+```
+
+
+
+```{r map4, echo=T, class.source="Rmain"}
+
+# # First, set a single categorical variable of interest from station covariates for summary graphs. If you do not have an appropriate category use "project_id".
+# category <- "feature_type"
+# 
+# # We first convert this category to a factor with discrete levels
+# dep[,category] <- factor(dep[,category])
+# # then use the turbo() function to assign each level a color
+# col.cat <- turbo(length(levels(dep[,category])))
+# # then we apply it to the dataframe
+# dep$colours <- col.cat[dep[,category]]
+
+m <- leaflet() %>%
+  addProviderTiles(providers$Esri.WorldImagery, group="Satellite") %>%  
+  addTiles(group="Base") %>%     # Include a basemap option too
+  addPolylines(data = trails, group = "roads", color="brown") %>% 
+  addPolygons(data=plots, popup=plots$plot_id, group="Plots") %>% 
+  addCircleMarkers(lng=locs_db$longitude, lat=locs_db$latitude,
+                   # Co lour the markers depending on the 'feature type'
+                   #color=dep$colours,
+                   # Add a popup of the placename and feature_type together
+                   popup=paste(locs_db$plot_id, locs_db$original_treatment)) %>%
+  ## Add a legend explaining what is going on
+  # addLegend("topleft", colors = col.cat,  labels = levels(dep[,category]),
+  #                  title = category,
+  #                  labFormat = labelFormat(prefix = "$"),
+  #                  opacity = 1) %>%
+  # 
+  # add a layer control box to toggle between the layers
+  addLayersControl(
+                    baseGroups = c("Satellite", "Base"))
+
+m
+
+```
 
 
 
