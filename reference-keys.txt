@@ -1,1 +1,3 @@
-device-status
+map-of-survey-locations
+study-area-and-survey-locations
+bird-data
