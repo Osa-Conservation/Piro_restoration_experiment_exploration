@@ -11,10 +11,6 @@ editor_options:
   chunk_output_type: console
 ---
 
-# Map of survey locations
-
-This document summarizes the movement locations for all active devices within Osa Conservation's movement ecology project.
-
 ```{r c01, echo=F, message=F, include=F}
 knitr::opts_chunk$set(echo = FALSE, message=F, warning=F)
 
@@ -52,9 +48,9 @@ The following represents the data exploration for the data collected during the 
 
 Also known as:
 
-The Piro Restoration Experiment
+**The Piro Restoration Experiment**
 
-The centralized document for the protocols used in this experiment lives [here](https://docs.google.com/document/d/11z94NQX6Oz3Eoyfs-HaDUQQkKXT1yKlZnzrT5vFTTcM/edit?usp=sharing).
+The centralized document for the protocols used in this experiment lives [here](https://docs.google.com/document/d/11z94NQX6Oz3Eoyfs-HaDUQQkKXT1yKlZnzrT5vFTTcM/edit?usp=sharing). Note, as this is a working document only OC staff currently have access. 
 
 ### Study area and survey locations
 
