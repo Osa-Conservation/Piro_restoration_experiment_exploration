@@ -28,6 +28,7 @@ library(googledrive)
 library(purrr)
 library(readxl)
 library(leaflet.extras)
+library(tidyr)
 
 #drive_auth()
 googledrive::drive_auth(path = Sys.getenv("GOOGLE_AUTHENTICATION_CREDENTIALS"))
@@ -104,8 +105,6 @@ drive_download(file = as_id("1mI3RhnR0WiuaK3TFnnF46xugKDRttKR8xe-lNCpeeXA"), pat
 
 locs_db <- read_excel("data/Piro_Restoration_Experiment_PLOT_MASTERLIST.xlsx", sheet="survey_locations")  
 
-
-
 ```
 
 The following map shows the locations of all the surveys included within this project to date. 
@@ -155,17 +154,143 @@ m
 
 ### Survey timeline
 
+```{r, include = F, echo = F}
+
+# Birds ############################################################
+
+# ## Find Google Drive folder 'Centre Circle Data & Info'
+drive_download(as_id("19xnEVq_EH3xkZe-Up3iK6hXROm3LUu9rITm7FCI1-9A"),
+                path="data/bird_data.xlsx", overwrite=T)
+bird_counts <- read_excel("data/bird_data.xlsx",
+                      sheet="Bird_count_data")
+bird_counts <- as.data.frame(bird_counts)
+
+bird_counts$date <- ymd(bird_counts$date)
+bird_counts <- bird_counts %>% drop_na(date)
+
+
+# Bats ############################################################
+# ## Find Google Drive folder 'Centre Circle Data & Info'
+drive_download(as_id("1mI3RhnR0WiuaK3TFnnF46xugKDRttKR8xe-lNCpeeXA"),
+                path="data/batbox_data.xlsx", overwrite=T)
+
+# The bat count data
+bat_counts <- read_excel("data/batbox_data.xlsx",
+                      sheet="bat_monitoring")
+
+bat_counts$date_check <- ymd(bat_counts$date_check)
+bat_counts <- bat_counts %>% drop_na(date_check)
+
+# Camera traps ######################################################
+drive_download(as_id("1SlxgGPrmkrSvfyNOkeQgVcIMq0iQEi3VbNnBaXeg40Y"),
+                path="data/camera_deployments.xlsx", overwrite=T)
+
+dep <- read_excel("data/camera_deployments.xlsx",
+                      sheet="deployment_data")
+dep$`Start date` <- ymd(dep$`Start date`)
+dep <- dep %>% drop_na(`Start date`)
+
+
+locs <- read_excel("data/camera_deployments.xlsx",
+                      sheet="camera_locations")
+locs <- locs %>% drop_na(longitude)
+
+# Amphibian data #####################################################
+drive_download(as_id("1Qi1rzjfUAm1DeQFKzXgbqEGijqnDydl58npTzzUV1wQ"),
+                path="data/amphib_data.xlsx", overwrite=T)
+
+amphib_effort <- read_excel("data/amphib_data.xlsx",
+                      sheet="visit_data", col_types = "text")
+
+amphib_effort$date <- as.Date(as.numeric(amphib_effort$date), origin = as.Date("1899-12-30"))
+amphib_effort <- amphib_effort %>% drop_na(date)
+
+
+
+
+
+# Rapid vegetation surveys ###############################################
+# Not in yet 
+```
+
+
+```{r}
+# Make a plotly graph where the survey type is the y0axis and the date is the x axis
+
+# The first bit of data form the whole project is:
+
+survey_types <- c("Birds" = 1, "Bats" = 2, "Camera traps" = 3, "Amphibians" = 4)
+
+fig <- plot_ly() %>%
+  layout(
+    title = "Survey Data Through Time",
+    xaxis = list(title = "Year", range = c(ymd("2017-01-01"), Sys.time())),
+    yaxis = list(title = "Survey Type", tickvals = unname(survey_types), ticktext = names(survey_types))
+  )
+
+# add birds
+
+fig <- fig %>%
+      add_trace(
+        x = bird_counts$date,
+        y = survey_types[["Birds"]],
+        type = "scatter",
+        mode = "markers",
+        marker = list(size = 10),
+        name = "Birds"
+      )
+
+# Add bats
+
+fig <- fig %>%
+      add_trace(
+        x = bat_counts$date_check,
+        y = survey_types[["Bats"]],
+        type = "scatter",
+        mode = "markers",
+        marker = list(size = 10),
+        name = "Bats"
+      )
+
+# Add cameras
+
+fig <- fig %>%
+      add_trace(
+        x = dep$`Start date`,
+        y = survey_types[["Camera traps"]],
+        type = "scatter",
+        mode = "markers",
+        marker = list(size = 10),
+        name = "Cameras"
+      )
+
+fig
+
+# Add amphibs
+
+fig <- fig %>%
+      add_trace(
+        x = amphib_effort$date,
+        y = survey_types[["Amphibians"]],
+        type = "scatter",
+        mode = "markers",
+        marker = list(size = 10),
+        name = "Amphibians"
+      )
+
+fig
+```
+
+Now lets zoom in on 2025:
+
+```{r}
+fig %>%
+  layout(xaxis = list(range = c(as.Date("2025-02-01"), Sys.time() )))
+```
+
 
 # Bird data
 
-```{r}
-# ## Find Google Drive folder 'Centre Circle Data & Info'
-drive_download(as_id("19xnEVq_EH3xkZe-Up3iK6hXROm3LUu9rITm7FCI1-9A"),
-                path="data/bird_data.xlsx")
-counts <- read_excel("data/bird_data.xlsx",
-                      sheet="Bird_count_data")
-counts_df<- as.data.frame(counts)
-```
 
 # Bat data
 
