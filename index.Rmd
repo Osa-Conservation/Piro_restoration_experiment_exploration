@@ -264,8 +264,6 @@ fig <- fig %>%
         name = "Cameras"
       )
 
-fig
-
 # Add amphibs
 
 fig <- fig %>%
@@ -285,7 +283,8 @@ Now lets zoom in on 2025:
 
 ```{r}
 fig %>%
-  layout(xaxis = list(range = c(as.Date("2025-02-01"), Sys.time() )))
+  layout(xaxis = list(range = c(as.Date("2025-02-01"), Sys.time() )),
+         title = "Survey Data 2025")
 ```
 
 
