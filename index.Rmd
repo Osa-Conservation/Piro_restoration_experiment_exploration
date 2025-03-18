@@ -297,7 +297,7 @@ fig %>%
 
 ### 2025 so far
 
-```{r}
+```{r, message=F, warning=F}
 
 head(bird_counts)
 
@@ -311,9 +311,8 @@ be_2025_sum <-  bird_effort_2025 %>% group_by(plot_id) %>% summarise(Visits=n())
 plots_centroid <- st_centroid(plots)
 be_2025_sum <- left_join(plots_centroid, be_2025_sum)
 # Convert simple features collection to an sf dataframe
-be_2025_sum <- st_cast(be_2025_sum, "POLYGON")
 be_2025_sum$Visits[is.na(be_2025_sum$Visits)==T] <- 0
-head(be_2025_sum)
+
 
 #2025 records
 bird_counts_2025 <- bird_counts[bird_counts$date>ymd("2025-01-01"),]
