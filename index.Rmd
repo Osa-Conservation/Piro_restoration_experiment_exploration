@@ -154,6 +154,8 @@ m
 
 ### Survey timeline
 
+**NOTE** I still need access to the vegetation data [Also note - should we add dung beetle and butterflies]
+
 ```{r, include = F, echo = F}
 
 # Birds ############################################################
@@ -167,6 +169,12 @@ bird_counts <- as.data.frame(bird_counts)
 
 bird_counts$date <- ymd(bird_counts$date)
 bird_counts <- bird_counts %>% drop_na(date)
+
+# Note that SOME OF THE bird data has a leading zero. We should remove that
+tmp1 <- substr(bird_counts$plot_id,1,1)
+tmp2 <- as.numeric(substr(bird_counts$plot_id,2,3))
+bird_counts$plot_id <- paste0(tmp1, tmp2)
+bird_counts$site_date <- paste0(bird_counts$plot_id, "_", gsub("-", "", bird_counts$date))
 
 
 # Bats ############################################################
@@ -204,9 +212,6 @@ amphib_effort <- read_excel("data/amphib_data.xlsx",
 
 amphib_effort$date <- as.Date(as.numeric(amphib_effort$date), origin = as.Date("1899-12-30"))
 amphib_effort <- amphib_effort %>% drop_na(date)
-
-
-
 
 
 # Rapid vegetation surveys ###############################################
@@ -289,6 +294,99 @@ fig %>%
 
 
 # Bird data
+
+### 2025 so far
+
+```{r}
+
+head(bird_counts)
+
+bird_effort <-bird_counts[, c("plot_id", "date", "site_date")]
+bird_effort <- bird_effort[duplicated(bird_effort)==F,] 
+bird_effort_2025 <- bird_effort[bird_effort$date>ymd("2025-01-01"),]
+
+# 2025 summary
+#head(bird_effort_2025)
+be_2025_sum <-  bird_effort_2025 %>% group_by(plot_id) %>% summarise(Visits=n())
+plots_centroid <- st_centroid(plots)
+be_2025_sum <- left_join(plots_centroid, be_2025_sum)
+# Convert simple features collection to an sf dataframe
+be_2025_sum <- st_cast(be_2025_sum, "POLYGON")
+be_2025_sum$Visits[is.na(be_2025_sum$Visits)==T] <- 0
+head(be_2025_sum)
+
+#2025 records
+bird_counts_2025 <- bird_counts[bird_counts$date>ymd("2025-01-01"),]
+#
+
+```
+
+So for we have visited `r nrow(be_2025_sum[be_2025_sum$Visits>0,])` unique survey locations and performed `r nrow(bird_effort_2025)` point counts, and recorded `r length(unique(bird_counts_2025$common_name))` different species. 
+
+The distribution of survey effort is as follows:
+
+```{r}
+library(RColorBrewer)
+
+# Assuming be_2025_sum is already loaded as an sf dataframe
+
+# Define a color palette for the Visits column
+pal <- colorBin(palette = "YlOrRd", domain = be_2025_sum$Visits, bins = 10, pretty = TRUE)
+
+# Create the leaflet map
+leaflet(be_2025_sum) %>% 
+  addTiles() %>% 
+  addCircleMarkers(
+    radius = 5, 
+    color = ~pal(Visits), 
+    stroke = FALSE, 
+    fillOpacity = 0.8,
+    popup = ~paste(plot_id, "<br> Survey Visits:", Visits)
+  ) %>% 
+  addLegend(
+    pal = pal, 
+    values = ~Visits, 
+    title = "Number of Visits", 
+    opacity = 1
+  )
+```
+
+The distributions of species detected is as follows:
+
+```{r}
+bc_2025_sum <- bird_counts_2025 %>% group_by(common_name) %>% summarise(sample_frequency=n())
+
+# Determine dynamic height based on number of species
+num_species <- nrow(bc_2025_sum)
+plot_height <- max(400, num_species * 20)  # Minimum height 400px, scales with species count
+
+# Create a Plotly bar chart
+plot <- bc_2025_sum %>%
+  arrange(desc(sample_frequency)) %>%  # Sort by frequency
+  plot_ly(
+    x = ~sample_frequency, 
+    y = ~common_name, 
+    type = 'bar',
+    orientation = 'h',
+    marker = list(color = 'steelblue',
+    height = plot_height)
+  ) %>%
+  layout(
+    title = "Species Detection Frequency",
+    xaxis = list(title = "Detection Frequency"),
+    yaxis = list(title = "Species", categoryorder = "total ascending"),
+    barmode = 'group'
+  )
+
+# Display the plot
+plot
+
+```
+
+
+
+
+### Historical 
 
 
 # Bat data
