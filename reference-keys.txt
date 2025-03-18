@@ -2,6 +2,8 @@ introduction
 study-area-and-survey-locations
 survey-timeline
 bird-data
+so-far
+historical
 bat-data
 small-mammal-data
 camera-trap-data
