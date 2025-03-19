@@ -152,7 +152,7 @@ m
 
 ```
 
-### Historical survey timeline
+## Historical survey timeline
 
 **NOTE** I still need access to the vegetation data [Also note - should we add dung beetle and butterflies]
 
@@ -284,9 +284,9 @@ fig <- fig %>%
 fig
 ```
 
-### 2025 Survey timeline
+## Earthwatch survey timeline
 
-Now lets zoom in on 2025:
+Now lets zoom in on data collected since our collaboration with Earthwatch started:
 
 ```{r}
 fig %>%
@@ -294,8 +294,7 @@ fig %>%
          title = "Survey Data 2025")
 ```
 
-
-# Bird data
+# Bird surveys
 
 ### 2025 so far
 
@@ -322,7 +321,7 @@ bird_counts_2025 <- bird_counts[bird_counts$date>ymd("2025-01-01"),]
 
 ```
 
-So for we have visited `r nrow(be_2025_sum[be_2025_sum$Visits>0,])` unique survey locations and performed `r nrow(bird_effort_2025)` point counts, and recorded `r length(unique(bird_counts_2025$common_name))` different species. 
+So for we have visited `r nrow(be_2025_sum[be_2025_sum$Visits>0,])` unique survey locations and performed `r nrow(bird_effort_2025)` point counts, and recorded `r length(unique(bird_counts_2025$common_name))` different species classifications. 
 
 The distribution of survey effort is as follows:
 
@@ -359,7 +358,7 @@ bc_2025_sum <- bird_counts_2025 %>% group_by(common_name) %>% summarise(sample_f
 
 # Determine dynamic height based on number of species
 num_species <- nrow(bc_2025_sum)
-plot_height <- max(400, num_species * 20)  # Minimum height 400px, scales with species count
+plot_height <- max(400, num_species * 18)  # Minimum height 400px, scales with species count
 ```
 
 
@@ -378,7 +377,8 @@ plot <- bc_2025_sum %>%
   layout(
     title = "Species Detection Frequency",
     xaxis = list(title = "Detection Frequency"),
-    yaxis = list(title = "Species", categoryorder = "total ascending"),
+    yaxis = list(title = "Species", categoryorder = "total ascending",
+                 tickfont = list(size = 10)),
     barmode = 'group'
   )
 
@@ -386,13 +386,56 @@ plot <- bc_2025_sum %>%
 plot
 ```
 
+
 ### Historical 
 
-So for we have visited `r nrow(be_2025_sum[be_2025_sum$Visits>0,])` unique survey locations and performed `r nrow(bird_effort_2025)` point counts, and recorded `r length(unique(bird_counts_2025$common_name))` different species. 
+```{r}
+bc_sum <- bird_counts %>% group_by(common_name) %>% summarise(sample_frequency=n())
 
+# Determine dynamic height based on number of species
+num_species <- nrow(bc_sum)
+plot_height <- max(400, num_species * 18)  # Minimum height 400px, scales with species count
+```
 
+Since the start of the project we have visited `r nrow(be_sum[be_sum$Visits>0,])` unique survey locations and performed `r nrow(bird_effort)` point counts, and recorded `r length(unique(bird_counts$common_name))` different species classifications. 
 
+The survey effort (number of locations samples and number of point counts by year) are as follows:
 
+```{r}
+bird_effort$year
+
+bird_effort$year <- year(bird_effort$date)
+
+tmp <- bird_effort %>% group_by(year) %>% summarise(plots_visited=n_distinct(plot_id), total_point_counts=n(), )
+
+knitr::kable(tmp,align = "lrr" ,caption = "Bird survey effort through time")
+```
+
+The frequency distributions of the species detected are as follows:
+
+```{r, out.height=plot_height}
+# Create a Plotly bar chart
+plot <- bc_sum %>%
+  arrange(desc(sample_frequency)) %>%  # Sort by frequency
+  plot_ly(
+    x = ~sample_frequency, 
+    y = ~common_name, 
+    type = 'bar',
+    orientation = 'h',
+    marker = list(color = 'steelblue',
+    height = plot_height)
+  ) %>%
+  layout(
+    title = "Species Detection Frequency",
+    xaxis = list(title = "Detection Frequency"),
+    yaxis = list(title = "Species", categoryorder = "total ascending",
+                 , tickfont = list(size = 10)),
+    barmode = 'group'
+  )
+
+# Display the plot
+plot
+```
 
 
 # Bat data
