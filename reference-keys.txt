@@ -1,9 +1,10 @@
+tab:unnamed-chunk-10
 introduction
 study-area-and-survey-locations
 historical-survey-timeline
-survey-timeline
-bird-data
-so-far
+earthwatch-survey-timeline
+bird-surveys
+earthwatch-data
 historical
 bat-data
 small-mammal-data
