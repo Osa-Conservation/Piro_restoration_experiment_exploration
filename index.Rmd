@@ -55,7 +55,7 @@ Also known as:
 
 The centralized document for the protocols used in this experiment lives [here](https://docs.google.com/document/d/11z94NQX6Oz3Eoyfs-HaDUQQkKXT1yKlZnzrT5vFTTcM/edit?usp=sharing). Note, as this is a working document only OC staff currently have access. 
 
-### Study area and survey locations
+## Study area and survey locations
 
 ```{r, c02, include=F, message=F, warning=F, results="hide"}
 #Import the shapefiles for the maps
@@ -152,7 +152,7 @@ m
 
 ```
 
-### Survey timeline
+### Historical survey timeline
 
 **NOTE** I still need access to the vegetation data [Also note - should we add dung beetle and butterflies]
 
@@ -284,6 +284,8 @@ fig <- fig %>%
 fig
 ```
 
+### 2025 Survey timeline
+
 Now lets zoom in on 2025:
 
 ```{r}
@@ -299,7 +301,7 @@ fig %>%
 
 ```{r, message=F, warning=F}
 
-head(bird_counts)
+#head(bird_counts)
 
 bird_effort <-bird_counts[, c("plot_id", "date", "site_date")]
 bird_effort <- bird_effort[duplicated(bird_effort)==F,] 
@@ -384,10 +386,13 @@ plot <- bc_2025_sum %>%
 plot
 ```
 
-
-
-
 ### Historical 
+
+So for we have visited `r nrow(be_2025_sum[be_2025_sum$Visits>0,])` unique survey locations and performed `r nrow(bird_effort_2025)` point counts, and recorded `r length(unique(bird_counts_2025$common_name))` different species. 
+
+
+
+
 
 
 # Bat data
