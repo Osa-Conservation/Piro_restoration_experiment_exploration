@@ -296,7 +296,7 @@ fig %>%
 
 # Bird surveys
 
-### 2025 so far
+## Earthwatch data
 
 ```{r, message=F, warning=F}
 
@@ -387,7 +387,7 @@ plot
 ```
 
 
-### Historical 
+## Historical 
 
 ```{r}
 bc_sum <- bird_counts %>% group_by(common_name) %>% summarise(sample_frequency=n())
