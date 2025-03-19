@@ -299,17 +299,20 @@ fig %>%
 ## Earthwatch data
 
 ```{r, message=F, warning=F}
-
+plots_centroid <- st_centroid(plots)
 #head(bird_counts)
 
 bird_effort <-bird_counts[, c("plot_id", "date", "site_date")]
 bird_effort <- bird_effort[duplicated(bird_effort)==F,] 
 bird_effort_2025 <- bird_effort[bird_effort$date>ymd("2025-01-01"),]
+be_sum <-  bird_effort %>% group_by(plot_id) %>% summarise(Visits=n())
+be_sum <- left_join(plots_centroid, be_sum)
+
+
 
 # 2025 summary
 #head(bird_effort_2025)
 be_2025_sum <-  bird_effort_2025 %>% group_by(plot_id) %>% summarise(Visits=n())
-plots_centroid <- st_centroid(plots)
 be_2025_sum <- left_join(plots_centroid, be_2025_sum)
 # Convert simple features collection to an sf dataframe
 be_2025_sum$Visits[is.na(be_2025_sum$Visits)==T] <- 0
@@ -429,7 +432,7 @@ plot <- bc_sum %>%
     title = "Species Detection Frequency",
     xaxis = list(title = "Detection Frequency"),
     yaxis = list(title = "Species", categoryorder = "total ascending",
-                 , tickfont = list(size = 10)),
+                 tickfont = list(size = 10)),
     barmode = 'group'
   )
 
@@ -439,6 +442,41 @@ plot
 
 
 # Bat data
+
+We have been collecting bat data from the following bat boxes:
+
+
+```{r}
+
+bat_counts %>% group_by()
+
+# Assuming be_2025_sum is already loaded as an sf dataframe
+
+# Define a color palette for the Visits column
+pal <- colorBin(palette = "YlOrRd", domain = be_2025_sum$Visits, bins = 10, pretty = TRUE)
+
+# Create the leaflet map
+leaflet(be_2025_sum) %>% 
+  addTiles() %>% 
+  addCircleMarkers(
+    radius = 5, 
+    color = ~pal(Visits), 
+    stroke = FALSE, 
+    fillOpacity = 0.8,
+    popup = ~paste(plot_id, "<br> Survey Visits:", Visits)
+  ) %>% 
+  addLegend(
+    pal = pal, 
+    values = ~Visits, 
+    title = "Number of Visits", 
+    opacity = 1
+  )
+```
+```
+
+
+
+
 
 
 # Small mammal data
