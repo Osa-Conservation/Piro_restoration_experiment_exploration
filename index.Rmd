@@ -358,7 +358,10 @@ bc_2025_sum <- bird_counts_2025 %>% group_by(common_name) %>% summarise(sample_f
 # Determine dynamic height based on number of species
 num_species <- nrow(bc_2025_sum)
 plot_height <- max(400, num_species * 20)  # Minimum height 400px, scales with species count
+```
 
+
+```{r, out.height=plot_height}
 # Create a Plotly bar chart
 plot <- bc_2025_sum %>%
   arrange(desc(sample_frequency)) %>%  # Sort by frequency
@@ -379,7 +382,6 @@ plot <- bc_2025_sum %>%
 
 # Display the plot
 plot
-
 ```
 
 
