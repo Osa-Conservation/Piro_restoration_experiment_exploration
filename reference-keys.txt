@@ -7,5 +7,6 @@ bird-surveys
 earthwatch-data
 historical
 bat-data
+vegetation-data
 small-mammal-data
 camera-trap-data
