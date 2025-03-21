@@ -79,6 +79,8 @@ plots<- st_zm(plots, drop = TRUE, what = "ZM")
 # Update the column name
 colnames(plots)[colnames(plots)=="plotID"] <- "plot_id"
 
+plots_centroid <- st_centroid(plots)
+
 roads <- st_read("shapefiles/roads_osa.shp")
 
 # Import the plot locations
@@ -215,7 +217,14 @@ amphib_effort <- amphib_effort %>% drop_na(date)
 
 
 # Rapid vegetation surveys ###############################################
-# Not in yet 
+drive_download(as_id("1SEIP_U719F8DkO5p-8wNwqjuk0qKGPpGyOny4-CRWB4"),
+                path="data/vegetation_data.xlsx", overwrite=T)
+
+veg_cover <- read_excel("data/vegetation_data.xlsx",
+                      sheet="rapid_vegetation_survey", col_types = "guess")
+
+head(veg_cover)
+
 ```
 
 
@@ -447,7 +456,7 @@ We have been collecting bat data from the following bat boxes:
 
 
 ```{r}
-
+head(bat_counts)
 bat_counts %>% group_by()
 
 # Assuming be_2025_sum is already loaded as an sf dataframe
@@ -472,11 +481,229 @@ leaflet(be_2025_sum) %>%
     opacity = 1
   )
 ```
+
+# Vegetation data
+
+```{r}
+veg_sum <- veg_cover %>% group_by(plot_id) %>% summarize("samples"=n())
+
+veg_sum <- left_join(plots_centroid, veg_sum)
+
+# Assuming veg_sum is already loaded and is an sf object
+veg_sum <- veg_sum %>% 
+  mutate(sample_status = ifelse(is.na(samples), "Not Surveyed", "Surveyed"))
+
 ```
 
+To date we have performed surveys (blue dots) in the following `r length(veg_sum$sample_status[veg_sum$sample_status=="Surveyed"])` locations.
+
+```{r}
+# What 
+head(veg_sum)
+# Define color palette
+color_palette <- colorFactor(c("red", "blue"), domain = c("Not Surveyed", "Surveyed"))
+
+# Create leaflet map
+leaflet(veg_sum) %>%
+  addTiles() %>%
+  addCircles(
+    radius = 8, # Adjust as needed
+    color = ~color_palette(sample_status),
+    fillColor = ~color_palette(sample_status),
+    fillOpacity = 0.7,
+    popup = ~paste(plot_id, " </br> Samples:", samples)
+  ) %>%
+  addLegend(
+    position = "bottomright",
+    pal = color_palette,
+    values = veg_sum$sample_status,
+    title = "Sample Presence",
+    opacity = 1
+  )
+
+```
+
+We could use grass cover a a proxy for how well the original treatments worked - i.e. if there is very high ground cover than would suggest the trees are not doing particularly well. I have explored the mean grass cover (number of quadrants which contain gress) as the metric for each location:
+
+```{r}
+# Ensure veg_sum is loaded
+grass_cover_filtered <- veg_cover %>%
+  filter(ground_cover_category == "Grass") %>%
+  group_by(plot_id) %>%
+  summarise(values = list(c(ground_cover, rep(0, max(0, 6 - length(ground_cover)))))) %>%
+  unnest(values) %>%   # Unnest to expand list into rows
+  group_by(plot_id) %>% summarise(grass_cover=mean(values))
+
+grass_cover_filtered$treatment <- substr(grass_cover_filtered$plot_id,1,1)
+
+# Add some jitter to the veg cover
+grass_cover_filtered$grass_cover_jitter <- jitter(grass_cover_filtered$grass_cover, amount=0.1)
+
+# Create Plotly Boxplot
+plot_ly(grass_cover_filtered, x = ~treatment, y = ~grass_cover, type = "box") %>%
+  layout(title = "Boxplot of Grass Cover per Plot",
+         xaxis = list(title = "Treatment type"),
+         yaxis = list(title = "Average Ground Cover"))%>%
+  # Scatter plot layer (raw data)
+  add_trace(
+    data = grass_cover_filtered,
+    x = ~treatment,
+    y = ~grass_cover_jitter,
+    type = "scatter",
+    mode = "markers",
+    name = "Raw Data",
+    marker = list(color = "red", opacity = 0.6, size = 6),
+    hoverinfo = "text",
+    text = ~paste("Plot ID:", plot_id, "<br>Value:", grass_cover)
+  ) %>%
+  # Layout options
+  layout(
+    title = "Grass Cover per Plot",
+    xaxis = list(title = "Plot ID"),
+    yaxis = list(title = "Ground Cover Value"),
+    showlegend = TRUE
+  )
+```
+
+Some sites have low grass cover, but it doesnt appear to be linked to the original restoration methodology (L,M,H, N). High seems to be the worst, and medium the best!
+
+We can do the same but with leaf litter cover (in this instance higher values are better):
+
+```{r}
+
+#table(veg_cover$ground_cover_category)
+# Ensure veg_sum is loaded
+leaflitter_cover_filtered <- veg_cover %>%
+  filter(ground_cover_category == "Leaf litter") %>%
+  group_by(plot_id) %>%
+  summarise(values = list(c(ground_cover, rep(0, max(0, 6 - length(ground_cover)))))) %>%
+  unnest(values) %>%   # Unnest to expand list into rows
+  group_by(plot_id) %>% summarise(leaf_cover=mean(values))
+
+leaflitter_cover_filtered$treatment <- substr(leaflitter_cover_filtered$plot_id,1,1)
+
+# Add some jitter to the veg cover
+leaflitter_cover_filtered$leaf_cover_jitter <- jitter(leaflitter_cover_filtered$leaf_cover, amount=0.1)
+
+# Create Plotly Boxplot
+plot_ly(leaflitter_cover_filtered, x = ~treatment, y = ~leaf_cover, type = "box") %>%
+  layout(title = "Boxplot of leaf litter per Plot",
+         xaxis = list(title = "Treatment type"),
+         yaxis = list(title = "Average Ground Cover"))%>%
+  # Scatter plot layer (raw data)
+  add_trace(
+    data = leaflitter_cover_filtered,
+    x = ~treatment,
+    y = ~leaf_cover_jitter,
+    type = "scatter",
+    mode = "markers",
+    name = "Raw Data",
+    marker = list(color = "red", opacity = 0.6, size = 6),
+    hoverinfo = "text",
+    text = ~paste("Plot ID:", plot_id, "<br>Value:", leaf_cover)
+  ) %>%
+  # Layout options
+  layout(
+    title = "Leaflitter Cover per Plot",
+    xaxis = list(title = "Plot ID"),
+    yaxis = list(title = "Leaflitter Cover Value"),
+    showlegend = TRUE
+  )
+```
+
+And shrub cover - note higher values of this are no nessecarily good:
+
+```{r}
+
+#table(veg_cover$ground_cover_category)
+# Ensure veg_sum is loaded
+shrub_cover_filtered <- veg_cover %>%
+  filter(ground_cover_category == "Plant/ shrub") %>%
+  group_by(plot_id) %>%
+  summarise(values = list(c(ground_cover, rep(0, max(0, 6 - length(ground_cover)))))) %>%
+  unnest(values) %>%   # Unnest to expand list into rows
+  group_by(plot_id) %>% summarise(shrub_cover=mean(values))
+
+shrub_cover_filtered$treatment <- substr(shrub_cover_filtered$plot_id,1,1)
+
+# Add some jitter to the veg cover
+shrub_cover_filtered$shrub_cover_jitter <- jitter(shrub_cover_filtered$shrub_cover, amount=0.1)
+
+# Create Plotly Boxplot
+plot_ly(shrub_cover_filtered, x = ~treatment, y = ~shrub_cover, type = "box") %>%
+  layout(title = "Boxplot of plant/shrub per Plot",
+         xaxis = list(title = "Treatment type"),
+         yaxis = list(title = "Average Ground Cover"))%>%
+  # Scatter plot layer (raw data)
+  add_trace(
+    data = shrub_cover_filtered,
+    x = ~treatment,
+    y = ~shrub_cover_jitter,
+    type = "scatter",
+    mode = "markers",
+    name = "Raw Data",
+    marker = list(color = "red", opacity = 0.6, size = 6),
+    hoverinfo = "text",
+    text = ~paste("Plot ID:", plot_id, "<br>Value:", shrub_cover)
+  ) %>%
+  # Layout options
+  layout(
+    title = "Shrub Cover per Plot",
+    xaxis = list(title = "Plot ID"),
+    yaxis = list(title = "Ground Cover Value"),
+    showlegend = TRUE
+  )
+
+# Remove the jitters
+
+shrub_cover_filtered$shrub_cover_jitter <- NULL
+grass_cover_filtered$grass_cover_jitter <- NULL
+leaflitter_cover_filtered$leaf_cover_jitter <- NULL
+```
+
+Finally if we create a plot of grass vs. leaf litter, this should give us a good idea of where trees are coming back well:
+
+```{r}
+
+# CODE NOT WORKING RIGHT NOW
 
 
 
+veg_final <- left_join(plots_centroid,shrub_cover_filtered) 
+veg_final <- left_join(veg_final,grass_cover_filtered) 
+veg_final <- left_join(veg_final,leaflitter_cover_filtered) 
+#head(veg_final)
+# Fill in the blanks
+# Little loop to fill in the blanks
+i <-4
+for(i in 1:nrow(veg_final))
+{
+  if((is.na(veg_final$shrub_cover[i])+ is.na(veg_final$grass_cover[i]) + is.na(veg_final$leaf_cover[i]))<3){
+      veg_final$shrub_cover[i][is.na(veg_final$shrub_cover[i])==T] <- 0
+      veg_final$grass_cover[i][is.na(veg_final$grass_cover[i])==T] <- 0
+      veg_final$leaf_cover[i][is.na(veg_final$leaf_cover[i])==T] <- 0
+  }
+    
+}
+veg_final_df <- as.data.frame(veg_final)
+
+fig <- plot_ly(data = veg_final_df, 
+               x = ~jitter(grass_cover), 
+               y = ~jitter(leaf_cover), 
+               type = 'scatter', 
+               text = ~paste("Plot ID:", plot_id), 
+               hoverinfo = 'text')
+
+# Layout adjustments
+fig <- fig %>% layout(
+  title = "Grass Cover vs Leaf Litter Cover",
+  xaxis = list(title = "Grass Cover"),
+  yaxis = list(title = "Leaf Litter Cover")
+)
+
+# Display the plot
+fig
+```
 
 
 # Small mammal data
