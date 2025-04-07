@@ -1,7 +1,7 @@
 ---
 title: "Osa Conservation: Piro Restoration Experiment"
 author:
-  - Chris Beirne
+  - Osa Conservation Wildlife Team and Earthwatch
 site: bookdown::test-bookdown
 output: bookdown::gitbook
 documentclass: book
@@ -156,7 +156,7 @@ m
 
 ## Historical survey timeline
 
-**NOTE** I still need access to the vegetation data [Also note - should we add dung beetle and butterflies]
+**NOTE** We still need incorporate the vegetation data [Also - should we add historical dung beetle and butterfly data?]
 
 ```{r, include = F, echo = F}
 
@@ -333,7 +333,7 @@ bird_counts_2025 <- bird_counts[bird_counts$date>ymd("2025-01-01"),]
 
 ```
 
-So for we have visited `r nrow(be_2025_sum[be_2025_sum$Visits>0,])` unique survey locations and performed `r nrow(bird_effort_2025)` point counts, and recorded `r length(unique(bird_counts_2025$common_name))` different species classifications. 
+Since January 2025, we have visited `r nrow(be_2025_sum[be_2025_sum$Visits>0,])` unique survey locations and performed `r nrow(bird_effort_2025)` point counts, and recorded `r length(unique(bird_counts_2025$common_name))` different species classifications. 
 
 The distribution of survey effort is as follows:
 
@@ -414,8 +414,6 @@ Since the start of the project we have visited `r nrow(be_sum[be_sum$Visits>0,])
 The survey effort (number of locations samples and number of point counts by year) are as follows:
 
 ```{r}
-bird_effort$year
-
 bird_effort$year <- year(bird_effort$date)
 
 tmp <- bird_effort %>% group_by(year) %>% summarise(plots_visited=n_distinct(plot_id), total_point_counts=n(), )
@@ -452,35 +450,143 @@ plot
 
 # Bat data
 
-We have been collecting bat data from the following bat boxes:
+We have been collecting bat data from `r length(unique(bat_counts$plot))` bat boxes. The list of names is as follows:
 
 
 ```{r}
-head(bat_counts)
-bat_counts %>% group_by()
+kbl(unique(bat_counts$plot))
+
+# Prep the next bubble
+bat_locs <- bat_counts[, c("plot", "latitude", "longitude")]
+bat_locs <- bat_locs[duplicated(bat_locs)==F,]
+
+# Setup the date column
+bat_counts$date_check <- ymd(bat_counts$date_check)
+```
+
+Of these locations, there are `r nrow(bat_locs)` different plot_id coordinate combinations. They are distributed as follows:
+
+```{r}
 
 # Assuming be_2025_sum is already loaded as an sf dataframe
 
-# Define a color palette for the Visits column
-pal <- colorBin(palette = "YlOrRd", domain = be_2025_sum$Visits, bins = 10, pretty = TRUE)
-
-# Create the leaflet map
-leaflet(be_2025_sum) %>% 
-  addTiles() %>% 
+leaflet(data = bat_locs) %>%
+  addPolygons(data=plots, popup=plots$plot_id, group="plots") %>%
+  addTiles() %>%
   addCircleMarkers(
-    radius = 5, 
-    color = ~pal(Visits), 
-    stroke = FALSE, 
-    fillOpacity = 0.8,
-    popup = ~paste(plot_id, "<br> Survey Visits:", Visits)
-  ) %>% 
-  addLegend(
-    pal = pal, 
-    values = ~Visits, 
-    title = "Number of Visits", 
-    opacity = 1
+    lng = ~longitude,
+    lat = ~latitude,
+    radius = 3,
+    color = "darkred",
+    fill = TRUE,
+    fillOpacity = 0.5,
+    popup = ~paste("Plot ID:", plot)
   )
+
 ```
+
+[ACTION POINT] We need a master list of locations and then to take the latitude/longitude column out of the visit data.
+
+[ACTION POINT] Do we trust the coordinates or the plot id?
+
+## Survey effort through time
+
+```{r}
+plot_types <- data.frame(locs = unique(bat_counts$plot), id=1:length(unique(bat_counts$plot)))
+
+# Order
+plot_types <- plot_types[order(plot_types$locs),] 
+
+plot_height <- max(300, min(nrow(plot_types) * 30, 800))
+
+fig <- plot_ly(height=plot_height) %>%
+  layout(
+    title = "Bat Survey Effort Through Time",
+    xaxis = list(title = "Year", range = c(min(bat_counts$date_check), Sys.time())),
+    yaxis = list(title = "Plot id", tickvals = plot_types$id, ticktext = plot_types$locs)
+  )
+
+# add birds
+i <- 1
+for(i in 1:nrow(plot_types))
+{
+    fig <- fig %>%
+      add_trace(
+        x = bat_counts$date_check[bat_counts$plot==plot_types$locs[i]],
+        y = i,
+        type = "scatter",
+        mode = "markers",
+        marker = list(size = 5),
+        name = plot_types$locs[i]
+      )
+  
+}
+
+fig
+
+```
+
+
+## Overall bat occupancy through time
+
+To understand the long term patterns in bat use of the nest boxes, we can look at the probability of a bat occupying the boxes or not through time: 
+
+```{r}
+bat_counts$binary <- NA
+bat_counts$binary[bat_counts$presence_of_bats=="yes"] <- 1
+bat_counts$binary[bat_counts$presence_of_bats=="no"] <- 0
+bat_counts$month <- ym(substr(bat_counts$date_check,1,7))
+tmp <- bat_counts[is.na(bat_counts$binary)==F,] %>% group_by(month) %>% summarise(occ=sum(binary)/n())
+
+# Make the plot
+plot_ly(
+  data = tmp,
+  x = ~month,
+  y = ~occ,
+  type = 'scatter',
+  mode = 'lines+markers',  # line with points
+  line = list(color = 'darkred'),
+  marker = list(size = 8, color = 'darkred')
+) %>%
+  layout(
+    title = "Bat occupancy Over Time",
+    xaxis = list(title = "Date"),
+    yaxis = list(title = "Occupancy",range = c(0, 1))
+  )
+
+
+```
+
+## Treatment specific occupancy through time
+
+```{r}
+
+bat_counts$treatment <- substr(bat_counts$plot,1,1)
+
+tmp <- bat_counts[is.na(bat_counts$binary)==F,] %>% group_by(month, treatment) %>% summarise(occ=sum(binary)/n())
+tmp$treatment <- as.factor(tmp$treatment)
+
+# Make the plot
+plot_ly(
+  data = tmp,
+  x = ~month,
+  y = ~occ,
+  color= ~treatment,
+  type = 'scatter',
+  mode = 'points',  # line with points
+#  line = list(width=2))#,
+  marker = list(size = 6)
+) %>%
+  layout(
+    title = "Bat occupancy Over Time",
+    xaxis = list(title = "Date"),
+    yaxis = list(title = "Occupancy",range = c(0, NA)),
+    legend = list(title = list(text = "Treatment"))
+  )
+
+
+```
+
 
 # Vegetation data
 
