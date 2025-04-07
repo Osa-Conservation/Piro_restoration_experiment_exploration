@@ -99,9 +99,15 @@ for(i in 1:nrow(data_folder))
 
 # Also grab the bird and batbox databases
 
+# Birds
 drive_download(file = as_id("19xnEVq_EH3xkZe-Up3iK6hXROm3LUu9rITm7FCI1-9A"), path = paste0("data/", "Piro_Restoration_Experiment_BIRD_DATABASE"), overwrite = TRUE)
 
+
+# Bats
 drive_download(file = as_id("1mI3RhnR0WiuaK3TFnnF46xugKDRttKR8xe-lNCpeeXA"), path = paste0("data/", "Piro_Restoration_Experiment_BATBOX_DATABASE"), overwrite = TRUE)
+
+# Camera deployments
+
 
 # Read in the plot locations master list
 
@@ -605,7 +611,6 @@ To date we have performed surveys (blue dots) in the following `r length(veg_sum
 
 ```{r}
 # What 
-head(veg_sum)
 # Define color palette
 color_palette <- colorFactor(c("red", "blue"), domain = c("Not Surveyed", "Surveyed"))
 
@@ -771,9 +776,6 @@ Finally if we create a plot of grass vs. leaf litter, this should give us a good
 
 ```{r}
 
-# CODE NOT WORKING RIGHT NOW
-
-
 
 veg_final <- left_join(plots_centroid,shrub_cover_filtered) 
 veg_final <- left_join(veg_final,grass_cover_filtered) 
@@ -817,4 +819,4 @@ fig
 
 # Camera trap data
 
-
+To date we have deployed....
