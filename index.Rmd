@@ -199,7 +199,7 @@ dep$`Start date` <- ymd(dep$`Start date`)
 dep <- dep %>% drop_na(`Start date`)
 
 
-dep <- read_excel("data/Piro_Restoration_Experiment_CAMERA_TRAP_DEPLOYMENTS.xlsx",
+locs <- read_excel("data/Piro_Restoration_Experiment_CAMERA_TRAP_DEPLOYMENTS.xlsx",
                       sheet="camera_locations")
                       
 locs <- locs %>% drop_na(longitude)
