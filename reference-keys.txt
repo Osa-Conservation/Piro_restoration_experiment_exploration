@@ -10,6 +10,6 @@ bat-data
 survey-effort-through-time
 overall-bat-occupancy-through-time
 treatment-specific-occupancy-through-time
-vegetation-data
 small-mammal-data
 camera-trap-data
+vegetation-data
