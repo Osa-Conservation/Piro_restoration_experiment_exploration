@@ -622,7 +622,7 @@ The deployments we distributed as follows:
 
 ```{r}
 library(RColorBrewer)
-library(micro)
+
 # Assuming be_2025_sum is already loaded as an sf dataframe
 
 # Define a color palette for the Visits column
