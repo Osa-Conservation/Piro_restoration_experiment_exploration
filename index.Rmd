@@ -4,6 +4,7 @@ author:
   - Osa Conservation Wildlife Team and Earthwatch
 site: bookdown::test-bookdown
 output: bookdown::gitbook
+date: '`r paste("Updated on", Sys.Date())`'
 documentclass: book
 biblio-style: apalike
 link-citations: yes
@@ -97,7 +98,7 @@ for(i in 1:nrow(data_folder))
   drive_download(file = as_id(data_folder$id[i]), path = paste0("data/", data_folder$name[i]), overwrite = TRUE)
 }
 
-# Also grab the bird and batbox databases
+# Also grab the bird and batbox databases - as they are shortcuts
 
 # Birds
 drive_download(file = as_id("19xnEVq_EH3xkZe-Up3iK6hXROm3LUu9rITm7FCI1-9A"), path = paste0("data/", "Piro_Restoration_Experiment_BIRD_DATABASE"), overwrite = TRUE)
@@ -105,9 +106,6 @@ drive_download(file = as_id("19xnEVq_EH3xkZe-Up3iK6hXROm3LUu9rITm7FCI1-9A"), pat
 
 # Bats
 drive_download(file = as_id("1mI3RhnR0WiuaK3TFnnF46xugKDRttKR8xe-lNCpeeXA"), path = paste0("data/", "Piro_Restoration_Experiment_BATBOX_DATABASE"), overwrite = TRUE)
-
-# Camera deployments
-
 
 # Read in the plot locations master list
 
@@ -133,10 +131,11 @@ m <- leaflet() %>%
   addProviderTiles(providers$Esri.WorldImagery, group="Satellite") %>%  
   addTiles(group="Base") %>%     # Include a basemap option too
   addPolylines(data = trails, group = "trails", color="brown") %>% 
-  addPolygons(data=plots, popup=plots$plot_id, group="plots") %>% 
+  addPolygons(data=plots, popup=plots$plot_id, group="plots",
+              weight=3) %>% 
   addCircleMarkers(lng=locs_db$longitude, lat=locs_db$latitude,
                    # Co lour the markers depending on the 'feature type'
-                   #color=dep$colours,
+                   color="black",radius=3, stroke=F, fillOpacity=0.6,
                    # Add a popup of the placename and feature_type together
                    popup=paste(locs_db$plot_id, locs_db$original_treatment,
                         "<br>Long:",locs_db$longitude,
@@ -168,10 +167,7 @@ m
 
 # Birds ############################################################
 
-# ## Find Google Drive folder 'Centre Circle Data & Info'
-drive_download(as_id("19xnEVq_EH3xkZe-Up3iK6hXROm3LUu9rITm7FCI1-9A"),
-                path="data/bird_data.xlsx", overwrite=T)
-bird_counts <- read_excel("data/bird_data.xlsx",
+bird_counts <- read_excel("data/Piro_Restoration_Experiment_BIRD_DATABASE.xlsx",
                       sheet="Bird_count_data")
 bird_counts <- as.data.frame(bird_counts)
 
@@ -186,22 +182,18 @@ bird_counts$site_date <- paste0(bird_counts$plot_id, "_", gsub("-", "", bird_cou
 
 
 # Bats ############################################################
-# ## Find Google Drive folder 'Centre Circle Data & Info'
-drive_download(as_id("1mI3RhnR0WiuaK3TFnnF46xugKDRttKR8xe-lNCpeeXA"),
-                path="data/batbox_data.xlsx", overwrite=T)
-
 # The bat count data
-bat_counts <- read_excel("data/batbox_data.xlsx",
+bat_counts <- read_excel("data/Piro_Restoration_Experiment_BATBOX_DATABASE.xlsx",
                       sheet="bat_monitoring")
 
 bat_counts$date_check <- ymd(bat_counts$date_check)
 bat_counts <- bat_counts %>% drop_na(date_check)
+# Remove NA;s
+bat_counts<- bat_counts[is.na(bat_counts$plot)==F,]
+
 
 # Camera traps ######################################################
-drive_download(as_id("1SlxgGPrmkrSvfyNOkeQgVcIMq0iQEi3VbNnBaXeg40Y"),
-                path="data/camera_deployments.xlsx", overwrite=T)
-
-dep <- read_excel("data/camera_deployments.xlsx",
+dep <- read_excel("data/Piro_Restoration_Experiment_CAMERA_TRAP_DEPLOYMENTS.xlsx",
                       sheet="deployment_data")
 dep$`Start date` <- ymd(dep$`Start date`)
 dep <- dep %>% drop_na(`Start date`)
@@ -212,10 +204,7 @@ locs <- read_excel("data/camera_deployments.xlsx",
 locs <- locs %>% drop_na(longitude)
 
 # Amphibian data #####################################################
-drive_download(as_id("1Qi1rzjfUAm1DeQFKzXgbqEGijqnDydl58npTzzUV1wQ"),
-                path="data/amphib_data.xlsx", overwrite=T)
-
-amphib_effort <- read_excel("data/amphib_data.xlsx",
+amphib_effort <- read_excel("data/Piro_Restoration_Experiment_AMPHIBIAN_DATABASE.xlsx",
                       sheet="visit_data", col_types = "text")
 
 amphib_effort$date <- as.Date(as.numeric(amphib_effort$date), origin = as.Date("1899-12-30"))
@@ -223,13 +212,21 @@ amphib_effort <- amphib_effort %>% drop_na(date)
 
 
 # Rapid vegetation surveys ###############################################
-drive_download(as_id("1SEIP_U719F8DkO5p-8wNwqjuk0qKGPpGyOny4-CRWB4"),
-                path="data/vegetation_data.xlsx", overwrite=T)
-
-veg_cover <- read_excel("data/vegetation_data.xlsx",
+veg_cover <- read_excel("data/Piro_Restoration_Experiment_VEGETATION_MONITORING.xlsx",
                       sheet="rapid_vegetation_survey", col_types = "guess")
 
 head(veg_cover)
+
+# Sherman trapping - 1Pr0X70oLGreYE3tnq7zkF3FN7kD0oBd71ldeA3_dkBI
+
+sherman_dep <- read_excel("data/Piro_Restoration_Experiment_SHERMAN_TRAPPING_DATABASE.xlsx",
+                      sheet="deployment_data", col_types = "guess")
+
+sherman_dep <- sherman_dep[is.na(sherman_dep$start_date)==F,]
+
+sherman_cap <- read_excel("data/Piro_Restoration_Experiment_SHERMAN_TRAPPING_DATABASE.xlsx",
+                      sheet="capture_data", col_types = "guess")
+
 
 ```
 
@@ -239,13 +236,14 @@ head(veg_cover)
 
 # The first bit of data form the whole project is:
 
-survey_types <- c("Birds" = 1, "Bats" = 2, "Camera traps" = 3, "Amphibians" = 4)
+survey_types <- c("Birds" = 1, "Bats" = 2, "Camera traps" = 3, "Amphibians" = 4,
+                  "Small mammals" = 5)
 
 fig <- plot_ly() %>%
   layout(
     title = "Survey Data Through Time",
     xaxis = list(title = "Year", range = c(ymd("2017-01-01"), Sys.time())),
-    yaxis = list(title = "Survey Type", tickvals = unname(survey_types), ticktext = names(survey_types))
+    yaxis = list(title = "", tickvals = unname(survey_types), ticktext = names(survey_types))
   )
 
 # add birds
@@ -295,6 +293,18 @@ fig <- fig %>%
         marker = list(size = 10),
         name = "Amphibians"
       )
+
+fig <- fig %>%
+      add_trace(
+        x = sherman_dep$start_date,
+        y = survey_types[["Small mammals"]],
+        type = "scatter",
+        mode = "markers",
+        marker = list(size = 10),
+        name = "Small mammals"
+      )
+
+
 
 fig
 ```
@@ -456,27 +466,36 @@ plot
 
 # Bat data
 
-We have been collecting bat data from `r length(unique(bat_counts$plot))` bat boxes. The list of names is as follows:
-
-
 ```{r}
-kbl(unique(bat_counts$plot))
+
+# Why do we have NA's
+tmp <- bat_counts %>% group_by(plot) %>% summarise(visits=n())
+
+#kbl(unique(bat_counts$plot))
 
 # Prep the next bubble
+# NOTE I DO NOT TRUST THE LOCATION IN THE DATABASE. USE THE SHAPEFILE NYOU HAVE. 
+
 bat_locs <- bat_counts[, c("plot", "latitude", "longitude")]
-bat_locs <- bat_locs[duplicated(bat_locs)==F,]
+
+#take the first of each of these (most likely the most reliable)
+bat_first <- bat_locs[duplicated(bat_locs$plot)==F,]
+
+
+#bat_locs <- bat_locs[duplicated(bat_locs)==F,]
+
 
 # Setup the date column
 bat_counts$date_check <- ymd(bat_counts$date_check)
 ```
 
-Of these locations, there are `r nrow(bat_locs)` different plot_id coordinate combinations. They are distributed as follows:
+We have been collecting bat data from `r length(unique(bat_counts$plot))` bat boxes, and visited these locations `r max(tmp$visits)` times. They are distributed as follows:
 
 ```{r}
 
 # Assuming be_2025_sum is already loaded as an sf dataframe
 
-leaflet(data = bat_locs) %>%
+leaflet(data = bat_first) %>%
   addPolygons(data=plots, popup=plots$plot_id, group="plots") %>%
   addTiles() %>%
   addCircleMarkers(
@@ -487,13 +506,15 @@ leaflet(data = bat_locs) %>%
     fill = TRUE,
     fillOpacity = 0.5,
     popup = ~paste("Plot ID:", plot)
-  )
+  ) 
+  
+# Remove the shit location data
+bat_counts$latitude <- NULL
+bat_counts$longitude <- NULL
+
+bat_counts <- left_join(bat_counts, bat_first)
 
 ```
-
-[ACTION POINT] We need a master list of locations and then to take the latitude/longitude column out of the visit data.
-
-[ACTION POINT] Do we trust the coordinates or the plot id?
 
 ## Survey effort through time
 
@@ -579,10 +600,9 @@ plot_ly(
   y = ~occ,
   color= ~treatment,
   type = 'scatter',
-  mode = 'points',  # line with points
-#  line = list(width=2))#,
-  marker = list(size = 6)
-) %>%
+  mode = 'lines+markers',  # line with points
+  line = list(width=2),
+  marker = list(size = 6)) %>%
   layout(
     title = "Bat occupancy Over Time",
     xaxis = list(title = "Date"),
@@ -592,6 +612,56 @@ plot_ly(
 
 
 ```
+
+# Small mammal data
+
+So far we have made `r length(unique(sherman_dep$deployment_id))` sherman trap deployments, across `r length(unique(sherman_dep$plot_id))` plots. 
+
+The deployments we distributed as follows:
+
+```{r}
+library(RColorBrewer)
+library(micro)
+# Assuming be_2025_sum is already loaded as an sf dataframe
+
+# Define a color palette for the Visits column
+n <- length(unique(sherman_dep$plot_id))
+qual_col_pals = brewer.pal.info[brewer.pal.info$category == 'qual',]
+col_vector = unlist(mapply(brewer.pal, qual_col_pals$maxcolors, rownames(qual_col_pals)))
+tmp <- data.frame(plot_id=unique(sherman_dep$plot_id), col=col_vector[1:n])
+sherman_dep<- left_join(sherman_dep, tmp)
+sherman_sf <- st_as_sf(sherman_dep, coords=c("longitude", "latitude"), crs=4326)
+
+
+# Create the leaflet map
+leaflet(sherman_sf) %>% 
+
+  addPolygons(data=plots, popup=plots$plot_id, group="plots",
+              weight=3, fillOpacity=0.05) %>% 
+  addTiles() %>% 
+  addCircleMarkers(
+    radius = 5, 
+    color = sherman_sf$col, 
+    stroke = FALSE, 
+    fillOpacity = 0.8,
+    popup = ~paste(plot_id, trap_location)
+  ) 
+```
+
+Top date we have recorded `r nrow(sherman_cap)` small mammals. They are as follows:
+
+```{r}
+tmp <- sherman_cap %>%  group_by(species) %>% summarise(count=n())
+kbl(tmp)
+```
+
+Of these, `r length(sherman_cap$deployment_id[substr(sherman_cap$deployment_id,1,1)=="F"])` were in forest and `r length(sherman_cap$deployment_id[substr(sherman_cap$deployment_id,1,1)!="F"])` were in the plots. 
+
+# Camera trap data
+
+To date we have deployed....
+
+
 
 
 # Vegetation data
@@ -814,9 +884,4 @@ fig
 ```
 
 
-# Small mammal data
 
-
-# Camera trap data
-
-To date we have deployed....
