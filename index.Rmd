@@ -708,10 +708,12 @@ leaflet(veg_sum) %>%
 We could use grass cover a a proxy for how well the original treatments worked - i.e. if there is very high ground cover than would suggest the trees are not doing particularly well. I have explored the mean grass cover (number of quadrants which contain gress) as the metric for each location:
 
 ```{r}
+veg_cover$plot_id <- as.factor(veg_cover$plot_id)
+
 # Ensure veg_sum is loaded
 grass_cover_filtered <- veg_cover %>%
   filter(ground_cover_category == "Grass") %>%
-  group_by(plot_id) %>%
+  group_by(plot_id, .drop = FALSE) %>%
   summarise(values = list(c(ground_cover, rep(0, max(0, 6 - length(ground_cover)))))) %>%
   unnest(values) %>%   # Unnest to expand list into rows
   group_by(plot_id) %>% summarise(grass_cover=mean(values))
@@ -749,6 +751,42 @@ plot_ly(grass_cover_filtered, x = ~treatment, y = ~grass_cover, type = "box") %>
 
 Some sites have low grass cover, but it doesnt appear to be linked to the original restoration methodology (L,M,H, N). High seems to be the worst, and medium the best!
 
+
+
+```{r}
+
+library(RColorBrewer)
+
+# Add the site locations
+
+grass_sf <- left_join(plots_centroid, grass_cover_filtered)
+
+
+# Assuming be_2025_sum is already loaded as an sf dataframe
+
+# Define a color palette for the Visits column
+pal <- colorBin(palette = "YlOrRd", domain = grass_sf$grass_cover, bins = 10, pretty = TRUE)
+
+# Create the leaflet map
+leaflet(grass_sf) %>% 
+  addTiles() %>% 
+  addCircleMarkers(
+    radius = 5, 
+    color = ~pal(grass_cover), 
+    stroke = FALSE, 
+    fillOpacity = 0.8,
+    popup = ~paste(plot_id, "<br> Grass cover:", grass_cover)
+  ) %>% 
+  addLegend(
+    pal = pal, 
+    values = ~grass_cover, 
+    title = "Grass cover", 
+    opacity = 1
+  )
+
+```
+
+
 We can do the same but with leaf litter cover (in this instance higher values are better):
 
 ```{r}
@@ -757,7 +795,7 @@ We can do the same but with leaf litter cover (in this instance higher values ar
 # Ensure veg_sum is loaded
 leaflitter_cover_filtered <- veg_cover %>%
   filter(ground_cover_category == "Leaf litter") %>%
-  group_by(plot_id) %>%
+  group_by(plot_id, .drop = F) %>%
   summarise(values = list(c(ground_cover, rep(0, max(0, 6 - length(ground_cover)))))) %>%
   unnest(values) %>%   # Unnest to expand list into rows
   group_by(plot_id) %>% summarise(leaf_cover=mean(values))
@@ -793,7 +831,38 @@ plot_ly(leaflitter_cover_filtered, x = ~treatment, y = ~leaf_cover, type = "box"
   )
 ```
 
-And shrub cover - note higher values of this are no nessecarily good:
+
+```{r}
+
+ll_sf <- left_join(plots_centroid, leaflitter_cover_filtered)
+
+
+# Assuming be_2025_sum is already loaded as an sf dataframe
+
+# Define a color palette for the Visits column
+pal <- colorBin(palette = "YlOrRd", domain = ll_sf$leaf_cover, bins = 10, pretty = TRUE)
+
+# Create the leaflet map
+leaflet(ll_sf) %>% 
+  addTiles() %>% 
+  addCircleMarkers(
+    radius = 5, 
+    color = ~pal(leaf_cover), 
+    stroke = FALSE, 
+    fillOpacity = 0.8,
+    popup = ~paste(plot_id, "<br> Leaflitter cover:", leaf_cover)
+  ) %>% 
+  addLegend(
+    pal = pal, 
+    values = ~leaf_cover, 
+    title = "Leaf cover", 
+    opacity = 1
+  )
+
+```
+
+
+And shrub cover - note higher values of this are not necessarily good:
 
 ```{r}
 
@@ -801,7 +870,7 @@ And shrub cover - note higher values of this are no nessecarily good:
 # Ensure veg_sum is loaded
 shrub_cover_filtered <- veg_cover %>%
   filter(ground_cover_category == "Plant/ shrub") %>%
-  group_by(plot_id) %>%
+  group_by(plot_id, .drop=F) %>%
   summarise(values = list(c(ground_cover, rep(0, max(0, 6 - length(ground_cover)))))) %>%
   unnest(values) %>%   # Unnest to expand list into rows
   group_by(plot_id) %>% summarise(shrub_cover=mean(values))
@@ -841,6 +910,114 @@ plot_ly(shrub_cover_filtered, x = ~treatment, y = ~shrub_cover, type = "box") %>
 shrub_cover_filtered$shrub_cover_jitter <- NULL
 grass_cover_filtered$grass_cover_jitter <- NULL
 leaflitter_cover_filtered$leaf_cover_jitter <- NULL
+```
+
+```{r}
+
+shrub_sf <- left_join(plots_centroid, shrub_cover_filtered)
+
+
+# Assuming be_2025_sum is already loaded as an sf dataframe
+
+# Define a color palette for the Visits column
+pal <- colorBin(palette = "YlOrRd", domain = shrub_sf$shrub_cover, bins = 10, pretty = TRUE)
+
+# Create the leaflet map
+leaflet(shrub_sf) %>% 
+  addTiles() %>% 
+  addCircleMarkers(
+    radius = 5, 
+    color = ~pal(shrub_cover), 
+    stroke = FALSE, 
+    fillOpacity = 0.8,
+    popup = ~paste(plot_id, "<br> Shrub cover:", shrub_cover)
+  ) %>% 
+  addLegend(
+    pal = pal, 
+    values = ~shrub_cover, 
+    title = "Shrub cover", 
+    opacity = 1
+  )
+
+```
+
+
+Canopy cover
+
+```{r}
+
+#table(veg_cover$ground_cover_category)
+# Ensure veg_sum is loaded
+canopy_cover_filtered <- veg_cover  %>%
+  group_by(plot_id, .drop=F) %>%
+  summarise(values = list(c(canopy_cover, rep(0, max(0, 6 - length(canopy_cover)))))) %>%
+  unnest(values) %>%   # Unnest to expand list into rows
+  group_by(plot_id) %>% summarise(canopy_cover=mean(values))
+
+canopy_cover_filtered$treatment <- substr(canopy_cover_filtered$plot_id,1,1)
+
+# Add some jitter to the veg cover
+canopy_cover_filtered$canopy_cover_jitter <- jitter(canopy_cover_filtered$canopy_cover, amount=0.1)
+
+# Create Plotly Boxplot
+plot_ly(canopy_cover_filtered, x = ~treatment, y = ~canopy_cover, type = "box") %>%
+  layout(title = "Boxplot of plant/canopy per Plot",
+         xaxis = list(title = "Treatment type"),
+         yaxis = list(title = "Average Ground Cover"))%>%
+  # Scatter plot layer (raw data)
+  add_trace(
+    data = canopy_cover_filtered,
+    x = ~treatment,
+    y = ~canopy_cover_jitter,
+    type = "scatter",
+    mode = "markers",
+    name = "Raw Data",
+    marker = list(color = "red", opacity = 0.6, size = 6),
+    hoverinfo = "text",
+    text = ~paste("Plot ID:", plot_id, "<br>Value:", canopy_cover)
+  ) %>%
+  # Layout options
+  layout(
+    title = "canopy Cover per Plot",
+    xaxis = list(title = "Plot ID"),
+    yaxis = list(title = "Canopy Cover Value"),
+    showlegend = TRUE
+  )
+
+# Remove the jitters
+
+shrub_cover_filtered$shrub_cover_jitter <- NULL
+grass_cover_filtered$grass_cover_jitter <- NULL
+leaflitter_cover_filtered$leaf_cover_jitter <- NULL
+```
+
+```{r}
+
+canopy_sf <- left_join(plots_centroid, canopy_cover_filtered)
+
+
+# Assuming be_2025_sum is already loaded as an sf dataframe
+
+# Define a color palette for the Visits column
+pal <- colorBin(palette = "YlOrRd", domain = canopy_sf$canopy_cover, bins = 10, pretty = TRUE)
+
+# Create the leaflet map
+leaflet(canopy_sf) %>% 
+  addTiles() %>% 
+  addCircleMarkers(
+    radius = 5, 
+    color = ~pal(canopy_cover), 
+    stroke = FALSE, 
+    fillOpacity = 0.8,
+    popup = ~paste(plot_id, "<br> canopy cover:", canopy_cover)
+  ) %>% 
+  addLegend(
+    pal = pal, 
+    values = ~canopy_cover, 
+    title = "canopy cover", 
+    opacity = 1
+  )
+
 ```
 
 Finally if we create a plot of grass vs. leaf litter, this should give us a good idea of where trees are coming back well:
