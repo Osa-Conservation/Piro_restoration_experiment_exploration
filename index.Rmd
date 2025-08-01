@@ -164,7 +164,7 @@ m
 **NOTE** We still need incorporate the vegetation data [Also - should we add historical dung beetle and butterfly data?]
 
 ```{r, include = F, echo = F}
-
+ 
 # Birds ############################################################
 
 bird_counts <- read_excel("data/Piro_Restoration_Experiment_BIRD_DATABASE.xlsx",
