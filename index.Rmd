@@ -191,7 +191,7 @@ bat_counts <- bat_counts %>% drop_na(date_check)
 # Remove NA;s
 bat_counts<- bat_counts[is.na(bat_counts$plot)==F,]
 
-
+ 
 # Camera traps ######################################################
 dep <- read_excel("data/Piro_Restoration_Experiment_CAMERA_TRAP_DEPLOYMENTS.xlsx",
                       sheet="deployment_data")
