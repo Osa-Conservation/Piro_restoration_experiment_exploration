@@ -80,7 +80,7 @@ plots<- st_zm(plots, drop = TRUE, what = "ZM")
 # Update the column name
 colnames(plots)[colnames(plots)=="plotID"] <- "plot_id"
 
-plots_centroid <- st_centroid(plots)
+#plots_centroid <- st_centroid(plots)
 
 roads <- st_read("shapefiles/roads_osa.shp")
 
@@ -108,6 +108,12 @@ drive_download(file = as_id("1mI3RhnR0WiuaK3TFnnF46xugKDRttKR8xe-lNCpeeXA"), pat
 
 # Read in the plot locations master list
 locs_db <- read_excel("data/Piro_Restoration_Experiment_PLOT_MASTERLIST.xlsx", sheet="survey_locations")  
+
+# Create a spatial map from the plot master list (these should be mid-points)
+
+plots_centroid <- st_as_sf(locs_db, coords = c("longitude", "latitude"),
+                         crs = 4326) 
+
 
 # Download the Wildlife Insights data and format it
 data_folder <- drive_ls(path = as_id("1csFLXRj8rNYGlEA06nMn6fP0qC-f7XOA"), recursive=F)
@@ -142,12 +148,6 @@ img$timestamp <- ymd_hms(img$timestamp)
 #
 dep <- dep[duplicated(dep[,c("deployment_id", "placename")])==F,]
 img <- left_join(img, dep[,c("deployment_id", "placename")])
-
-# Create a spatial object to plot the results
-plots_centroid <- st_centroid(plots)
-# This doesnt have the primary sites though!
-
-
 
 
 ```
@@ -214,9 +214,6 @@ bird_counts$date <- ymd(bird_counts$date)
 bird_counts <- bird_counts %>% drop_na(date)
 
 # Note that SOME OF THE bird data has a leading zero. We should remove that
-tmp1 <- substr(bird_counts$plot_id,1,1)
-tmp2 <- as.numeric(substr(bird_counts$plot_id,2,3))
-bird_counts$plot_id <- paste0(tmp1, tmp2)
 bird_counts$site_date <- paste0(bird_counts$plot_id, "_", gsub("-", "", bird_counts$date))
 
 
@@ -231,18 +228,6 @@ bat_counts <- bat_counts %>% drop_na(date_check)
 bat_counts<- bat_counts[is.na(bat_counts$plot)==F,]
 
  
-# Camera traps ######################################################
-#dep <- read_excel("data/Piro_Restoration_Experiment_CAMERA_TRAP_DEPLOYMENTS.xlsx",
-#                      sheet="deployment_data")
-#dep$`Start date` <- ymd(dep$`Start date`)
-#dep <- dep %>% drop_na(`Start date`)
-
-
-locs <- read_excel("data/Piro_Restoration_Experiment_CAMERA_TRAP_DEPLOYMENTS.xlsx",
-                      sheet="camera_locations")
-                      
-locs <- locs %>% drop_na(longitude)
-
 # Amphibian data #####################################################
 amphib_effort <- read_excel("data/Piro_Restoration_Experiment_AMPHIBIAN_DATABASE.xlsx",
                       sheet="visit_data", col_types = "text")
@@ -278,7 +263,6 @@ sherman_dep <- sherman_dep[is.na(sherman_dep$start_date)==F,]
 
 sherman_cap <- read_excel("data/Piro_Restoration_Experiment_SHERMAN_TRAPPING_DATABASE.xlsx",
                       sheet="capture_data", col_types = "guess")
-
 
 ```
 
@@ -326,7 +310,7 @@ fig <- fig %>%
 
 fig <- fig %>%
       add_trace(
-        x = dep$`Start date`,
+        x = dep$start_date,
         y = survey_types[["Camera traps"]],
         type = "scatter",
         mode = "markers",
@@ -845,6 +829,10 @@ dep <- dep[order(dep$placename),]
 
 # Get unique placenames
 placenames_unique <- unique(dep$placename)
+head(dep)
+#Get a list of unique locations
+locs <- dep[,c("placename", "longitude", "latitude")]
+locs <- locs[duplicated(locs)==F,]
 
 # Make a colour palette for blanks vs. real detections
 cols <- c("red", "blue")
@@ -1254,7 +1242,7 @@ Some sites have low grass cover, but it doesnt appear to be linked to the origin
 library(RColorBrewer)
 
 # Add the site locations
-grass_sf <- left_join(plots_centroid, grass_cover_filtered)
+grass_sf <- left_join(plots_centroid[,c("plot_id", "geometry")], grass_cover_filtered)
 
 # Define a color palette for the grass_cover column
 pal <- colorBin(palette = "YlOrRd", domain = grass_sf$grass_cover, bins = 10, pretty = TRUE)
@@ -1333,8 +1321,8 @@ plot_ly(leaflitter_cover_filtered, x = ~treatment, y = ~leaf_cover, type = "box"
 
 ```{r}
 
-ll_sf <- left_join(plots_centroid, leaflitter_cover_filtered)
-
+ll_sf <- left_join(plots_centroid[,c("plot_id", "geometry")], leaflitter_cover_filtered, by="plot_id")
+colnames(plots_centroid)
 
 # Define a color palette for the leaf_cover column
 pal <- colorBin(palette = "YlOrRd", domain = ll_sf$leaf_cover, bins = 10, pretty = TRUE)
@@ -1418,7 +1406,7 @@ leaflitter_cover_filtered$leaf_cover_jitter <- NULL
 
 ```{r}
 
-shrub_sf <- left_join(plots_centroid, shrub_cover_filtered)
+shrub_sf <- left_join(plots_centroid[,c("plot_id", "geometry")], shrub_cover_filtered)
 
 
 # Assuming be_2025_sum is already loaded as an sf dataframe
@@ -1444,7 +1432,6 @@ leaflet(shrub_sf) %>%
   )
 
 ```
-
 
 Canopy cover
 
@@ -1497,7 +1484,7 @@ leaflitter_cover_filtered$leaf_cover_jitter <- NULL
 
 ```{r}
 
-canopy_sf <- left_join(plots_centroid, canopy_cover_filtered)
+canopy_sf <- left_join(plots_centroid[,c("plot_id", "geometry")], canopy_cover_filtered)
 
 
 # Assuming be_2025_sum is already loaded as an sf dataframe
@@ -1523,6 +1510,9 @@ leaflet(canopy_sf) %>%
   )
 
 ```
+
+
+### Prioritising sites
 
 Finally if we create a plot of grass vs. leaf litter, this should give us a good idea of where trees are coming back well:
 
@@ -1564,6 +1554,25 @@ fig <- fig %>% layout(
 # Display the plot
 fig
 ```
+
+
+How do these sites relate to flooded areas?
+
+```{r}
+head(flood_dat)
+
+flood_sum <- flood_dat %>% group_by(plot_id) %>% summarize("samples"=n())
+
+table(plots_centroid$plot_id)
+
+flood_sum <- left_join(plots_centroid, flood_sum)
+
+# Assuming flood_sum is already loaded and is an sf object
+flood_sum <- flood_sum %>% 
+  mutate(sample_status = ifelse(is.na(samples), "Not Surveyed", "Surveyed"))
+
+```
+
 
 
 
