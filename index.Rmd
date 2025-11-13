@@ -902,7 +902,7 @@ p <- p %>% layout(
   height = plot_height
 )
 
-print(p)
+p
 ```
 
 There are some issues to sort out... we will do that later.
