@@ -750,7 +750,7 @@ Of these, `r length(sherman_cap$deployment_id[substr(sherman_cap$deployment_id,1
 
 To date we have deployed `r nrow(dep)` cameras, at `r length(unique(dep$placename))` locations.
 
-```{r}
+```{r, cam_dat}
 # Pick the category you want to color
 category <- "feature_type"
 
