@@ -103,12 +103,10 @@ for(i in 1:nrow(data_folder))
 # Birds
 drive_download(file = as_id("19xnEVq_EH3xkZe-Up3iK6hXROm3LUu9rITm7FCI1-9A"), path = paste0("data/", "Piro_Restoration_Experiment_BIRD_DATABASE"), overwrite = TRUE)
 
-
 # Bats
 drive_download(file = as_id("1mI3RhnR0WiuaK3TFnnF46xugKDRttKR8xe-lNCpeeXA"), path = paste0("data/", "Piro_Restoration_Experiment_BATBOX_DATABASE"), overwrite = TRUE)
 
 # Read in the plot locations master list
-
 locs_db <- read_excel("data/Piro_Restoration_Experiment_PLOT_MASTERLIST.xlsx", sheet="survey_locations")  
 
 # Download the Wildlife Insights data and format it
@@ -119,23 +117,22 @@ for(i in 1:nrow(data_folder))
   drive_download(file = as_id(data_folder$id[i]), path = paste0("data/", data_folder$name[i]), overwrite = TRUE)
 }
 
-img <- read.csv("data/images.csv", header=T)
+img <- read.csv("data/images_2008900.csv", header=T)
 dep <- read.csv("data/deployments.csv", header=T)
 
 img$project_id <- "PRE"
 dep$project_id <- "PRE"
 
-
 # Prep the dates 
 
 # start dates
-dep$start_date <- ymd_hms(dep$start_date)
+dep$start_date <- ymd_hms(paste0(substr(dep$start_date,1,10), " 00:00:01"))
 
 # end dates
-dep$end_date   <- ymd_hms(dep$end_date)
+dep$end_date   <- ymd_hms(paste0(substr(dep$end_date,1,10), " 23:59:00"))
 
 # camera days
-dep$days <- interval(dep$start_date, dep$end_date)/ddays(1)
+dep$days <- round(interval(dep$start_date, dep$end_date)/ddays(1),0)
 
 dep$feature_type <- substr(dep$placename,4,4)
 
@@ -145,6 +142,12 @@ img$timestamp <- ymd_hms(img$timestamp)
 #
 dep <- dep[duplicated(dep[,c("deployment_id", "placename")])==F,]
 img <- left_join(img, dep[,c("deployment_id", "placename")])
+
+# Create a spatial object to plot the results
+plots_centroid <- st_centroid(plots)
+# This doesnt have the primary sites though!
+
+
 
 
 ```
@@ -247,12 +250,24 @@ amphib_effort <- read_excel("data/Piro_Restoration_Experiment_AMPHIBIAN_DATABASE
 amphib_effort$date <- as.Date(as.numeric(amphib_effort$date), origin = as.Date("1899-12-30"))
 amphib_effort <- amphib_effort %>% drop_na(date)
 
+amphib_caps <- read_excel("data/Piro_Restoration_Experiment_AMPHIBIAN_DATABASE.xlsx",
+                      sheet="capture_data", col_types = "text")
+ 
+
+
 
 # Rapid vegetation surveys ###############################################
 veg_cover <- read_excel("data/Piro_Restoration_Experiment_VEGETATION_MONITORING.xlsx",
                       sheet="rapid_vegetation_survey", col_types = "guess")
 
 head(veg_cover)
+
+# Flooding ################################
+
+flood_dat <- read_excel("data/Piro_Restoration_Experiment_FLOODING_MONITORING.xlsx",
+                      sheet="Sheet1", col_types = "guess")
+
+head(flood_dat)
 
 # Sherman trapping - 1Pr0X70oLGreYE3tnq7zkF3FN7kD0oBd71ldeA3_dkBI
 
@@ -361,9 +376,6 @@ fig %>%
 ## Earthwatch data
 
 ```{r, message=F, warning=F}
-plots_centroid <- st_centroid(plots)
-#head(bird_counts)
-
 bird_effort <-bird_counts[, c("plot_id", "date", "site_date")]
 bird_effort <- bird_effort[duplicated(bird_effort)==F,] 
 bird_effort_2025 <- bird_effort[bird_effort$date>ymd("2025-01-01"),]
@@ -395,8 +407,12 @@ library(RColorBrewer)
 
 # Assuming be_2025_sum is already loaded as an sf dataframe
 
-# Define a color palette for the Visits column
-pal <- colorBin(palette = "YlOrRd", domain = be_2025_sum$Visits, bins = 10, pretty = TRUE)
+# Define a color palette for the Visits column using discrete values
+pal <- colorFactor(
+  palette = "YlOrRd", 
+  domain = be_2025_sum$Visits,
+  levels = sort(unique(be_2025_sum$Visits))
+)
 
 # Create the leaflet map
 leaflet(be_2025_sum) %>% 
@@ -624,29 +640,65 @@ plot_ly(
 ## Treatment specific occupancy through time
 
 ```{r}
-
-bat_counts$treatment <- substr(bat_counts$plot,1,1)
-
-tmp <- bat_counts[is.na(bat_counts$binary)==F,] %>% group_by(month, treatment) %>% summarise(occ=sum(binary)/n())
+bat_counts$treatment <- substr(bat_counts$plot, 1, 1)
+tmp <- bat_counts[is.na(bat_counts$binary)==F,] %>% 
+  group_by(month, treatment) %>% 
+  summarise(occ = sum(binary)/n())
 tmp$treatment <- as.factor(tmp$treatment)
 
+# Convert month to numeric for fitting trend lines
+tmp$month_numeric <- as.numeric(tmp$month)
+
+# Fit models and create predictions for each treatment
+trend_data <- tmp %>%
+  group_by(treatment) %>%
+  do({
+    fit <- lm(occ ~ month_numeric, data = .)
+    data.frame(
+      month = .$month,
+      month_numeric = .$month_numeric,
+      fitted = fitted(fit),
+      treatment = .$treatment
+    )
+  })
+
 # Make the plot
-plot_ly(
-  data = tmp,
-  x = ~month,
-  y = ~occ,
-  color= ~treatment,
-  type = 'scatter',
-  mode = 'lines+markers',  # line with points
-  line = list(width=2),
-  marker = list(size = 6)) %>%
+plot_ly() %>%
+  # Add dashed lines connecting points
+  add_trace(
+    data = tmp,
+    x = ~month,
+    y = ~occ,
+    color = ~treatment,
+    type = 'scatter',
+    mode = 'lines',
+    line = list(dash = 'dash', width = 2),
+    showlegend = FALSE
+  ) %>%
+  # Add markers
+  add_markers(
+    data = tmp,
+    x = ~month,
+    y = ~occ,
+    color = ~treatment,
+    marker = list(size = 6),
+    name = ~treatment
+  ) %>%
+  # Add solid trend lines
+  add_lines(
+    data = trend_data,
+    x = ~month,
+    y = ~fitted,
+    color = ~treatment,
+    line = list(width = 3),
+    showlegend = FALSE
+  ) %>%
   layout(
-    title = "Bat occupancy Over Time",
+    title = "Bat Occupancy Over Time",
     xaxis = list(title = "Date"),
-    yaxis = list(title = "Occupancy",range = c(0, NA)),
+    yaxis = list(title = "Occupancy", range = c(0, NA)),
     legend = list(title = list(text = "Treatment"))
   )
-
 
 ```
 
@@ -788,86 +840,69 @@ Check the images occur in the right place:
 
 ```{r}
 #Camera activity plot
-# Make a separate plot for each 30 stations 
 # Order by placename to make the graphs easier to follow
 dep <- dep[order(dep$placename),]
 
-# To do this make a plot dataframe
-tmp <- data.frame("deployment_id"=unique(dep$deployment_id), "plot_group"=ceiling(1:length(unique(dep$deployment_id))/30))
-
-dep_tmp <- left_join(dep,tmp, by="deployment_id")
-
+# Get unique placenames
+placenames_unique <- unique(dep$placename)
 
 # Make a colour palette for blanks vs. real detections
 cols <- c("red", "blue")
 
+# Create the plot
+p <- plot_ly() 
 
-for(i in 1:max(dep_tmp$plot_group))
-{  
-  # Call the plot
+# Loop through each placename
+for(j in 1:length(placenames_unique))
+{
+  # Get all deployments at this placename
+  deployments_at_place <- dep[dep$placename == placenames_unique[j], ]
   
-  #Subset the data to just that placename
-  tmp <- dep_tmp[dep_tmp$plot_group==i,]
-  # Order by placename 
-  tmp <- tmp[order(tmp$placename),]
-  p <- plot_ly() 
- # Loop through each deployment at that placename
-  for(j in 1:nrow(tmp))
+  # Loop through each deployment at this placename
+  for(k in 1:nrow(deployments_at_place))
+  {
+    # Subset the image data
+    tmp_img <- img[img$deployment_id == deployments_at_place$deployment_id[k], ]
+    
+    if(nrow(tmp_img) > 0)
     {
-        #Subset the image data
-        tmp_img <- img[img$deployment_id==tmp$deployment_id[j],]
-        
-        if(nrow(tmp_img)>0)
-        {
-         
-          p <- add_trace(p, 
-                       #Use the start and end date as x coordinates
-                       x = c(ymd_hms(tmp_img$timestamp)), 
-                       #Use the counter for the y coordinates
-                       y = rep(j, nrow(tmp_img)), 
-                       # State the type of chart
-                       type="scatter",
-                       # make a line that also has points
-                       mode = "markers", 
-                       # Add the deployment ID as hover text
-                       hovertext=paste(tmp_img$genus,tmp_img$species), 
-                       # Color it all black
-                       marker = list(color = cols[tmp_img$is_blank+1]), 
-                       # Suppress the legend
-                       showlegend = FALSE)
-        }
-        
-       # Add a line to 'p'
-        p <- add_trace(p, 
-                       #Use the start and end date as x coordinates
-                       x = c(tmp$start_date[j], tmp$end_date[j]+days(1)), 
-                       #Use the counter for the y coordinates
-                       y = c(j,j), 
-                       # State the type of chart
-                       type="scatter",
-                       # make a line that also has points
-                       mode = "lines", 
-                       # Add the deployment ID as hover text
-                       hovertext=tmp$deployment_id[j], 
-                       # Color it all black
-                       color=I("black"), 
-                       # Suppress the legend
-                       showlegend = FALSE)
-      }
-  # Add custom y axis labels  
-  p <- p %>%   layout(yaxis = list(
+      p <- add_trace(p, 
+                     x = c(ymd_hms(tmp_img$timestamp)), 
+                     y = rep(j, nrow(tmp_img)), 
+                     type = "scatter",
+                     mode = "markers", 
+                     hovertext = paste(tmp_img$genus, tmp_img$species), 
+                     marker = list(color = cols[tmp_img$is_blank + 1]), 
+                     showlegend = FALSE)
+    }
+    
+    # Add a line for this deployment
+    p <- add_trace(p, 
+                   x = c(deployments_at_place$start_date[k], 
+                         deployments_at_place$end_date[k] + days(1)), 
+                   y = c(j, j), 
+                   type = "scatter",
+                   mode = "lines", 
+                   hovertext = deployments_at_place$deployment_id[k], 
+                   color = I("black"), 
+                   showlegend = FALSE)
+  }
+}
 
-      ticktext = as.list(tmp$deployment_id), 
+# Calculate dynamic height (e.g., 20 pixels per row, with a minimum of 400)
+plot_height <- max(400, length(placenames_unique) * 20)
 
-      tickvals = as.list(1:nrow(tmp)),
+# Add custom y axis labels with placenames and dynamic height
+p <- p %>% layout(
+  yaxis = list(
+    ticktext = as.list(placenames_unique), 
+    tickvals = as.list(1:length(placenames_unique)),
+    tickmode = "array"
+  ),
+  height = plot_height
+)
 
-      tickmode = "array"))
-  
-  print(p)
-      
-  
-} 
-
+print(p)
 ```
 
 There are some issues to sort out... we will do that later.
@@ -899,9 +934,9 @@ daily_lookup <- list()
 # Loop through the deployment dataframe and create a row for every day the camera is active
 for(i in 1:nrow(tmp))
 {
-  if(ymd(tmp$start_date[i])!=ymd(tmp$end_date[i]))
+  if(ymd(substr(tmp$start_date[i],1,10))!=ymd(substr(tmp$end_date[i],1,10)))
   {
-    daily_lookup[[i]] <- data.frame("date"=seq(ymd(tmp$start_date[i]), ymd(tmp$end_date[i]), by="days"), "placename"=tmp$placename[i])
+    daily_lookup[[i]] <- data.frame("date"=seq(ymd(substr(tmp$start_date[i],1,10)), ymd(substr(tmp$end_date[i],1,10)), by="days"), "placename"=tmp$placename[i])
   }
 }
 
@@ -1122,6 +1157,8 @@ fig2 <- plot_ly(x = sp_summary$occupancy, y = sp_summary$common_name, type = 'ba
 subplot(nrows=1,fig1, fig2, titleX = T) # We could stack them on top of one another using nrows=2
 ```
 
+Chris will add spatial plots soon!
+
 
 # Vegetation data
 
@@ -1216,18 +1253,16 @@ Some sites have low grass cover, but it doesnt appear to be linked to the origin
 library(RColorBrewer)
 
 # Add the site locations
-
 grass_sf <- left_join(plots_centroid, grass_cover_filtered)
 
-
-# Assuming be_2025_sum is already loaded as an sf dataframe
-
-# Define a color palette for the Visits column
+# Define a color palette for the grass_cover column
 pal <- colorBin(palette = "YlOrRd", domain = grass_sf$grass_cover, bins = 10, pretty = TRUE)
 
-# Create the leaflet map
+# Create the leaflet map with multiple base layers
 leaflet(grass_sf) %>% 
-  addTiles() %>% 
+  addProviderTiles(providers$OpenStreetMap, group = "Street Map") %>%
+  addProviderTiles(providers$Esri.WorldImagery, group = "Satellite") %>%
+  addProviderTiles(providers$CartoDB.Positron, group = "Light") %>%
   addCircleMarkers(
     radius = 5, 
     color = ~pal(grass_cover), 
@@ -1240,6 +1275,11 @@ leaflet(grass_sf) %>%
     values = ~grass_cover, 
     title = "Grass cover", 
     opacity = 1
+  ) %>%
+  addLayersControl(
+    baseGroups = c("Street Map", "Satellite", "Light"),
+    position = "topright",
+    options = layersControlOptions(collapsed = TRUE)
   )
 
 ```
@@ -1295,14 +1335,14 @@ plot_ly(leaflitter_cover_filtered, x = ~treatment, y = ~leaf_cover, type = "box"
 ll_sf <- left_join(plots_centroid, leaflitter_cover_filtered)
 
 
-# Assuming be_2025_sum is already loaded as an sf dataframe
-
-# Define a color palette for the Visits column
+# Define a color palette for the leaf_cover column
 pal <- colorBin(palette = "YlOrRd", domain = ll_sf$leaf_cover, bins = 10, pretty = TRUE)
 
-# Create the leaflet map
+# Create the leaflet map with multiple base layers
 leaflet(ll_sf) %>% 
-  addTiles() %>% 
+  addProviderTiles(providers$OpenStreetMap, group = "Street Map") %>%
+  addProviderTiles(providers$Esri.WorldImagery, group = "Satellite") %>%
+  addProviderTiles(providers$CartoDB.Positron, group = "Light") %>%
   addCircleMarkers(
     radius = 5, 
     color = ~pal(leaf_cover), 
@@ -1315,6 +1355,11 @@ leaflet(ll_sf) %>%
     values = ~leaf_cover, 
     title = "Leaf cover", 
     opacity = 1
+  ) %>%
+  addLayersControl(
+    baseGroups = c("Street Map", "Satellite", "Light"),
+    position = "topright",
+    options = layersControlOptions(collapsed = TRUE)
   )
 
 ```
