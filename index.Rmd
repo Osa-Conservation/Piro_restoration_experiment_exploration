@@ -849,8 +849,10 @@ placenames_unique <- unique(dep$placename)
 # Make a colour palette for blanks vs. real detections
 cols <- c("red", "blue")
 
+plot_height <- max(400, length(placenames_unique) * 20)
+
 # Create the plot
-p <- plot_ly() 
+p <- plot_ly(height = plot_height) 
 
 # Loop through each placename
 for(j in 1:length(placenames_unique))
@@ -890,7 +892,6 @@ for(j in 1:length(placenames_unique))
 }
 
 # Calculate dynamic height (e.g., 20 pixels per row, with a minimum of 400)
-plot_height <- max(400, length(placenames_unique) * 20)
 
 # Add custom y axis labels with placenames and dynamic height
 p <- p %>% layout(
@@ -898,12 +899,12 @@ p <- p %>% layout(
     ticktext = as.list(placenames_unique), 
     tickvals = as.list(1:length(placenames_unique)),
     tickmode = "array"
-  ),
-  height = plot_height
+  )
 )
 
 p
 ```
+
 
 There are some issues to sort out... we will do that later.
 
