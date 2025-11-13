@@ -1519,7 +1519,7 @@ Finally if we create a plot of grass vs. leaf litter, this should give us a good
 ```{r}
 
 
-veg_final <- left_join(plots_centroid,shrub_cover_filtered) 
+veg_final <- left_join(plots_centroid[,c("plot_id", "geometry")],shrub_cover_filtered) 
 veg_final <- left_join(veg_final,grass_cover_filtered) 
 veg_final <- left_join(veg_final,leaflitter_cover_filtered) 
 #head(veg_final)
