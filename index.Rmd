@@ -150,9 +150,17 @@ dep <- dep[duplicated(dep[,c("deployment_id", "placename")])==F,]
 img <- left_join(img, dep[,c("deployment_id", "placename")])
 
 
+# Download the plot master list
+
+plot_master  <- read_excel("data/Piro_Restoration_Experiment_PLOT_MASTERLIST.xlsx",
+                      sheet="survey_locations")
+
+head(plot_master)
+
+plot_master$simple_treatment
 ```
 
-The following map shows the locations of all the surveys included within this project to date. 
+The following map shows the locations of all the surveys included within this project to date, coloured by simplfied treatment category: active restoration; natural restoration and forest control. 
 
 ```{r map4, echo=F, class.source="Rmain"}
 
@@ -166,37 +174,65 @@ The following map shows the locations of all the surveys included within this pr
 # # then we apply it to the dataframe
 # dep$colours <- col.cat[dep[,category]]
 
-m <- leaflet() %>%
-  addProviderTiles(providers$Esri.WorldImagery, group="Satellite") %>%  
-  addTiles(group="Base") %>%     # Include a basemap option too
-  addPolylines(data = trails, group = "trails", color="brown") %>% 
-  addPolygons(data=plots, popup=plots$plot_id, group="plots",
-              weight=3) %>% 
-  addCircleMarkers(lng=locs_db$longitude, lat=locs_db$latitude,
-                   # Co lour the markers depending on the 'feature type'
-                   color="black",radius=3, stroke=F, fillOpacity=0.6,
-                   # Add a popup of the placename and feature_type together
-                   popup=paste(locs_db$plot_id, locs_db$original_treatment,
-                        "<br>Long:",locs_db$longitude,
-                        "<br>Lat:",locs_db$latitude),
-                   group="survey_locs") %>%
-  ## Add a legend explaining what is going on
-  # addLegend("topleft", colors = col.cat,  labels = levels(dep[,category]),
-  #                  title = category,
-  #                  labFormat = labelFormat(prefix = "$"),
-  #                  opacity = 1) %>%
-  # 
-  # add a layer control box to toggle between the layers
+plot_master$simple_treatment <- as.factor(plot_master$simple_treatment)
+
+# Create a color palette for the treatments
+treatment_colors <- colorFactor(
+  palette = c("#984EA3", "#4DAF4A","#E41A1C"),  # adjust number of colors as needed
+  domain = plot_master$simple_treatment
+)
+
+m <- leaflet(data = plot_master) %>%
+  addProviderTiles(providers$Esri.WorldImagery, group = "Satellite") %>%  
+  addTiles(group = "Base") %>%
+  addPolylines(data = trails, group = "trails", color = "brown") %>% 
+  addPolygons(data = plots, popup = plots$plot_id, group = "plots",
+              weight = 3) %>% 
+  addCircleMarkers(
+    lng = ~longitude, 
+    lat = ~latitude,
+    color = ~treatment_colors(simple_treatment),
+    fillColor = ~treatment_colors(simple_treatment),
+    radius = 6, 
+    stroke = TRUE,
+    weight = 1,
+    fillOpacity = 0.8,
+    popup = ~paste(plot_id, original_treatment,
+                   "<br>Treatment:", simple_treatment,
+                   "<br>Long:", longitude,
+                   "<br>Lat:", latitude),
+    group = "survey_locs"
+  ) %>%
+  addLegend(
+    position = "topright",
+    pal = treatment_colors,
+    values = ~simple_treatment,
+    title = "Treatment",
+    opacity = 1
+  ) %>%
   addLayersControl(
-                    baseGroups = c("Base", "Satellite"),
-                    overlayGroups = c("plots","trails", "survey_locs"),
-                    options = layersControlOptions(collapsed = FALSE)
-      ) %>%
-  addFullscreenControl()
+    position = "topleft",
+    baseGroups = c("Base", "Satellite"),
+    overlayGroups = c("plots", "trails", "survey_locs"),
+    options = layersControlOptions(collapsed = FALSE)
+  ) %>%
+  addFullscreenControl() %>%
+  addScaleBar(position = "topright")
 
 m
 
 ```
+
+The number of survey locations for each category are as follows:
+
+```{r}
+plot_master %>%
+  count(simple_treatment) %>%
+  kable(col.names = c("Treatment", "Number of Locations")) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"), 
+                full_width = FALSE)
+```
+
 
 ## Historical survey timeline
 
@@ -215,6 +251,12 @@ bird_counts <- bird_counts %>% drop_na(date)
 
 # Note that SOME OF THE bird data has a leading zero. We should remove that
 bird_counts$site_date <- paste0(bird_counts$plot_id, "_", gsub("-", "", bird_counts$date))
+
+# Bird effort
+bird_effort <- read_excel("data/Piro_Restoration_Experiment_BIRD_DATABASE.xlsx",
+                      sheet="Visit_metadata")
+bird_effort <- bird_effort[is.na(bird_effort$date)==F,]
+table(substr(bird_effort$date,1,4))
 
 
 # Bats ############################################################
@@ -277,7 +319,7 @@ survey_types <- c("Birds" = 1, "Bats" = 2, "Camera traps" = 3, "Amphibians" = 4,
 
 fig <- plot_ly() %>%
   layout(
-    title = "Survey Data Through Time",
+    title = "Historical survey data",
     xaxis = list(title = "Year", range = c(ymd("2017-01-01"), Sys.time())),
     yaxis = list(title = "", tickvals = unname(survey_types), ticktext = names(survey_types))
   )
@@ -351,9 +393,77 @@ Now lets zoom in on data collected since our collaboration with Earthwatch start
 
 ```{r}
 fig %>%
-  layout(xaxis = list(range = c(as.Date("2025-02-01"), Sys.time() )),
-         title = "Survey Data 2025")
+  layout(xaxis = list(range = c(as.Date("2025-02-01"),c(as.Date("2025-12-30") )),
+         title = "2025 Survey Data"))
 ```
+
+And a summary of the number of different surveys conducted by year:
+
+```{r}
+
+
+# Combine all survey data - counting unique site-date combinations
+survey_summary <- bind_rows(
+  bird_counts %>% 
+    mutate(year = year(date)) %>%
+    distinct(plot_id, date, year) %>%
+    count(year) %>%
+    mutate(survey_type = "Birds"),
+  
+  bat_counts %>% 
+    mutate(year = year(date_check)) %>%
+    distinct(plot, date_check, year) %>%
+    count(year) %>%
+    mutate(survey_type = "Bats"),
+  
+  dep %>% 
+    mutate(year = year(start_date)) %>%
+    distinct(placename, start_date, year) %>%
+    count(year) %>%
+    mutate(survey_type = "Camera traps"),
+  
+  amphib_effort %>% 
+    mutate(year = year(date)) %>%
+    distinct(plot_id, date, year) %>%
+    count(year) %>%
+    mutate(survey_type = "Amphibians"),
+  
+  sherman_dep %>% 
+    mutate(year = year(start_date)) %>%
+    distinct(plot_id, start_date, year) %>%
+    count(year) %>%
+    mutate(survey_type = "Small mammals")
+)
+
+# Pivot to wide format with years as columns
+survey_table <- survey_summary %>%
+  pivot_wider(names_from = year, values_from = n, values_fill = 0) %>%
+  mutate(Total = rowSums(across(where(is.numeric)))) %>%
+  mutate(survey_type = factor(survey_type, 
+                               levels = c("Birds", "Bats", "Camera traps", 
+                                          "Amphibians", "Small mammals"))) %>%
+  arrange(survey_type) %>%
+  # Reorder columns: survey_type, years in order, Total
+  select(survey_type, sort(names(.)[names(.) != "survey_type" & names(.) != "Total"]), Total)
+
+# Add column totals row
+totals <- survey_table %>%
+  summarise(survey_type = "Total", across(where(is.numeric), sum))
+
+survey_table <- bind_rows(survey_table, totals)
+
+# Create the formatted table
+survey_table %>%
+  kable(col.names = c("Survey Type", names(survey_table)[-1]),
+        caption = "Number of unique site-date surveys by type and year") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
+                full_width = FALSE) %>%
+  row_spec(0, bold = TRUE, background = "#f5f5f5") %>%
+  row_spec(nrow(survey_table), bold = TRUE, background = "#f5f5f5")
+```
+
+
+
 
 # Bird surveys
 
@@ -375,14 +485,21 @@ be_2025_sum <- left_join(plots_centroid, be_2025_sum)
 # Convert simple features collection to an sf dataframe
 be_2025_sum$Visits[is.na(be_2025_sum$Visits)==T] <- 0
 
+# Remove the historical amphibian plots
+be_2025_sum <- be_2025_sum[be_2025_sum$taxa!="amphibians",]
+
+# Add the meta data
+be_2025_sum <- left_join(be_2025_sum, plot_master)
 
 #2025 records
 bird_counts_2025 <- bird_counts[bird_counts$date>ymd("2025-01-01"),]
+bird_counts_2025 <- left_join(bird_counts_2025, plot_master)
+
 #
 
 ```
 
-Since January 2025, we have visited `r nrow(be_2025_sum[be_2025_sum$Visits>0,])` unique survey locations and performed `r nrow(bird_effort_2025)` point counts, and recorded `r length(unique(bird_counts_2025$common_name))` different species classifications. 
+Since January 2025, we have visited `r nrow(be_2025_sum[be_2025_sum$Visits>0,])` unique survey locations and performed `r nrow(bird_effort_2025)` point counts, and recorded `r length(unique(bird_counts_2025$common_name))` different species classifications. The mean number of visits was `r round(mean(be_2025_sum$Visits),1)`, minimum = `r min(be_2025_sum$Visits)` max = `r max(be_2025_sum$Visits)`. 
 
 The distribution of survey effort is as follows:
 
@@ -402,7 +519,7 @@ pal <- colorFactor(
 leaflet(be_2025_sum) %>% 
   addTiles() %>% 
   addCircleMarkers(
-    radius = 5, 
+    radius = 7, 
     color = ~pal(Visits), 
     stroke = FALSE, 
     fillOpacity = 0.8,
@@ -413,7 +530,8 @@ leaflet(be_2025_sum) %>%
     values = ~Visits, 
     title = "Number of Visits", 
     opacity = 1
-  )
+  ) %>%
+  addScaleBar(position = "topright")
 ```
 
 The distributions of species detected is as follows:
@@ -425,7 +543,6 @@ bc_2025_sum <- bird_counts_2025 %>% group_by(common_name) %>% summarise(sample_f
 num_species <- nrow(bc_2025_sum)
 plot_height <- max(400, num_species * 18)  # Minimum height 400px, scales with species count
 ```
-
 
 ```{r, out.height=plot_height}
 # Create a Plotly bar chart
@@ -449,7 +566,153 @@ plot <- bc_2025_sum %>%
 
 # Display the plot
 plot
+
+#table(bc_2025_sum$sample_frequency==1)/nrow(bc_2025_sum)
+
 ```
+
+We can examine the average observed species richness per visits for the simplified treatment categories. 
+
+```{r}
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+
+# Read your data (adjust path as needed)
+bird_data <- read.csv("example.csv")
+
+# Remove rows with NA in simple_treatment
+bird_data <- bird_data %>%
+  filter(!is.na(simple_treatment))
+
+# Set the treatment order
+bird_data <- bird_data %>%
+  mutate(simple_treatment = factor(simple_treatment, 
+                                    levels = c("forest", "active_restoration", "passive_restoration")))
+
+# Calculate species richness per site_date
+richness_per_visit <- bird_data %>%
+  group_by(simple_treatment, site_date) %>%
+  summarise(species_richness = n_distinct(common_name), .groups = "drop")
+
+# Calculate mean and SD per treatment
+richness_summary <- richness_per_visit %>%
+  group_by(simple_treatment) %>%
+  summarise(
+    mean_richness = mean(species_richness),
+    sd_richness = sd(species_richness),
+    se_richness = sd(species_richness) / sqrt(n()),
+    n_surveys = n(),
+    .groups = "drop"
+  )
+
+ggplot(richness_per_visit, aes(x = simple_treatment, y = species_richness, fill = simple_treatment)) +
+  geom_violin(alpha = 0.7, trim = FALSE) +
+  geom_boxplot(width = 0.1, fill = "white", outlier.shape = NA) +
+  scale_x_discrete(labels = c("forest" = "Forest", 
+                               "active_restoration" = "Active Restoration", 
+                               "passive_restoration" = "Passive Restoration")) +
+  scale_fill_viridis_d(option = "plasma", begin = 0.2, end = 0.8) +
+  labs(
+    x = "Treatment",
+    y = "Species richness per survey",
+    title = "Bird species richness by treatment type"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1, size = 12),
+    axis.text.y = element_text(size = 12),
+    axis.title.x = element_text(size = 14),
+    axis.title.y = element_text(size = 14),
+    plot.title = element_text(size = 16),
+    legend.position = "none"
+  )
+```
+
+
+These simple patterns in species richness do not reflect the complex species specific affinities birds have to the different habitat categories. Examining how frequently the top 20 most frequently detected birds were detected in each survey category reveals this:
+
+
+```{r}
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+
+# Read your data (adjust path as needed)
+bird_data <- read.csv("example.csv")
+
+# Remove rows with NA in simple_treatment
+bird_data <- bird_data %>%
+  filter(!is.na(simple_treatment))
+
+# Set the treatment order
+bird_data <- bird_data %>%
+  mutate(simple_treatment = factor(simple_treatment, 
+                                    levels = c("forest", "active_restoration", "passive_restoration")))
+
+# Calculate survey effort (unique site_dates) per treatment
+effort <- bird_data %>%
+  distinct(simple_treatment, site_date) %>%
+  count(simple_treatment, name = "n_surveys")
+
+# Calculate number of site_dates where each species was detected per treatment
+detections <- bird_data %>%
+  distinct(common_name, simple_treatment, site_date) %>%
+  count(common_name, simple_treatment, name = "n_detections")
+
+# Join and calculate detection frequency
+detection_freq <- detections %>%
+  left_join(effort, by = "simple_treatment") %>%
+  mutate(detection_rate = n_detections / n_surveys)
+
+# Get top 20 species overall (by total detections across all treatments)
+top_20_species <- detection_freq %>%
+  group_by(common_name) %>%
+  summarise(total_detections = sum(n_detections)) %>%
+  arrange(desc(total_detections)) %>%
+  slice_head(n = 20) %>%
+  pull(common_name)
+
+# Get species order based on forest detection rate
+forest_order <- detection_freq %>%
+  filter(common_name %in% top_20_species, simple_treatment == "forest") %>%
+  arrange(desc(detection_rate)) %>%
+  pull(common_name)
+
+# Add any species not detected in forest to the end
+forest_order <- c(forest_order, setdiff(top_20_species, forest_order))
+
+# Filter to top 20 and make complete (fill missing combos with 0)
+plot_data <- detection_freq %>%
+  filter(common_name %in% top_20_species) %>%
+  complete(common_name, simple_treatment, fill = list(n_detections = 0, detection_rate = 0)) %>%
+  mutate(common_name = factor(common_name, levels = rev(forest_order)),
+         # Add column for text color based on detection rate
+         text_color = ifelse(detection_rate < 0.3, "white", "black"))
+
+# Create the heatmap
+ggplot(plot_data, aes(x = simple_treatment, y = common_name, fill = detection_rate)) +
+  geom_tile(color = "white") +
+  geom_text(aes(label = scales::percent(detection_rate, accuracy = 1), color = text_color), size = 3) +
+  scale_fill_viridis_c(labels = scales::percent_format(), option = "plasma") +
+  scale_color_identity() +  # Use the actual color values in text_color column
+  scale_x_discrete(labels = c("forest" = "Forest", 
+                               "active_restoration" = "Active Restoration", 
+                               "passive_restoration" = "Passive Restoration")) +
+  labs(
+    x = "Treatment",
+    y = "",
+    fill = "Detection\nfrequency",
+    title = "Top 20 bird species detection frequency by treatment"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    axis.text.y = element_text(size = 9)
+  )
+```
+
+
 
 
 ## Historical 
@@ -685,6 +948,25 @@ plot_ly() %>%
   )
 
 ```
+
+# Amphibian data
+
+```{r}
+head(amphib_effort)
+
+amphib_effort$year <- as.numeric(substr(amphib_effort$year,1,4))
+amphib_effort$treatment <- substr(amphib_effort$plot_id,1,1)
+
+table(amphib_effort$year)
+
+
+unique(amphib_effort$plot_id)[!(unique(amphib_effort$plot_id) %in% plots_centroid$plot_id)]
+
+
+
+
+```
+
 
 # Small mammal data
 
