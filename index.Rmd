@@ -91,7 +91,7 @@ data_folder <- drive_ls(path = as_id("1dnLGAUTC0IQ9dSzC4l354whRrBXLNOM1"), recur
 data_folder <- data_folder[substr(data_folder$name,1,4)=="Piro",]
 
 # Remove the shortcut folders and replace them with the real file 
-data_folder <- data_folder[!(data_folder$name %in% c("Piro_Restoration_Experiment_BATBOX_DATABASE", "Piro_Restoration_Experiment_BIRD_DATABASE")),]
+data_folder <- data_folder[!(data_folder$name %in% c("Piro_Restoration_Experiment_BATBOX_DATABASE", "Piro_Restoration_Experiment_bird_counts_2025BASE")),]
 
 for(i in 1:nrow(data_folder))
 {
@@ -101,7 +101,7 @@ for(i in 1:nrow(data_folder))
 # Also grab the bird and batbox databases - as they are shortcuts
 
 # Birds
-drive_download(file = as_id("19xnEVq_EH3xkZe-Up3iK6hXROm3LUu9rITm7FCI1-9A"), path = paste0("data/", "Piro_Restoration_Experiment_BIRD_DATABASE"), overwrite = TRUE)
+drive_download(file = as_id("19xnEVq_EH3xkZe-Up3iK6hXROm3LUu9rITm7FCI1-9A"), path = paste0("data/", "Piro_Restoration_Experiment_bird_counts_2025BASE"), overwrite = TRUE)
 
 # Bats
 drive_download(file = as_id("1mI3RhnR0WiuaK3TFnnF46xugKDRttKR8xe-lNCpeeXA"), path = paste0("data/", "Piro_Restoration_Experiment_BATBOX_DATABASE"), overwrite = TRUE)
@@ -157,7 +157,7 @@ plot_master  <- read_excel("data/Piro_Restoration_Experiment_PLOT_MASTERLIST.xls
 
 head(plot_master)
 
-plot_master$simple_treatment
+#plot_master$simple_treatment
 ```
 
 The following map shows the locations of all the surveys included within this project to date, coloured by simplfied treatment category: active restoration; natural restoration and forest control. 
@@ -242,7 +242,7 @@ plot_master %>%
   
 # Birds ############################################################
 
-bird_counts <- read_excel("data/Piro_Restoration_Experiment_BIRD_DATABASE.xlsx",
+bird_counts <- read_excel("data/Piro_Restoration_Experiment_bird_counts_2025BASE.xlsx",
                       sheet="Bird_count_data")
 bird_counts <- as.data.frame(bird_counts)
 
@@ -253,7 +253,7 @@ bird_counts <- bird_counts %>% drop_na(date)
 bird_counts$site_date <- paste0(bird_counts$plot_id, "_", gsub("-", "", bird_counts$date))
 
 # Bird effort
-bird_effort <- read_excel("data/Piro_Restoration_Experiment_BIRD_DATABASE.xlsx",
+bird_effort <- read_excel("data/Piro_Restoration_Experiment_bird_counts_2025BASE.xlsx",
                       sheet="Visit_metadata")
 bird_effort <- bird_effort[is.na(bird_effort$date)==F,]
 table(substr(bird_effort$date,1,4))
@@ -463,8 +463,6 @@ survey_table %>%
 ```
 
 
-
-
 # Bird surveys
 
 ## Earthwatch data
@@ -574,24 +572,18 @@ plot
 We can examine the average observed species richness per visits for the simplified treatment categories. 
 
 ```{r}
-library(dplyr)
-library(tidyr)
-library(ggplot2)
-
-# Read your data (adjust path as needed)
-bird_data <- read.csv("example.csv")
 
 # Remove rows with NA in simple_treatment
-bird_data <- bird_data %>%
+bird_counts_2025 <- bird_counts_2025 %>%
   filter(!is.na(simple_treatment))
 
 # Set the treatment order
-bird_data <- bird_data %>%
+bird_counts_2025 <- bird_counts_2025 %>%
   mutate(simple_treatment = factor(simple_treatment, 
                                     levels = c("forest", "active_restoration", "passive_restoration")))
 
 # Calculate species richness per site_date
-richness_per_visit <- bird_data %>%
+richness_per_visit <- bird_counts_2025 %>%
   group_by(simple_treatment, site_date) %>%
   summarise(species_richness = n_distinct(common_name), .groups = "drop")
 
@@ -634,29 +626,23 @@ These simple patterns in species richness do not reflect the complex species spe
 
 
 ```{r}
-library(dplyr)
-library(tidyr)
-library(ggplot2)
-
-# Read your data (adjust path as needed)
-bird_data <- read.csv("example.csv")
 
 # Remove rows with NA in simple_treatment
-bird_data <- bird_data %>%
+bird_counts_2025 <- bird_counts_2025 %>%
   filter(!is.na(simple_treatment))
 
 # Set the treatment order
-bird_data <- bird_data %>%
+bird_counts_2025 <- bird_counts_2025 %>%
   mutate(simple_treatment = factor(simple_treatment, 
                                     levels = c("forest", "active_restoration", "passive_restoration")))
 
 # Calculate survey effort (unique site_dates) per treatment
-effort <- bird_data %>%
+effort <- bird_counts_2025 %>%
   distinct(simple_treatment, site_date) %>%
   count(simple_treatment, name = "n_surveys")
 
 # Calculate number of site_dates where each species was detected per treatment
-detections <- bird_data %>%
+detections <- bird_counts_2025 %>%
   distinct(common_name, simple_treatment, site_date) %>%
   count(common_name, simple_treatment, name = "n_detections")
 
@@ -711,8 +697,6 @@ ggplot(plot_data, aes(x = simple_treatment, y = common_name, fill = detection_ra
     axis.text.y = element_text(size = 9)
   )
 ```
-
-
 
 
 ## Historical 
@@ -887,6 +871,9 @@ plot_ly(
 ## Treatment specific occupancy through time
 
 ```{r}
+
+left_join()
+
 bat_counts$treatment <- substr(bat_counts$plot, 1, 1)
 tmp <- bat_counts[is.na(bat_counts$binary)==F,] %>% 
   group_by(month, treatment) %>% 
