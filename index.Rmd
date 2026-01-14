@@ -242,7 +242,7 @@ plot_master %>%
   
 # Birds ############################################################
 
-bird_counts <- read_excel("data/Piro_Restoration_Experiment_bird_counts_2025BASE.xlsx",
+bird_counts <- read_excel("data/Piro_Restoration_Experiment_BIRD_DATABASE.xlsx",
                       sheet="Bird_count_data")
 bird_counts <- as.data.frame(bird_counts)
 
@@ -253,7 +253,7 @@ bird_counts <- bird_counts %>% drop_na(date)
 bird_counts$site_date <- paste0(bird_counts$plot_id, "_", gsub("-", "", bird_counts$date))
 
 # Bird effort
-bird_effort <- read_excel("data/Piro_Restoration_Experiment_bird_counts_2025BASE.xlsx",
+bird_effort <- read_excel("data/Piro_Restoration_Experiment_BIRD_DATABASE.xlsx",
                       sheet="Visit_metadata")
 bird_effort <- bird_effort[is.na(bird_effort$date)==F,]
 table(substr(bird_effort$date,1,4))
@@ -798,7 +798,73 @@ bat_counts$longitude <- NULL
 
 bat_counts <- left_join(bat_counts, bat_first)
 
+# Add other meta data
+bat_counts <-  left_join(bat_counts, plot_master, by=c("plot"="plot_id"))
+
+bat_counts_2025 <- bat_counts[as.numeric(substr(bat_counts$date_check,1,4))>2024,]
+
+bat_counts_2025$binary <- bat_counts_2025$presence_of_bats=="yes"
+
+colnames(bat_counts)
+
 ```
+
+## Earthwatch data only 
+
+```{r}
+# Convert columns to numeric and sum
+bat_summary <- bat_counts_2025 %>%
+  mutate(
+    carollia_adult = as.numeric(carollia_adult),
+    carollia_pup = as.numeric(carollia_pup),
+    glossophaga_adult = as.numeric(glossophaga_adult),
+    glossophaga_pup = as.numeric(glossophaga_pup),
+    micronycteris_adult = as.numeric(micronycteris_adult),
+    micronycteris_pup = as.numeric(micronycteris_pup)
+  ) %>%
+  summarise(
+    carollia_adult = sum(carollia_adult, na.rm = TRUE),
+    carollia_pup = sum(carollia_pup, na.rm = TRUE),
+    glossophaga_adult = sum(glossophaga_adult, na.rm = TRUE),
+    glossophaga_pup = sum(glossophaga_pup, na.rm = TRUE),
+    micronycteris_adult = sum(micronycteris_adult, na.rm = TRUE),
+    micronycteris_pup = sum(micronycteris_pup, na.rm = TRUE)
+  ) %>%
+  pivot_longer(everything(), names_to = "category", values_to = "count") %>%
+  separate(category, into = c("species", "age_class"), sep = "_") %>%
+  mutate(
+    species = factor(species, levels = c("carollia", "glossophaga", "micronycteris"),
+                     labels = c("Carollia", "Glossophaga", "Micronycteris")),
+    age_class = factor(age_class, levels = c("adult", "pup"),
+                       labels = c("Adult", "Pup"))
+  )
+```
+
+
+In 2025 we checked the bat boxes on `r nrow(bat_counts_2025)` occasions encountering `r sum(bat_summary$count)` individuals. On average the bat boxes were occupied `r round(sum(bat_counts_2025$binary)/nrow(bat_counts_2025),2)*100`% of the time.
+
+```{r}
+# Define colors
+plasma_colors <- viridis(2, option = "plasma", begin = 0.2, end = 0.8)
+
+# Create grouped bar chart
+plot_ly(
+  data = bat_summary,
+  x = ~species,
+  y = ~count,
+  color = ~age_class,
+  colors = plasma_colors,
+  type = "bar"
+) %>%
+  layout(
+    title = "Bat Captures by Species and Age Class (2025)",
+    xaxis = list(title = "Species"),
+    yaxis = list(title = "Number of Individuals"),
+    barmode = "group",
+    legend = list(title = list(text = "Age Class"))
+  )
+```
+
 
 ## Survey effort through time
 
@@ -872,66 +938,80 @@ plot_ly(
 
 ```{r}
 
-left_join()
+# Summarise by month and simple_treatment
+tmp <- bat_counts[is.na(bat_counts$binary) == FALSE, ] %>% 
+  group_by(month, simple_treatment) %>% 
+  summarise(occ = sum(binary) / n(), .groups = "drop")
 
-bat_counts$treatment <- substr(bat_counts$plot, 1, 1)
-tmp <- bat_counts[is.na(bat_counts$binary)==F,] %>% 
-  group_by(month, treatment) %>% 
-  summarise(occ = sum(binary)/n())
-tmp$treatment <- as.factor(tmp$treatment)
+# Set treatment order and convert month to Date
+tmp <- tmp %>%
+  mutate(simple_treatment = factor(simple_treatment, 
+                                    levels = c("forest", "active_restoration", "passive_restoration")),
+         month = as.Date(month),
+         month_numeric = as.numeric(month))
 
-# Convert month to numeric for fitting trend lines
-tmp$month_numeric <- as.numeric(tmp$month)
-
-# Fit models and create predictions for each treatment
-trend_data <- tmp %>%
-  group_by(treatment) %>%
+# Fit spline smoothers for each treatment
+spline_data <- tmp %>%
+  group_by(simple_treatment) %>%
+  arrange(month_numeric) %>%
   do({
-    fit <- lm(occ ~ month_numeric, data = .)
+    fit <- smooth.spline(.$month_numeric, .$occ, spar = 0.6)
+    new_x <- seq(min(.$month_numeric), max(.$month_numeric), length.out = 100)
+    pred <- predict(fit, new_x)
     data.frame(
-      month = .$month,
-      month_numeric = .$month_numeric,
-      fitted = fitted(fit),
-      treatment = .$treatment
+      month_numeric = pred$x,
+      fitted = pred$y,
+      simple_treatment = unique(.$simple_treatment)
     )
-  })
+  }) %>%
+  ungroup() %>%
+  # Convert numeric back to Date
+  mutate(month = as.Date(month_numeric, origin = "1970-01-01"))
+
+# Also ensure tmp$month is Date class
+tmp <- tmp %>%
+  mutate(month = as.Date(month_numeric, origin = "1970-01-01"))
+
+# Define viridis plasma colors to match bird plots
+plasma_colors <- viridis(3, option = "plasma", begin = 0.2, end = 0.8)
+names(plasma_colors) <- c("forest", "active_restoration", "passive_restoration")
 
 # Make the plot
 plot_ly() %>%
-  # Add dashed lines connecting points
+  # Add spline smoothers
   add_trace(
-    data = tmp,
+    data = spline_data,
     x = ~month,
-    y = ~occ,
-    color = ~treatment,
+    y = ~fitted,
+    color = ~simple_treatment,
+    colors = plasma_colors,
     type = 'scatter',
     mode = 'lines',
-    line = list(dash = 'dash', width = 2),
+    line = list(width = 2),
     showlegend = FALSE
   ) %>%
-  # Add markers
+  # Add markers for actual data points
   add_markers(
     data = tmp,
     x = ~month,
     y = ~occ,
-    color = ~treatment,
-    marker = list(size = 6),
-    name = ~treatment
-  ) %>%
-  # Add solid trend lines
-  add_lines(
-    data = trend_data,
-    x = ~month,
-    y = ~fitted,
-    color = ~treatment,
-    line = list(width = 3),
-    showlegend = FALSE
+    color = ~simple_treatment,
+    colors = plasma_colors,
+    marker = list(size = 8),
+    name = ~simple_treatment
   ) %>%
   layout(
     title = "Bat Occupancy Over Time",
-    xaxis = list(title = "Date"),
+    xaxis = list(
+      title = "Date",
+      type = "date",
+      tickformat = "%b %Y"  # Format as "Jan 2025"
+    ),
     yaxis = list(title = "Occupancy", range = c(0, NA)),
-    legend = list(title = list(text = "Treatment"))
+    legend = list(
+      title = list(text = "Treatment"),
+      itemsizing = "constant"
+    )
   )
 
 ```
