@@ -149,15 +149,18 @@ img$timestamp <- ymd_hms(img$timestamp)
 dep <- dep[duplicated(dep[,c("deployment_id", "placename")])==F,]
 img <- left_join(img, dep[,c("deployment_id", "placename")])
 
+dep$plot_id <- substr(dep$placename,4,6)
+
 
 # Download the plot master list
 
 plot_master  <- read_excel("data/Piro_Restoration_Experiment_PLOT_MASTERLIST.xlsx",
                       sheet="survey_locations")
 
-head(plot_master)
+dep <- left_join(dep, plot_master[,c("plot_id", "simple_treatment")])
 
-#plot_master$simple_treatment
+
+
 ```
 
 The following map shows the locations of all the surveys included within this project to date, coloured by simplfied treatment category: active restoration; natural restoration and forest control. 
@@ -280,7 +283,7 @@ amphib_effort <- amphib_effort %>% drop_na(date)
 amphib_caps <- read_excel("data/Piro_Restoration_Experiment_AMPHIBIAN_DATABASE.xlsx",
                       sheet="capture_data", col_types = "text")
  
-
+amphib_caps$date <- as.Date(as.numeric(amphib_caps$date), origin = "1899-12-30")
 
 
 # Rapid vegetation surveys ###############################################
@@ -1019,99 +1022,304 @@ plot_ly() %>%
 # Amphibian data
 
 ```{r}
-head(amphib_effort)
-
 amphib_effort$year <- as.numeric(substr(amphib_effort$year,1,4))
 amphib_effort$treatment <- substr(amphib_effort$plot_id,1,1)
+amphib_effort <- left_join(amphib_effort, plot_master[,c("plot_id", "simple_treatment")])
 
-table(amphib_effort$year)
+amphib_effort$plot_id <- as.factor(amphib_effort$plot_id)
+amphib_effort_2025 <- amphib_effort[amphib_effort$year==2025,]
+
+amphib_2025_sum <- amphib_effort_2025 %>% group_by(plot_id, .drop = FALSE) %>% summarise(visits=n(),)
+table(amphib_2025_sum$plot_id)
+# Left join the locations
+
+amphib_2025_sum <- left_join(plots_centroid, amphib_2025_sum)
+amphib_2025_sum$visits[is.na(amphib_2025_sum$visits)==T] <- 0
 
 
-unique(amphib_effort$plot_id)[!(unique(amphib_effort$plot_id) %in% plots_centroid$plot_id)]
+# Sort the capture database
+amphib_caps$count <- as.numeric(amphib_caps$count)
+amphib_caps <- left_join(amphib_caps,plot_master[,c("plot_id", "simple_treatment")] )
 
-
+amphib_caps_2025 <- amphib_caps[substr(amphib_caps$date,1,4)=="2025",]
 
 
 ```
 
-
-# Small mammal data
-
-So far we have made `r length(unique(sherman_dep$deployment_id))` sherman trap deployments, across `r length(unique(sherman_dep$plot_id))` plots. 
-
-The deployments we distributed as follows:
+In 2025 we conducted a total of `r nrow(amphib_effort[amphib_effort$year==2025,])` amphibian surveys. They were distributed as follows:
 
 ```{r}
 library(RColorBrewer)
 
 # Assuming be_2025_sum is already loaded as an sf dataframe
 
-# Define a color palette for the Visits column
-n <- length(unique(sherman_dep$plot_id))
-qual_col_pals = brewer.pal.info[brewer.pal.info$category == 'qual',]
-col_vector = unlist(mapply(brewer.pal, qual_col_pals$maxcolors, rownames(qual_col_pals)))
-tmp <- data.frame(plot_id=unique(sherman_dep$plot_id), col=col_vector[1:n])
-sherman_dep<- left_join(sherman_dep, tmp)
-sherman_sf <- st_as_sf(sherman_dep, coords=c("longitude", "latitude"), crs=4326)
-
+# Define a color palette for the Visits column using discrete values
+pal <- colorFactor(
+  palette = "YlOrRd", 
+  domain = amphib_2025_sum$Visits,
+  levels = sort(unique(amphib_2025_sum$visits))
+)
 
 # Create the leaflet map
-leaflet(sherman_sf) %>% 
-
-  addPolygons(data=plots, popup=plots$plot_id, group="plots",
-              weight=3, fillOpacity=0.05) %>% 
+leaflet(amphib_2025_sum) %>% 
   addTiles() %>% 
   addCircleMarkers(
-    radius = 5, 
-    color = sherman_sf$col, 
+    radius = 7, 
+    color = ~pal(visits), 
     stroke = FALSE, 
     fillOpacity = 0.8,
-    popup = ~paste(plot_id, trap_location)
-  ) 
+    popup = ~paste(plot_id, "<br> Survey Visits:", visits)
+  ) %>% 
+  addLegend(
+    pal = pal, 
+    values = ~visits, 
+    title = "Number of Visits", 
+    opacity = 1
+  ) %>%
+  addScaleBar(position = "topright")
 ```
+
+In total, we detected `r sum(amphib_caps_2025$count)` of `r length(unique(amphib_caps_2025$species))`. The distribution of species detected was as follows: 
+
+```{r}
+
+cap_sum <- amphib_caps_2025 %>% group_by(species) %>% summarise(count=sum(count))
+
+```
+
+
+```{r}
+
+# Create site_date in effort if not present
+amphib_effort_2025 <- amphib_effort_2025 %>%
+  mutate(site_date = paste(plot_id, gsub("-", "", date), sep = "_"))
+
+# Get the number of surveys per treatment
+effort_summary <- amphib_effort_2025 %>%
+  group_by(simple_treatment) %>%
+  summarise(n_surveys = n(), .groups = "drop")
+
+# For each species, count number of site_dates where it was detected per treatment
+detections <- amphib_caps_2025 %>%
+  distinct(species, simple_treatment, site_date) %>%
+  count(species, simple_treatment, name = "n_detections")
+
+# Calculate detection probability
+detection_prob <- detections %>%
+  left_join(effort_summary, by = "simple_treatment") %>%
+  mutate(detection_prob = n_detections / n_surveys) %>%
+  # Set treatment order
+  mutate(simple_treatment = factor(simple_treatment, 
+                                    levels = c("forest", "active_restoration", "passive_restoration")))
+
+# Get species order based on forest detection probability
+forest_order <- detection_prob %>%
+  filter(simple_treatment == "forest") %>%
+  arrange(desc(detection_prob)) %>%
+  pull(species)
+
+# Add species not in forest to the end
+all_species <- unique(detection_prob$species)
+forest_order <- c(forest_order, setdiff(all_species, forest_order))
+
+# Complete the data to include zeros and set factor levels
+plot_data <- detection_prob %>%
+  complete(species, simple_treatment, fill = list(n_detections = 0, detection_prob = 0)) %>%
+  left_join(effort_summary, by = "simple_treatment") %>%
+  mutate(
+    detection_prob = ifelse(is.na(detection_prob), 0, detection_prob),
+    species = factor(species, levels = rev(forest_order)),
+    text_color = ifelse(detection_prob < 0.3, "white", "black")
+  )
+
+# Create heatmap
+ggplot(plot_data, aes(x = simple_treatment, y = species, fill = detection_prob)) +
+  geom_tile(color = "white") +
+  geom_text(aes(label = scales::percent(detection_prob, accuracy = 1), color = text_color), size = 3) +
+  scale_fill_viridis_c(option = "plasma", labels = scales::percent_format()) +
+  scale_color_identity() +
+  scale_x_discrete(labels = c("forest" = "Forest", 
+                               "active_restoration" = "Active Restoration", 
+                               "passive_restoration" = "Passive Restoration")) +
+  labs(
+    x = "Treatment",
+    y = "",
+    fill = "Detection\nprobability",
+    title = "Amphibian detection probability by treatment"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1, size = 12),
+    axis.text.y = element_text(size = 10, face = "italic"),
+    axis.title.x = element_text(size = 14),
+    plot.title = element_text(size = 16)
+  )
+
+```
+
+
+# Small mammal data
+
+So far we have made `r length(unique(sherman_dep$deployment_id))` sherman trap deployments, across `r length(unique(sherman_dep$plot_id))` plots.
+
+The deployments we distributed as follows:
+
+```{r}
+library(RColorBrewer)
+sherman_dep <- left_join(sherman_dep, plot_master[,c("plot_id", "simple_treatment")], by=c("plot_id"))
+sherman_cap$plot_id <- substr(sherman_cap$deployment_id,1,3)
+sherman_cap <- left_join(sherman_cap, plot_master[,c("plot_id", "simple_treatment")], by=c("plot_id"))
+
+# Convert to sf object
+sherman_sf <- st_as_sf(sherman_dep, coords = c("longitude", "latitude"), crs = 4326)
+
+# Set treatment order
+sherman_sf <- sherman_sf %>%
+  mutate(simple_treatment = factor(simple_treatment, 
+                                    levels = c("forest", "active_restoration", "passive_restoration")))
+
+
+# Create a color palette for the treatments
+treatment_colors <- colorFactor(
+  palette = c("#4DAF4A","#984EA3","#E41A1C"),  # adjust number of colors as needed
+  domain = sherman_sf$simple_treatment
+)
+
+# Create the leaflet map
+leaflet(data = sherman_sf) %>% 
+  addTiles(group = "Base") %>%
+  addProviderTiles(providers$Esri.WorldImagery, group = "Satellite") %>%
+  addPolygons(data = plots, popup = plots$plot_id, group = "plots",
+              weight = 3, fillOpacity = 0.05) %>% 
+  addCircleMarkers(
+    radius = 5, 
+    color = ~treatment_colors(simple_treatment),
+    fillColor = ~treatment_colors(simple_treatment),
+    stroke = TRUE,
+    weight = 1,
+    fillOpacity = 0.8,
+    popup = ~paste(plot_id, trap_location, "<br>Treatment:", simple_treatment),
+    group = "traps"
+  ) %>%
+  addLegend(
+    position = "topright",
+    pal = treatment_colors,
+    values = ~simple_treatment,
+    title = "Treatment",
+    labels = c("Forest", "Active Restoration", "Passive Restoration"),
+    opacity = 1
+  ) %>%
+  addScaleBar(position = "topright") %>%
+  addLayersControl(
+    position = "topleft",
+    baseGroups = c("Base", "Satellite"),
+    overlayGroups = c("plots", "traps"),
+    options = layersControlOptions(collapsed = FALSE)
+  )
+
+
+```
+
+THe survey effort by treatment was as follows:
+
+```{r}
+tmp <- sherman_dep[, c("plot_id", "simple_treatment")][duplicated(sherman_dep[, c("plot_id", "simple_treatment")])==F,]
+
+tmp <- tmp %>%  
+  group_by(simple_treatment) %>% 
+  summarise(count = n(), .groups = "drop") 
+
+tmp %>%
+  kable(col.names = c("Treatment", "Effort"),
+        caption = "Small mammal capture sites surveyed by treatment") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
+                full_width = FALSE) %>%
+  row_spec(0, bold = TRUE, background = "#f5f5f5") 
+
+
+```
+
+
 
 Top date we have recorded `r nrow(sherman_cap)` small mammals. They are as follows:
 
 ```{r}
-tmp <- sherman_cap %>%  group_by(species) %>% summarise(count=n())
-kbl(tmp)
-```
 
-Of these, `r length(sherman_cap$deployment_id[substr(sherman_cap$deployment_id,1,1)=="F"])` were in forest and `r length(sherman_cap$deployment_id[substr(sherman_cap$deployment_id,1,1)!="F"])` were in the plots. 
+tmp <- sherman_cap %>%  
+  group_by(species, simple_treatment) %>% 
+  summarise(count = n(), .groups = "drop") %>%
+  pivot_wider(names_from = simple_treatment, values_from = count, values_fill = 0) %>%
+  # Reorder columns
+  select(species, any_of(c("forest", "active_restoration", "passive_restoration"))) %>%
+  # Add row totals
+  mutate(Total = rowSums(across(where(is.numeric)))) %>%
+  arrange(desc(Total))
+
+# Add column totals row
+totals <- tmp %>%
+  summarise(species = "Total", across(where(is.numeric), sum))
+
+tmp <- bind_rows(tmp, totals)
+
+tmp %>%
+  kable(col.names = c("Species", "Forest", "Active Restoration", "Passive Restoration", "Total"),
+        caption = "Small mammal captures by species and treatment") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
+                full_width = FALSE) %>%
+  row_spec(0, bold = TRUE, background = "#f5f5f5") %>%
+  row_spec(nrow(tmp), bold = TRUE, background = "#f5f5f5")
+```
 
 # Camera trap data
 
-To date we have deployed `r nrow(dep)` cameras, at `r length(unique(dep$placename))` locations.
+To date we have deployed `r nrow(dep)` cameras, at `r length(unique(dep$placename))` locations. Resulting in the capture of `r nrow(img[img$is_blank==0,])` wildlife images.
 
 ```{r, cam_dat}
-# Pick the category you want to color
-category <- "feature_type"
+# Set treatment order
+dep <- dep %>%
+  mutate(simple_treatment = factor(simple_treatment, 
+                                    levels = c("forest", "active_restoration", "passive_restoration")))
 
-# We first convert this category to a factor with discrete levels
-dep[,category] <- factor(dep[,category])
-# then use the turbo() function to assign each level a color
-col.cat <- turbo(length(levels(dep[,category])))
-# then we apply it to the dataframe
-dep$colours <- col.cat[dep[,category]]
+# Create a color palette for the treatments
+treatment_colors <- colorFactor(
+  palette = c("#4DAF4A","#984EA3","#E41A1C"),  # adjust number of colors as needed
+  domain = dep$simple_treatment
+)
 
-m <- leaflet() %>%
-  addProviderTiles(providers$Esri.WorldImagery, group="Satellite") %>%  
-  addTiles(group="Base") %>%     # Include a basemap option too
-  addCircleMarkers(lng=dep$longitude, lat=dep$latitude,
-                   # Co lour the markers depending on the 'feature type'
-                   color=dep$colours,
-                   # Add a popup of the placename and feature_type together 
-                   popup=paste(dep$placename, dep[,category])) %>%
-  
-  # Add a legend explaining what is going on
-  addLegend("bottomleft", colors = col.cat,  labels = levels(dep[,category]),
-                   title = category,
-                   labFormat = labelFormat(prefix = "$"),
-                   opacity = 1) %>%
-  
-  # add a layer control box to toggle between the layers
+# Create the leaflet map
+m <- leaflet(data = dep) %>%
+  addProviderTiles(providers$Esri.WorldImagery, group = "Satellite") %>%  
+  addTiles(group = "Base") %>%
+  addPolygons(data = plots, popup = plots$plot_id, group = "plots",
+              weight = 3, fillOpacity = 0.05) %>%
+  addCircleMarkers(
+    lng = ~longitude, 
+    lat = ~latitude,
+    color = ~treatment_colors(simple_treatment),
+    fillColor = ~treatment_colors(simple_treatment),
+    radius = 6,
+    stroke = TRUE,
+    weight = 1,
+    fillOpacity = 0.8,
+    popup = ~paste(placename, 
+                   "<br>Treatment:", simple_treatment),
+    group = "cameras"
+  ) %>%
+  addLegend(
+    position = "topright",
+    pal = treatment_colors,
+    values = ~simple_treatment,
+    title = "Treatment",
+    labels = c("Forest", "Active Restoration", "Passive Restoration"),
+    opacity = 1
+  ) %>%
+  addScaleBar(position = "topright") %>%
   addLayersControl(
-                    baseGroups = c("Satellite", "Base"))
+    position = "topleft",
+    baseGroups = c("Base", "Satellite"),
+    overlayGroups = c("plots", "cameras"),
+    options = layersControlOptions(collapsed = FALSE)
+  )
 
 m
 ```
@@ -1416,7 +1624,15 @@ tmp<- tmp[duplicated(tmp)==F,]
       total_count[i,as.character(tmp_stats$sp)] <- tmp_stats$count
     }
 
+# add simple treatment to the total_count dataframe
+total_count$plot_id <- substr(total_count$placename,4,6)  
+total_count <- left_join(total_count, plot_master[, c("plot_id", "simple_treatment")])  
+  
+  
+  
 ```
+
+This resulted in `r nrow(ind_dat)` independent detections of wildlife. The total number of detections and proportion of cameras detected at are as follows:
 
 ```{r}
 # Make a species list
@@ -1476,10 +1692,10 @@ sp_summary <- sp_summary[order(sp_summary$count),]
 yform <- list(categoryorder = "array",
               categoryarray = sp_summary$sp)
 
-xform <- list(title="Captures")
+xform <- list(title="Independent detections")
 
 # Capture rate
-fig1 <- plot_ly(x = sp_summary$count, y = sp_summary$common_name, type = 'bar', orientation = 'h') %>% 
+fig1 <- plot_ly(x = sp_summary$count, y = sp_summary$common_name, type = 'bar', orientation = 'h', showlegend=F) %>% 
  layout(yaxis = yform, xaxis=xform)
 
 yform <- list(categoryorder = "array",
@@ -1489,13 +1705,94 @@ xform <- list(title="Occupancy")
 
 
 # Occupancy
-fig2 <- plot_ly(x = sp_summary$occupancy, y = sp_summary$common_name, type = 'bar', orientation = 'h') %>% 
+fig2 <- plot_ly(x = sp_summary$occupancy, y = sp_summary$common_name, type = 'bar', orientation = 'h', showlegend=F) %>% 
  layout(yaxis = yform, xaxis=xform)
 
 subplot(nrows=1,fig1, fig2, titleX = T) # We could stack them on top of one another using nrows=2
 ```
 
-Chris will add spatial plots soon!
+For the top twenty detected species, the treatment-specific capture rates are as follows:
+
+```{r}
+# Get species columns (everything except placename, days, plot_id, simple_treatment)
+species_cols <- colnames(total_count)[!colnames(total_count) %in% c("placename", "days", "plot_id", "simple_treatment")]
+
+# Pivot to long format
+cam_long <- total_count %>%
+  pivot_longer(cols = all_of(species_cols), 
+               names_to = "species", 
+               values_to = "count")
+
+# Calculate capture rate per 100 days by species and treatment
+capture_rates <- cam_long %>%
+  group_by(simple_treatment, species) %>%
+  summarise(
+    total_captures = sum(count, na.rm = TRUE),
+    total_days = sum(days, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  mutate(capture_rate = (total_captures / total_days) * 100)
+
+# Get top 20 species overall
+top_20_species <- capture_rates %>%
+  group_by(species) %>%
+  summarise(total = sum(total_captures)) %>%
+  arrange(desc(total)) %>%
+  slice_head(n = 20) %>%
+  pull(species)
+
+# Get species order based on forest capture rate
+forest_order <- capture_rates %>%
+  filter(species %in% top_20_species, simple_treatment == "forest") %>%
+  arrange(desc(capture_rate)) %>%
+  pull(species)
+
+# Add any species not detected in forest to the end
+forest_order <- c(forest_order, setdiff(top_20_species, forest_order))
+
+# Filter to top 20 and set factor levels
+plot_data <- capture_rates %>%
+  filter(species %in% top_20_species) %>%
+  mutate(
+    species = factor(species, levels = rev(forest_order)),
+    simple_treatment = factor(simple_treatment, 
+                               levels = c("forest", "active_restoration", "passive_restoration")),
+    # Add small value to zeros for log scale, and adjust text color threshold
+    capture_rate_log = capture_rate + 0.01,
+    text_color = ifelse(capture_rate < 5, "white", "black")
+  )
+
+# Create nicer species labels (replace . with space)
+plot_data <- plot_data %>%
+  mutate(species_label = gsub("\\.", " ", species),
+         species_label = factor(species_label, levels = gsub("\\.", " ", rev(forest_order))))
+
+# Create the heatmap with log scale
+ggplot(plot_data, aes(x = simple_treatment, y = species_label, fill = capture_rate_log)) +
+  geom_tile(color = "white") +
+  geom_text(aes(label = round(capture_rate, 1), color = text_color), size = 3) +
+  scale_fill_viridis_c(option = "plasma", 
+                       trans = "log10",
+                       breaks = c(0.1, 1, 10, 100),
+                       labels = c("0.1", "1", "10", "100"),
+                       name = "Captures\nper 100 days") +
+  scale_color_identity() +
+  scale_x_discrete(labels = c("forest" = "Forest", 
+                               "active_restoration" = "Active Restoration", 
+                               "passive_restoration" = "Passive Restoration")) +
+  labs(
+    x = "Treatment",
+    y = "",
+    title = "Top 20 species capture rates by treatment"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1, size = 12),
+    axis.text.y = element_text(size = 10, face = "italic"),
+    axis.title.x = element_text(size = 14),
+    plot.title = element_text(size = 16)
+  )
+```
 
 
 # Vegetation data
@@ -1508,6 +1805,7 @@ veg_sum <- left_join(plots_centroid, veg_sum)
 # Assuming veg_sum is already loaded and is an sf object
 veg_sum <- veg_sum %>% 
   mutate(sample_status = ifelse(is.na(samples), "Not Surveyed", "Surveyed"))
+
 
 ```
 
@@ -1541,44 +1839,64 @@ leaflet(veg_sum) %>%
 We could use grass cover a a proxy for how well the original treatments worked - i.e. if there is very high ground cover than would suggest the trees are not doing particularly well. I have explored the mean grass cover (number of quadrants which contain gress) as the metric for each location:
 
 ```{r}
+veg_cover <- left_join(veg_cover, plot_master[,c("plot_id", "simple_treatment")])
 veg_cover$plot_id <- as.factor(veg_cover$plot_id)
 
-# Ensure veg_sum is loaded
+# Calculate grass cover
 grass_cover_filtered <- veg_cover %>%
   filter(ground_cover_category == "Grass") %>%
-  group_by(plot_id, .drop = FALSE) %>%
-  summarise(values = list(c(ground_cover, rep(0, max(0, 6 - length(ground_cover)))))) %>%
-  unnest(values) %>%   # Unnest to expand list into rows
-  group_by(plot_id) %>% summarise(grass_cover=mean(values))
+  group_by(plot_id, simple_treatment, .drop = FALSE) %>%
+  summarise(values = list(c(ground_cover, rep(0, max(0, 6 - length(ground_cover))))), .groups = "drop") %>%
+  unnest(values) %>%
+  group_by(plot_id, simple_treatment) %>% 
+  summarise(grass_cover = mean(values), .groups = "drop")
 
-grass_cover_filtered$treatment <- substr(grass_cover_filtered$plot_id,1,1)
+# Add back in the treatment
+grass_cover_filtered$simple_treatment <- NULL 
+grass_cover_filtered <- left_join(grass_cover_filtered, plot_master[,c("plot_id", "simple_treatment")])
 
-# Add some jitter to the veg cover
-grass_cover_filtered$grass_cover_jitter <- jitter(grass_cover_filtered$grass_cover, amount=0.1)
+# Set treatment order AFTER the final join
+grass_cover_filtered <- grass_cover_filtered %>%
+  mutate(simple_treatment = factor(simple_treatment, 
+                                    levels = c("forest", "active_restoration", "passive_restoration")))
 
-# Create Plotly Boxplot
-plot_ly(grass_cover_filtered, x = ~treatment, y = ~grass_cover, type = "box") %>%
-  layout(title = "Boxplot of Grass Cover per Plot",
-         xaxis = list(title = "Treatment type"),
-         yaxis = list(title = "Average Ground Cover"))%>%
-  # Scatter plot layer (raw data)
+# Add jitter
+grass_cover_filtered$grass_cover_jitter <- jitter(grass_cover_filtered$grass_cover, amount = 0.1)
+
+# Create a named color palette for the treatments
+treatment_colors <- c(
+  "forest" = "#4DAF4A",
+  "active_restoration" = "#984EA3",
+  "passive_restoration" = "#E41A1C"
+)
+
+# Create plot with categoryorder to enforce order
+plot_ly(grass_cover_filtered, x = ~simple_treatment, y = ~grass_cover, 
+        color = ~simple_treatment, colors = treatment_colors,
+        type = "box", boxpoints = FALSE, showlegend = FALSE) %>%
   add_trace(
     data = grass_cover_filtered,
-    x = ~treatment,
+    x = ~simple_treatment,
     y = ~grass_cover_jitter,
+    color = ~simple_treatment,
+    colors = treatment_colors,
     type = "scatter",
     mode = "markers",
-    name = "Raw Data",
-    marker = list(color = "red", opacity = 0.6, size = 6),
+    marker = list(opacity = 0.6, size = 8),
     hoverinfo = "text",
-    text = ~paste("Plot ID:", plot_id, "<br>Value:", grass_cover)
+    text = ~paste("Plot ID:", plot_id, "<br>Grass cover:", round(grass_cover, 1)),
+    showlegend = FALSE
   ) %>%
-  # Layout options
   layout(
-    title = "Grass Cover per Plot",
-    xaxis = list(title = "Plot ID"),
-    yaxis = list(title = "Ground Cover Value"),
-    showlegend = TRUE
+    title = "Grass Cover by Treatment Type",
+    xaxis = list(
+      title = "Treatment",
+      categoryorder = "array",
+      categoryarray = c("forest", "active_restoration", "passive_restoration"),
+      ticktext = c("Forest", "Active Restoration", "Passive Restoration"),
+      tickvals = c("forest", "active_restoration", "passive_restoration")
+    ),
+    yaxis = list(title = "Grass Cover Score (0-4)")
   )
 ```
 
