@@ -146,51 +146,12 @@
 <div id="species-of-conservation-concern" class="section level1 hasAnchor" number="7">
 <h1><span class="header-section-number">7</span> Species of conservation concern<a href="species-of-conservation-concern.html#species-of-conservation-concern" class="anchor-section" aria-label="Anchor link to header"></a></h1>
 <p>Previous work by Arianna Basto created lists of mammal, bird and amphibian species in the Osa region which are of conservation concern. We will import these lists and extract any species detected thus far in our surveys.</p>
-<pre><code>## # A tibble: 49 × 9
-##    class    order         family genus species common_name sp    count occupancy
-##    &lt;chr&gt;    &lt;chr&gt;         &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;       &lt;chr&gt; &lt;int&gt;     &lt;dbl&gt;
-##  1 Aves     Accipitrifor… Accip… Bute… anthra… Common Bla… Bute…     1      0.02
-##  2 Aves     Cathartiform… Catha… Cath… aura    Turkey Vul… Cath…     1      0.02
-##  3 Aves     Columbiformes Colum… Colu… talpac… Ruddy Grou… Colu…     1      0.02
-##  4 Aves     Passeriformes Thrau… Euco… penici… Grey-heade… Euco…     1      0.02
-##  5 Mammalia Carnivora     Felid… Herp… yagoua… Jaguarundi  Herp…     1      0.02
-##  6 Mammalia Carnivora     Felid… Leop… wiedii  Margay      Leop…     1      0.02
-##  7 Mammalia Carnivora     Mephi… Cone… semist… Striped Ho… Cone…     1      0.02
-##  8 Mammalia Primates      Cebid… Saim… oerste… Black-crow… Saim…     1      0.02
-##  9 Reptilia Squamata      Iguan… Igua… iguana  Common Gre… Igua…     1      0.02
-## 10 Aves     Columbiformes Colum… Lept… cassin… Grey-chest… Lept…     2      0.04
-## # ℹ 39 more rows</code></pre>
-<pre><code>## # A tibble: 1,285 × 19
-##    plot_id date       site_date    time_found    code  species common_name count
-##    &lt;chr&gt;   &lt;date&gt;     &lt;chr&gt;        &lt;chr&gt;         &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;       &lt;dbl&gt;
-##  1 M07     2019-08-20 M07_20190820 NA            NA    NA      NA             NA
-##  2 H08     2019-08-20 H08_20190820 NA            NA    NA      NA             NA
-##  3 N08     2019-08-20 N08_20190820 NA            NA    NA      NA             NA
-##  4 M04     2019-08-21 M04_20190821 0.8048611111… LEPI… Leptod… Spotted Fo…     1
-##  5 M04     2019-08-21 M04_20190821 0.8097222222… DENE… Dendro… Hourglass …     1
-##  6 H07     2019-08-21 H07_20190821 0.8222222222… LEPI… Leptod… Spotted Fo…     1
-##  7 H07     2019-08-21 H07_20190821 0.8263888888… LEPI… Leptod… Spotted Fo…     1
-##  8 H07     2019-08-21 H07_20190821 0.8298611111… DENE… Dendro… Hourglass …     1
-##  9 L07     2019-08-21 L07_20190821 0.8395833333… LEPI… Leptod… Spotted Fo…     1
-## 10 M06     2019-08-23 M06_20190823 0.8243055555… DENE… Dendro… Hourglass …     1
-## # ℹ 1,275 more rows
-## # ℹ 11 more variables: distance_found &lt;chr&gt;, substrate &lt;chr&gt;, weight_g &lt;chr&gt;,
-## #   svl_mm &lt;chr&gt;, `jaw width_mm` &lt;chr&gt;, Earthranger_report &lt;chr&gt;,
-## #   comments &lt;chr&gt;, ...16 &lt;chr&gt;, ...17 &lt;chr&gt;, simple_treatment &lt;fct&gt;,
-## #   year &lt;dbl&gt;</code></pre>
-<pre><code>## 
-##  Data Deficient      Endangered   Least Concern Near Threatened    Not Assessed 
-##               1               2             183               5               6 
-##      Vulnerable 
-##               3</code></pre>
 <table class="table table-striped table-hover table-condensed" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <caption>
 <span id="tab:unnamed-chunk-38">Table 7.1: </span>IUCN status by taxon
 </caption>
 <thead>
 <tr>
-<th style="text-align:left;font-weight: bold;background-color: rgba(245, 245, 245, 255) !important;">
-</th>
 <th style="text-align:left;font-weight: bold;background-color: rgba(245, 245, 245, 255) !important;">
 scientific_name
 </th>
@@ -211,9 +172,6 @@ IUCN_status
 <tbody>
 <tr>
 <td style="text-align:left;">
-199
-</td>
-<td style="text-align:left;">
 Agalychnis callidryas
 </td>
 <td style="text-align:left;">
@@ -230,9 +188,6 @@ AMPHIBIA
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
-211
-</td>
 <td style="text-align:left;">
 Diasporus diastema
 </td>
@@ -251,9 +206,6 @@ AMPHIBIA
 </tr>
 <tr>
 <td style="text-align:left;">
-200
-</td>
-<td style="text-align:left;">
 Craugastor stejnegerianus
 </td>
 <td style="text-align:left;">
@@ -270,29 +222,6 @@ AMPHIBIA
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
-207
-</td>
-<td style="text-align:left;">
-Diasporus vocator
-</td>
-<td style="text-align:left;">
-Endemic to Costa Rica and Panama
-</td>
-<td style="text-align:left;">
-Stable
-</td>
-<td style="text-align:left;">
-AMPHIBIA
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-210
-</td>
 <td style="text-align:left;">
 Dermophis occidentalis
 </td>
@@ -311,10 +240,7 @@ AMPHIBIA
 </tr>
 <tr>
 <td style="text-align:left;">
-212
-</td>
-<td style="text-align:left;">
-Oedipina alleni
+Diasporus vocator
 </td>
 <td style="text-align:left;">
 Endemic to Costa Rica and Panama
@@ -330,9 +256,6 @@ AMPHIBIA
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
-214
-</td>
 <td style="text-align:left;">
 Incilius aucoinae
 </td>
@@ -351,8 +274,22 @@ AMPHIBIA
 </tr>
 <tr>
 <td style="text-align:left;">
-196
+Oedipina alleni
 </td>
+<td style="text-align:left;">
+Endemic to Costa Rica and Panama
+</td>
+<td style="text-align:left;">
+Stable
+</td>
+<td style="text-align:left;">
+AMPHIBIA
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
 <td style="text-align:left;">
 Scinax elaeochroa
 </td>
@@ -371,10 +308,7 @@ AMPHIBIA
 </tr>
 <tr>
 <td style="text-align:left;">
-190
-</td>
-<td style="text-align:left;">
-Leptodactylus insularum
+Boana rosenbergi
 </td>
 <td style="text-align:left;">
 Not Endemic
@@ -390,249 +324,6 @@ AMPHIBIA
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
-191
-</td>
-<td style="text-align:left;">
-Dendropsophus ebraccatus
-</td>
-<td style="text-align:left;">
-Not Endemic
-</td>
-<td style="text-align:left;">
-Stable
-</td>
-<td style="text-align:left;">
-AMPHIBIA
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-192
-</td>
-<td style="text-align:left;">
-Leptodactylus savagei
-</td>
-<td style="text-align:left;">
-Not Endemic
-</td>
-<td style="text-align:left;">
-Stable
-</td>
-<td style="text-align:left;">
-AMPHIBIA
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-193
-</td>
-<td style="text-align:left;">
-Engystomops pustulosus
-</td>
-<td style="text-align:left;">
-Not Endemic
-</td>
-<td style="text-align:left;">
-Stable
-</td>
-<td style="text-align:left;">
-AMPHIBIA
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-195
-</td>
-<td style="text-align:left;">
-Dendropsophus microcephalus
-</td>
-<td style="text-align:left;">
-Not Endemic
-</td>
-<td style="text-align:left;">
-Increasing
-</td>
-<td style="text-align:left;">
-AMPHIBIA
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-197
-</td>
-<td style="text-align:left;">
-Scinax boulengeri
-</td>
-<td style="text-align:left;">
-Not Endemic
-</td>
-<td style="text-align:left;">
-Stable
-</td>
-<td style="text-align:left;">
-AMPHIBIA
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-198
-</td>
-<td style="text-align:left;">
-Leptodactylus fragilis
-</td>
-<td style="text-align:left;">
-Not Endemic
-</td>
-<td style="text-align:left;">
-Stable
-</td>
-<td style="text-align:left;">
-AMPHIBIA
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-201
-</td>
-<td style="text-align:left;">
-Leptodactylus poecilochilus
-</td>
-<td style="text-align:left;">
-Not Endemic
-</td>
-<td style="text-align:left;">
-Stable
-</td>
-<td style="text-align:left;">
-AMPHIBIA
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-202
-</td>
-<td style="text-align:left;">
-Rhinella horribilis
-</td>
-<td style="text-align:left;">
-Not Endemic
-</td>
-<td style="text-align:left;">
-Increasing
-</td>
-<td style="text-align:left;">
-AMPHIBIA
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-203
-</td>
-<td style="text-align:left;">
-Craugastor fitzingeri
-</td>
-<td style="text-align:left;">
-Not Endemic
-</td>
-<td style="text-align:left;">
-Stable
-</td>
-<td style="text-align:left;">
-AMPHIBIA
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-204
-</td>
-<td style="text-align:left;">
-Teratohyla pulverata
-</td>
-<td style="text-align:left;">
-Not Endemic
-</td>
-<td style="text-align:left;">
-Unknown
-</td>
-<td style="text-align:left;">
-AMPHIBIA
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-206
-</td>
-<td style="text-align:left;">
-Smilisca phaeota
-</td>
-<td style="text-align:left;">
-Not Endemic
-</td>
-<td style="text-align:left;">
-Increasing
-</td>
-<td style="text-align:left;">
-AMPHIBIA
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-208
-</td>
-<td style="text-align:left;">
-Pristimantis ridens
-</td>
-<td style="text-align:left;">
-Not Endemic
-</td>
-<td style="text-align:left;">
-Stable
-</td>
-<td style="text-align:left;">
-AMPHIBIA
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-209
-</td>
 <td style="text-align:left;">
 Craugastor crassidigitus
 </td>
@@ -651,10 +342,7 @@ AMPHIBIA
 </tr>
 <tr>
 <td style="text-align:left;">
-213
-</td>
-<td style="text-align:left;">
-Boana rosenbergi
+Craugastor fitzingeri
 </td>
 <td style="text-align:left;">
 Not Endemic
@@ -671,19 +359,16 @@ AMPHIBIA
 </tr>
 <tr>
 <td style="text-align:left;">
-52
+Dendropsophus ebraccatus
 </td>
 <td style="text-align:left;">
-Ramphocelus passerinii
-</td>
-<td style="text-align:left;">
-Endemic to Central America
+Not Endemic
 </td>
 <td style="text-align:left;">
 Stable
 </td>
 <td style="text-align:left;">
-AVES
+AMPHIBIA
 </td>
 <td style="text-align:left;">
 <span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
@@ -691,19 +376,33 @@ AVES
 </tr>
 <tr>
 <td style="text-align:left;">
-53
+Dendropsophus microcephalus
 </td>
 <td style="text-align:left;">
-Sporophila corvina
+Not Endemic
 </td>
 <td style="text-align:left;">
-Endemic to Central America
+Increasing
+</td>
+<td style="text-align:left;">
+AMPHIBIA
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Engystomops pustulosus
+</td>
+<td style="text-align:left;">
+Not Endemic
 </td>
 <td style="text-align:left;">
 Stable
 </td>
 <td style="text-align:left;">
-AVES
+AMPHIBIA
 </td>
 <td style="text-align:left;">
 <span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
@@ -711,19 +410,16 @@ AVES
 </tr>
 <tr>
 <td style="text-align:left;">
-62
+Leptodactylus fragilis
 </td>
 <td style="text-align:left;">
-Pionus senilis
+Not Endemic
 </td>
 <td style="text-align:left;">
-Endemic to Central America
+Stable
 </td>
 <td style="text-align:left;">
-Decreasing
-</td>
-<td style="text-align:left;">
-AVES
+AMPHIBIA
 </td>
 <td style="text-align:left;">
 <span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
@@ -731,19 +427,16 @@ AVES
 </tr>
 <tr>
 <td style="text-align:left;">
-100
+Leptodactylus insularum
 </td>
 <td style="text-align:left;">
-Geothlypis poliocephala
+Not Endemic
 </td>
 <td style="text-align:left;">
-Endemic to Central America
+Stable
 </td>
 <td style="text-align:left;">
-Decreasing
-</td>
-<td style="text-align:left;">
-AVES
+AMPHIBIA
 </td>
 <td style="text-align:left;">
 <span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
@@ -751,19 +444,16 @@ AVES
 </tr>
 <tr>
 <td style="text-align:left;">
-112
+Leptodactylus poecilochilus
 </td>
 <td style="text-align:left;">
-Xiphorhynchus flavigaster
+Not Endemic
 </td>
 <td style="text-align:left;">
-Endemic to Central America
+Stable
 </td>
 <td style="text-align:left;">
-Decreasing
-</td>
-<td style="text-align:left;">
-AVES
+AMPHIBIA
 </td>
 <td style="text-align:left;">
 <span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
@@ -771,19 +461,16 @@ AVES
 </tr>
 <tr>
 <td style="text-align:left;">
-131
+Leptodactylus savagei
 </td>
 <td style="text-align:left;">
-Ornithion semiflavum
+Not Endemic
 </td>
 <td style="text-align:left;">
-Endemic to Central America
+Stable
 </td>
 <td style="text-align:left;">
-Decreasing
-</td>
-<td style="text-align:left;">
-AVES
+AMPHIBIA
 </td>
 <td style="text-align:left;">
 <span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
@@ -791,8 +478,90 @@ AVES
 </tr>
 <tr>
 <td style="text-align:left;">
-133
+Pristimantis ridens
 </td>
+<td style="text-align:left;">
+Not Endemic
+</td>
+<td style="text-align:left;">
+Stable
+</td>
+<td style="text-align:left;">
+AMPHIBIA
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rhinella horribilis
+</td>
+<td style="text-align:left;">
+Not Endemic
+</td>
+<td style="text-align:left;">
+Increasing
+</td>
+<td style="text-align:left;">
+AMPHIBIA
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Scinax boulengeri
+</td>
+<td style="text-align:left;">
+Not Endemic
+</td>
+<td style="text-align:left;">
+Stable
+</td>
+<td style="text-align:left;">
+AMPHIBIA
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Smilisca phaeota
+</td>
+<td style="text-align:left;">
+Not Endemic
+</td>
+<td style="text-align:left;">
+Increasing
+</td>
+<td style="text-align:left;">
+AMPHIBIA
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Teratohyla pulverata
+</td>
+<td style="text-align:left;">
+Not Endemic
+</td>
+<td style="text-align:left;">
+Unknown
+</td>
+<td style="text-align:left;">
+AMPHIBIA
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
 <td style="text-align:left;">
 Cantorchilus modestus
 </td>
@@ -811,9 +580,6 @@ AVES
 </tr>
 <tr>
 <td style="text-align:left;">
-158
-</td>
-<td style="text-align:left;">
 Dendrocincla anabatina
 </td>
 <td style="text-align:left;">
@@ -831,8 +597,56 @@ AVES
 </tr>
 <tr>
 <td style="text-align:left;">
-160
+Geothlypis poliocephala
 </td>
+<td style="text-align:left;">
+Endemic to Central America
+</td>
+<td style="text-align:left;">
+Decreasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Ornithion semiflavum
+</td>
+<td style="text-align:left;">
+Endemic to Central America
+</td>
+<td style="text-align:left;">
+Decreasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Pionus senilis
+</td>
+<td style="text-align:left;">
+Endemic to Central America
+</td>
+<td style="text-align:left;">
+Decreasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
 <td style="text-align:left;">
 Psittacara finschi
 </td>
@@ -851,8 +665,39 @@ AVES
 </tr>
 <tr>
 <td style="text-align:left;">
-172
+Ramphocelus passerinii
 </td>
+<td style="text-align:left;">
+Endemic to Central America
+</td>
+<td style="text-align:left;">
+Stable
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Sporophila corvina
+</td>
+<td style="text-align:left;">
+Endemic to Central America
+</td>
+<td style="text-align:left;">
+Stable
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
 <td style="text-align:left;">
 Vireolanius pulchellus
 </td>
@@ -871,13 +716,10 @@ AVES
 </tr>
 <tr>
 <td style="text-align:left;">
-50
+Xiphorhynchus flavigaster
 </td>
 <td style="text-align:left;">
-Thamnophilus bridgesi
-</td>
-<td style="text-align:left;">
-Endemic to Central America (Costa Rica and Panama)
+Endemic to Central America
 </td>
 <td style="text-align:left;">
 Decreasing
@@ -890,9 +732,6 @@ AVES
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
-58
-</td>
 <td style="text-align:left;">
 Cantorchilus semibadius
 </td>
@@ -911,29 +750,6 @@ AVES
 </tr>
 <tr>
 <td style="text-align:left;">
-59
-</td>
-<td style="text-align:left;">
-Polyerata decora
-</td>
-<td style="text-align:left;">
-Endemic to Central America (Costa Rica and Panama)
-</td>
-<td style="text-align:left;">
-Decreasing
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-98
-</td>
-<td style="text-align:left;">
 Chaetura fumosa
 </td>
 <td style="text-align:left;">
@@ -950,29 +766,6 @@ AVES
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
-120
-</td>
-<td style="text-align:left;">
-Melanerpes chrysauchen
-</td>
-<td style="text-align:left;">
-Endemic to Central America (Costa Rica and Panama)
-</td>
-<td style="text-align:left;">
-Decreasing
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-140
-</td>
 <td style="text-align:left;">
 Manacus aurantiacus
 </td>
@@ -991,8 +784,39 @@ AVES
 </tr>
 <tr>
 <td style="text-align:left;">
-145
+Melanerpes chrysauchen
 </td>
+<td style="text-align:left;">
+Endemic to Central America (Costa Rica and Panama)
+</td>
+<td style="text-align:left;">
+Decreasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Polyerata decora
+</td>
+<td style="text-align:left;">
+Endemic to Central America (Costa Rica and Panama)
+</td>
+<td style="text-align:left;">
+Decreasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
 <td style="text-align:left;">
 Pteroglossus frantzii
 </td>
@@ -1011,8 +835,22 @@ AVES
 </tr>
 <tr>
 <td style="text-align:left;">
-89
+Thamnophilus bridgesi
 </td>
+<td style="text-align:left;">
+Endemic to Central America (Costa Rica and Panama)
+</td>
+<td style="text-align:left;">
+Decreasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
 <td style="text-align:left;">
 Euphonia luteicapilla
 </td>
@@ -1031,9 +869,6 @@ AVES
 </tr>
 <tr>
 <td style="text-align:left;">
-66
-</td>
-<td style="text-align:left;">
 Troglodytes ochraceus
 </td>
 <td style="text-align:left;">
@@ -1050,9 +885,6 @@ AVES
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
-91
-</td>
 <td style="text-align:left;">
 Passer domesticus
 </td>
@@ -1071,469 +903,6 @@ AVES
 </tr>
 <tr>
 <td style="text-align:left;">
-1
-</td>
-<td style="text-align:left;">
-Buteogallus anthracinus
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Decreasing
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-2
-</td>
-<td style="text-align:left;">
-Cathartes aura
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Stable
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-3
-</td>
-<td style="text-align:left;">
-Columbina talpacoti
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Increasing
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-4
-</td>
-<td style="text-align:left;">
-Eucometis penicillata
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Stable
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-10
-</td>
-<td style="text-align:left;">
-Leptotila cassinii
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Decreasing
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-11
-</td>
-<td style="text-align:left;">
-Ortalis cinereiceps
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Stable
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-13
-</td>
-<td style="text-align:left;">
-Formicarius analis
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Decreasing
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-15
-</td>
-<td style="text-align:left;">
-Phaethornis striigularis
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Decreasing
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-16
-</td>
-<td style="text-align:left;">
-Caracara plancus
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Stable
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-17
-</td>
-<td style="text-align:left;">
-Xiphorhynchus susurrans
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Decreasing
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-18
-</td>
-<td style="text-align:left;">
-Pitangus sulphuratus
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Increasing
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-21
-</td>
-<td style="text-align:left;">
-Nyctanassa violacea
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Stable
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-24
-</td>
-<td style="text-align:left;">
-Geotrygon montana
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Decreasing
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-26
-</td>
-<td style="text-align:left;">
-Rupornis magnirostris
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Increasing
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-32
-</td>
-<td style="text-align:left;">
-Leptotila verreauxi
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Stable
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-33
-</td>
-<td style="text-align:left;">
-Tigrisoma mexicanum
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Decreasing
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-39
-</td>
-<td style="text-align:left;">
-Aramides cajaneus
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Stable
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-41
-</td>
-<td style="text-align:left;">
-Tinamus major
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Decreasing
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-44
-</td>
-<td style="text-align:left;">
-Eudocimus albus
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Stable
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-51
-</td>
-<td style="text-align:left;">
-Harpagus bidentatus
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Decreasing
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-54
-</td>
-<td style="text-align:left;">
-Sporophila morelleti
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Increasing
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-55
-</td>
-<td style="text-align:left;">
-Tyrannus melancholicus
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Increasing
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-56
-</td>
-<td style="text-align:left;">
-Columbina passerina
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Stable
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-57
-</td>
-<td style="text-align:left;">
 Amazilia tzacatl
 </td>
 <td style="text-align:left;">
@@ -1550,1009 +919,6 @@ AVES
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
-61
-</td>
-<td style="text-align:left;">
-Hylophilus flavipes
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Stable
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-63
-</td>
-<td style="text-align:left;">
-Dendrocolaptes sanctithomae
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Decreasing
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-65
-</td>
-<td style="text-align:left;">
-Quiscalus mexicanus
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Stable
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-67
-</td>
-<td style="text-align:left;">
-Melanerpes rubricapillus
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Stable
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-70
-</td>
-<td style="text-align:left;">
-Ramphastos ambiguus
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Decreasing
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-71
-</td>
-<td style="text-align:left;">
-Dryocopus lineatus
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Increasing
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-72
-</td>
-<td style="text-align:left;">
-Myiarchus tuberculifer
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Decreasing
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-73
-</td>
-<td style="text-align:left;">
-Brotogeris jugularis
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Decreasing
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-74
-</td>
-<td style="text-align:left;">
-Myiopagis viridicata
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Stable
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-75
-</td>
-<td style="text-align:left;">
-Lepidocolaptes souleyetii
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Decreasing
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-77
-</td>
-<td style="text-align:left;">
-Volatinia jacarina
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Increasing
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-78
-</td>
-<td style="text-align:left;">
-Thraupis episcopus
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Increasing
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-79
-</td>
-<td style="text-align:left;">
-Attila spadiceus
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Decreasing
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-80
-</td>
-<td style="text-align:left;">
-Sporophila funerea
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Decreasing
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-81
-</td>
-<td style="text-align:left;">
-Sporophila minuta
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Decreasing
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-82
-</td>
-<td style="text-align:left;">
-Setophaga petechia
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Decreasing
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-83
-</td>
-<td style="text-align:left;">
-Dendrocygna autumnalis
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Increasing
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-84
-</td>
-<td style="text-align:left;">
-Pachysylvia decurtata
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Decreasing
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-85
-</td>
-<td style="text-align:left;">
-Zimmerius parvus
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Decreasing
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-86
-</td>
-<td style="text-align:left;">
-Dacnis cayana
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Decreasing
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-87
-</td>
-<td style="text-align:left;">
-Thraupis palmarum
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Stable
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-88
-</td>
-<td style="text-align:left;">
-Piranga rubra
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Stable
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-90
-</td>
-<td style="text-align:left;">
-Tolmomyias sulphurescens
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Decreasing
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-92
-</td>
-<td style="text-align:left;">
-Loriotus luctuosus
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Decreasing
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-93
-</td>
-<td style="text-align:left;">
-Todirostrum cinereum
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Stable
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-94
-</td>
-<td style="text-align:left;">
-Leistes militaris
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Increasing
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-95
-</td>
-<td style="text-align:left;">
-Elaenia flavogaster
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Stable
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-96
-</td>
-<td style="text-align:left;">
-Pyrilia haematotis
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Decreasing
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-99
-</td>
-<td style="text-align:left;">
-Claravis pretiosa
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Decreasing
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-101
-</td>
-<td style="text-align:left;">
-Geothlypis formosa
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Decreasing
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-102
-</td>
-<td style="text-align:left;">
-Myiozetetes similis
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Stable
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-103
-</td>
-<td style="text-align:left;">
-Coereba flaveola
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Decreasing
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-104
-</td>
-<td style="text-align:left;">
-Geothlypis philadelphia
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Decreasing
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-105
-</td>
-<td style="text-align:left;">
-Xiphorhynchus lachrymosus
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Decreasing
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-106
-</td>
-<td style="text-align:left;">
-Phaethornis longirostris
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Decreasing
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-107
-</td>
-<td style="text-align:left;">
-Myiodynastes maculatus
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Stable
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-108
-</td>
-<td style="text-align:left;">
-Thamnophilus doliatus
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Stable
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-109
-</td>
-<td style="text-align:left;">
-Herpetotheres cachinnans
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Decreasing
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-110
-</td>
-<td style="text-align:left;">
-Icterus galbula
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Stable
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-111
-</td>
-<td style="text-align:left;">
-Ara macao
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Decreasing
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-113
-</td>
-<td style="text-align:left;">
-Coragyps atratus
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Increasing
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-114
-</td>
-<td style="text-align:left;">
-Capsiempis flaveola
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Decreasing
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-115
-</td>
-<td style="text-align:left;">
-Setophaga castanea
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Increasing
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-116
-</td>
-<td style="text-align:left;">
-Taraba major
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Decreasing
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-117
-</td>
-<td style="text-align:left;">
-Geranospiza caerulescens
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Decreasing
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-118
-</td>
-<td style="text-align:left;">
-Camptostoma obsoletum
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Stable
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-119
-</td>
-<td style="text-align:left;">
-Megarynchus pitangua
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Stable
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-121
-</td>
-<td style="text-align:left;">
-Arremonops conirostris
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Stable
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-122
-</td>
-<td style="text-align:left;">
-Crotophaga ani
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Stable
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-123
-</td>
-<td style="text-align:left;">
-Laterallus exilis
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Decreasing
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-124
-</td>
 <td style="text-align:left;">
 Amazona autumnalis
 </td>
@@ -2571,409 +937,6 @@ AVES
 </tr>
 <tr>
 <td style="text-align:left;">
-125
-</td>
-<td style="text-align:left;">
-Stelgidopteryx ruficollis
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Stable
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-126
-</td>
-<td style="text-align:left;">
-Onychorhynchus coronatus
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Decreasing
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-128
-</td>
-<td style="text-align:left;">
-Florisuga mellivora
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Decreasing
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-129
-</td>
-<td style="text-align:left;">
-Molothrus bonariensis
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Increasing
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-130
-</td>
-<td style="text-align:left;">
-Laterallus albigularis
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Unknown
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-132
-</td>
-<td style="text-align:left;">
-Chlorestes eliciae
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Decreasing
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-134
-</td>
-<td style="text-align:left;">
-Picumnus olivaceus
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Decreasing
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-135
-</td>
-<td style="text-align:left;">
-Campephilus guatemalensis
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Decreasing
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-136
-</td>
-<td style="text-align:left;">
-Tityra inquisitor
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Decreasing
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-137
-</td>
-<td style="text-align:left;">
-Micrastur semitorquatus
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Decreasing
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-138
-</td>
-<td style="text-align:left;">
-Synallaxis brachyura
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Stable
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-139
-</td>
-<td style="text-align:left;">
-Pachyramphus polychopterus
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Stable
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-141
-</td>
-<td style="text-align:left;">
-Glaucis aeneus
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Decreasing
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-144
-</td>
-<td style="text-align:left;">
-Poliocrania exsul
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Decreasing
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-146
-</td>
-<td style="text-align:left;">
-Empidonax flaviventris
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Increasing
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-147
-</td>
-<td style="text-align:left;">
-Myiarchus crinitus
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Stable
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-148
-</td>
-<td style="text-align:left;">
-Setophaga pensylvanica
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Decreasing
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-149
-</td>
-<td style="text-align:left;">
-Vireo philadelphicus
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Increasing
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-150
-</td>
-<td style="text-align:left;">
-Cyanerpes cyaneus
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Decreasing
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-152
-</td>
-<td style="text-align:left;">
-Tityra semifasciata
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Decreasing
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-153
-</td>
-<td style="text-align:left;">
 Amazona farinosa
 </td>
 <td style="text-align:left;">
@@ -2991,10 +954,7 @@ AVES
 </tr>
 <tr>
 <td style="text-align:left;">
-156
-</td>
-<td style="text-align:left;">
-Xiphorhynchus erythropygius
+Ara macao
 </td>
 <td style="text-align:left;">
 Not endemic
@@ -3011,130 +971,7 @@ AVES
 </tr>
 <tr>
 <td style="text-align:left;">
-157
-</td>
-<td style="text-align:left;">
-Leiothlypis peregrina
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Decreasing
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-159
-</td>
-<td style="text-align:left;">
-Threnetes ruckeri
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Decreasing
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-161
-</td>
-<td style="text-align:left;">
-Streptoprocne zonaris
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Decreasing
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-162
-</td>
-<td style="text-align:left;">
-Vireo flavifrons
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Increasing
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-163
-</td>
-<td style="text-align:left;">
-Glyphorynchus spirurus
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Decreasing
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-164
-</td>
-<td style="text-align:left;">
-Patagioenas nigrirostris
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Decreasing
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-165
-</td>
-<td style="text-align:left;">
-Catharus ustulatus
+Aramides cajaneus
 </td>
 <td style="text-align:left;">
 Not endemic
@@ -3150,49 +987,6 @@ AVES
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
-167
-</td>
-<td style="text-align:left;">
-Trogon caligatus
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Unknown
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-168
-</td>
-<td style="text-align:left;">
-Mionectes oleagineus
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Decreasing
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-170
-</td>
 <td style="text-align:left;">
 Arremon aurantiirostris
 </td>
@@ -3211,130 +1005,7 @@ AVES
 </tr>
 <tr>
 <td style="text-align:left;">
-171
-</td>
-<td style="text-align:left;">
-Rhytipterna holerythra
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Decreasing
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-173
-</td>
-<td style="text-align:left;">
-Tunchiornis ochraceiceps
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Decreasing
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-174
-</td>
-<td style="text-align:left;">
-Platyrinchus coronatus
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Decreasing
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-175
-</td>
-<td style="text-align:left;">
-Sporophila nigricollis
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Increasing
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-176
-</td>
-<td style="text-align:left;">
-Leptodon cayanensis
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Decreasing
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-178
-</td>
-<td style="text-align:left;">
-Saltator maximus
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-Decreasing
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-179
-</td>
-<td style="text-align:left;">
-Saltator striatipectus
+Arremonops conirostris
 </td>
 <td style="text-align:left;">
 Not endemic
@@ -3351,8 +1022,158 @@ AVES
 </tr>
 <tr>
 <td style="text-align:left;">
-180
+Attila spadiceus
 </td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Decreasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Brotogeris jugularis
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Decreasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Buteogallus anthracinus
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Decreasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Campephilus guatemalensis
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Decreasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Camptostoma obsoletum
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Stable
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Capsiempis flaveola
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Decreasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Caracara plancus
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Stable
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Cathartes aura
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Stable
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Catharus ustulatus
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Stable
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
 <td style="text-align:left;">
 Ceratopipra mentalis
 </td>
@@ -3371,10 +1192,7 @@ AVES
 </tr>
 <tr>
 <td style="text-align:left;">
-181
-</td>
-<td style="text-align:left;">
-Microrhopias quixensis
+Chlorestes eliciae
 </td>
 <td style="text-align:left;">
 Not endemic
@@ -3391,10 +1209,7 @@ AVES
 </tr>
 <tr>
 <td style="text-align:left;">
-182
-</td>
-<td style="text-align:left;">
-Thalurania colombica
+Claravis pretiosa
 </td>
 <td style="text-align:left;">
 Not endemic
@@ -3411,10 +1226,7 @@ AVES
 </tr>
 <tr>
 <td style="text-align:left;">
-183
-</td>
-<td style="text-align:left;">
-Momotus lessonii
+Coereba flaveola
 </td>
 <td style="text-align:left;">
 Not endemic
@@ -3431,10 +1243,75 @@ AVES
 </tr>
 <tr>
 <td style="text-align:left;">
-184
+Columbina passerina
 </td>
 <td style="text-align:left;">
-Hylopezus perspicillatus
+Not endemic
+</td>
+<td style="text-align:left;">
+Stable
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Columbina talpacoti
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Increasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Coragyps atratus
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Increasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Crotophaga ani
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Stable
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Cyanerpes cyaneus
 </td>
 <td style="text-align:left;">
 Not endemic
@@ -3450,9 +1327,6 @@ AVES
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
-185
-</td>
 <td style="text-align:left;">
 Cyanoloxia cyanoides
 </td>
@@ -3471,8 +1345,22 @@ AVES
 </tr>
 <tr>
 <td style="text-align:left;">
-186
+Dacnis cayana
 </td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Decreasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
 <td style="text-align:left;">
 Daptrius chimachima
 </td>
@@ -3491,8 +1379,685 @@ AVES
 </tr>
 <tr>
 <td style="text-align:left;">
-188
+Dendrocolaptes sanctithomae
 </td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Decreasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Dendrocygna autumnalis
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Increasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Dryocopus lineatus
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Increasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Elaenia flavogaster
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Stable
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Empidonax flaviventris
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Increasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Eucometis penicillata
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Stable
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Eudocimus albus
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Stable
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Florisuga mellivora
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Decreasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Formicarius analis
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Decreasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Geothlypis formosa
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Decreasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Geothlypis philadelphia
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Decreasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Geotrygon montana
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Decreasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Geranospiza caerulescens
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Decreasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Glaucis aeneus
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Decreasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Glyphorynchus spirurus
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Decreasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Harpagus bidentatus
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Decreasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Herpetotheres cachinnans
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Decreasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Hylopezus perspicillatus
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Decreasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Hylophilus flavipes
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Stable
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Icterus galbula
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Stable
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Laterallus albigularis
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Unknown
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Laterallus exilis
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Decreasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Leiothlypis peregrina
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Decreasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Leistes militaris
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Increasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Lepidocolaptes souleyetii
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Decreasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Leptodon cayanensis
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Decreasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Leptotila cassinii
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Decreasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Leptotila verreauxi
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Stable
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Loriotus luctuosus
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Decreasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Megarynchus pitangua
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Stable
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Melanerpes rubricapillus
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Stable
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Micrastur semitorquatus
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Decreasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Microrhopias quixensis
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Decreasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Mionectes oleagineus
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Decreasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Molothrus bonariensis
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Increasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Momotus lessonii
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Decreasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Myiarchus crinitus
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Stable
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Myiarchus tuberculifer
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Decreasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Myiodynastes maculatus
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Stable
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Myiopagis viridicata
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Stable
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
 <td style="text-align:left;">
 Myiozetetes granadensis
 </td>
@@ -3511,8 +2076,107 @@ AVES
 </tr>
 <tr>
 <td style="text-align:left;">
-189
+Myiozetetes similis
 </td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Stable
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Nyctanassa violacea
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Stable
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Onychorhynchus coronatus
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Decreasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Ortalis cinereiceps
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Stable
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Pachyramphus polychopterus
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Stable
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Pachysylvia decurtata
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Decreasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
 <td style="text-align:left;">
 Patagioenas cayennensis
 </td>
@@ -3531,8 +2195,804 @@ AVES
 </tr>
 <tr>
 <td style="text-align:left;">
-169
+Patagioenas nigrirostris
 </td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Decreasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Phaethornis longirostris
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Decreasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Phaethornis striigularis
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Decreasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Picumnus olivaceus
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Decreasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Piranga rubra
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Stable
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Pitangus sulphuratus
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Increasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Platyrinchus coronatus
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Decreasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Poliocrania exsul
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Decreasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Pyrilia haematotis
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Decreasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Quiscalus mexicanus
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Stable
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Ramphastos ambiguus
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Decreasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rhytipterna holerythra
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Decreasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rupornis magnirostris
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Increasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Saltator maximus
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Decreasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Saltator striatipectus
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Stable
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Setophaga castanea
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Increasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Setophaga pensylvanica
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Decreasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Setophaga petechia
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Decreasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Sporophila funerea
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Decreasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Sporophila minuta
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Decreasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Sporophila morelleti
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Increasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Sporophila nigricollis
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Increasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Stelgidopteryx ruficollis
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Stable
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Streptoprocne zonaris
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Decreasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Synallaxis brachyura
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Stable
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Taraba major
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Decreasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Thalurania colombica
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Decreasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Thamnophilus doliatus
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Stable
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Thraupis episcopus
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Increasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Thraupis palmarum
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Stable
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Threnetes ruckeri
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Decreasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Tigrisoma mexicanum
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Decreasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Tinamus major
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Decreasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Tityra inquisitor
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Decreasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Tityra semifasciata
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Decreasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Todirostrum cinereum
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Stable
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Tolmomyias sulphurescens
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Decreasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Trogon caligatus
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Unknown
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Tunchiornis ochraceiceps
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Decreasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Tyrannus melancholicus
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Increasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Vireo flavifrons
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Increasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Vireo philadelphicus
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Increasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Volatinia jacarina
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Increasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Xiphorhynchus erythropygius
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Decreasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Xiphorhynchus lachrymosus
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Decreasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Xiphorhynchus susurrans
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Decreasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Zimmerius parvus
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+Decreasing
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
 <td style="text-align:left;">
 Trogon bairdii
 </td>
@@ -3551,9 +3011,6 @@ AVES
 </tr>
 <tr>
 <td style="text-align:left;">
-12
-</td>
-<td style="text-align:left;">
 Penelope purpurascens
 </td>
 <td style="text-align:left;">
@@ -3570,9 +3027,6 @@ AVES
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
-76
-</td>
 <td style="text-align:left;">
 Setophaga striata
 </td>
@@ -3591,9 +3045,6 @@ AVES
 </tr>
 <tr>
 <td style="text-align:left;">
-60
-</td>
-<td style="text-align:left;">
 Cantorchilus elutus
 </td>
 <td style="text-align:left;">
@@ -3610,69 +3061,6 @@ AVES
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
-69
-</td>
-<td style="text-align:left;">
-Polioptila bilineata
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(255, 255, 255, 255) !important;">Not Assessed</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-151
-</td>
-<td style="text-align:left;">
-Trogon tenellus
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(255, 255, 255, 255) !important;">Not Assessed</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-155
-</td>
-<td style="text-align:left;">
-Xenops mexicanus
-</td>
-<td style="text-align:left;">
-Not endemic
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-AVES
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(255, 255, 255, 255) !important;">Not Assessed</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-187
-</td>
 <td style="text-align:left;">
 Lepidothrix velutina
 </td>
@@ -3691,8 +3079,56 @@ AVES
 </tr>
 <tr>
 <td style="text-align:left;">
-46
+Polioptila bilineata
 </td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(255, 255, 255, 255) !important;">Not Assessed</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Trogon tenellus
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(255, 255, 255, 255) !important;">Not Assessed</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Xenops mexicanus
+</td>
+<td style="text-align:left;">
+Not endemic
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+AVES
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(255, 255, 255, 255) !important;">Not Assessed</span>
+</td>
+</tr>
+<tr>
 <td style="text-align:left;">
 Crax rubra
 </td>
@@ -3711,9 +3147,6 @@ AVES
 </tr>
 <tr>
 <td style="text-align:left;">
-25
-</td>
-<td style="text-align:left;">
 Mazama temama
 </td>
 <td style="text-align:left;">
@@ -3730,9 +3163,6 @@ MAMMALIA
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
-8
-</td>
 <td style="text-align:left;">
 Saimiri oerstedii
 </td>
@@ -3751,9 +3181,6 @@ MAMMALIA
 </tr>
 <tr>
 <td style="text-align:left;">
-38
-</td>
-<td style="text-align:left;">
 Tapirus bairdii
 </td>
 <td style="text-align:left;">
@@ -3770,29 +3197,6 @@ MAMMALIA
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
-5
-</td>
-<td style="text-align:left;">
-Herpailurus yagouaroundi
-</td>
-<td style="text-align:left;">
-Not Endemic
-</td>
-<td style="text-align:left;">
-Decreasing
-</td>
-<td style="text-align:left;">
-MAMMALIA
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-7
-</td>
 <td style="text-align:left;">
 Conepatus semistriatus
 </td>
@@ -3811,229 +3215,6 @@ MAMMALIA
 </tr>
 <tr>
 <td style="text-align:left;">
-14
-</td>
-<td style="text-align:left;">
-Galictis vittata
-</td>
-<td style="text-align:left;">
-Not Endemic
-</td>
-<td style="text-align:left;">
-Stable
-</td>
-<td style="text-align:left;">
-MAMMALIA
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-22
-</td>
-<td style="text-align:left;">
-Puma concolor
-</td>
-<td style="text-align:left;">
-Not Endemic
-</td>
-<td style="text-align:left;">
-Decreasing
-</td>
-<td style="text-align:left;">
-MAMMALIA
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-23
-</td>
-<td style="text-align:left;">
-Procyon lotor
-</td>
-<td style="text-align:left;">
-Not Endemic
-</td>
-<td style="text-align:left;">
-Increasing
-</td>
-<td style="text-align:left;">
-MAMMALIA
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-27
-</td>
-<td style="text-align:left;">
-Proechimys semispinosus
-</td>
-<td style="text-align:left;">
-Not Endemic
-</td>
-<td style="text-align:left;">
-Stable
-</td>
-<td style="text-align:left;">
-MAMMALIA
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-28
-</td>
-<td style="text-align:left;">
-Sciurus granatensis
-</td>
-<td style="text-align:left;">
-Not Endemic
-</td>
-<td style="text-align:left;">
-Stable
-</td>
-<td style="text-align:left;">
-MAMMALIA
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-30
-</td>
-<td style="text-align:left;">
-Didelphis marsupialis
-</td>
-<td style="text-align:left;">
-Not Endemic
-</td>
-<td style="text-align:left;">
-Stable
-</td>
-<td style="text-align:left;">
-MAMMALIA
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-31
-</td>
-<td style="text-align:left;">
-Eira barbara
-</td>
-<td style="text-align:left;">
-Not Endemic
-</td>
-<td style="text-align:left;">
-Decreasing
-</td>
-<td style="text-align:left;">
-MAMMALIA
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-37
-</td>
-<td style="text-align:left;">
-Dasypus novemcinctus
-</td>
-<td style="text-align:left;">
-Not Endemic
-</td>
-<td style="text-align:left;">
-Stable
-</td>
-<td style="text-align:left;">
-MAMMALIA
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-40
-</td>
-<td style="text-align:left;">
-Procyon cancrivorus
-</td>
-<td style="text-align:left;">
-Not Endemic
-</td>
-<td style="text-align:left;">
-Decreasing
-</td>
-<td style="text-align:left;">
-MAMMALIA
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-42
-</td>
-<td style="text-align:left;">
-Tamandua mexicana
-</td>
-<td style="text-align:left;">
-Not Endemic
-</td>
-<td style="text-align:left;">
-Unknown
-</td>
-<td style="text-align:left;">
-MAMMALIA
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-43
-</td>
-<td style="text-align:left;">
-Leopardus pardalis
-</td>
-<td style="text-align:left;">
-Not Endemic
-</td>
-<td style="text-align:left;">
-Decreasing
-</td>
-<td style="text-align:left;">
-MAMMALIA
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-45
-</td>
-<td style="text-align:left;">
 Cuniculus paca
 </td>
 <td style="text-align:left;">
@@ -4050,49 +3231,6 @@ MAMMALIA
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
-47
-</td>
-<td style="text-align:left;">
-Nasua narica
-</td>
-<td style="text-align:left;">
-Not Endemic
-</td>
-<td style="text-align:left;">
-Decreasing
-</td>
-<td style="text-align:left;">
-MAMMALIA
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-48
-</td>
-<td style="text-align:left;">
-Dicotyles tajacu
-</td>
-<td style="text-align:left;">
-Not Endemic
-</td>
-<td style="text-align:left;">
-Stable
-</td>
-<td style="text-align:left;">
-MAMMALIA
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-49
-</td>
 <td style="text-align:left;">
 Dasyprocta punctata
 </td>
@@ -4111,8 +3249,243 @@ MAMMALIA
 </tr>
 <tr>
 <td style="text-align:left;">
-6
+Dasypus novemcinctus
 </td>
+<td style="text-align:left;">
+Not Endemic
+</td>
+<td style="text-align:left;">
+Stable
+</td>
+<td style="text-align:left;">
+MAMMALIA
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Dicotyles tajacu
+</td>
+<td style="text-align:left;">
+Not Endemic
+</td>
+<td style="text-align:left;">
+Stable
+</td>
+<td style="text-align:left;">
+MAMMALIA
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Didelphis marsupialis
+</td>
+<td style="text-align:left;">
+Not Endemic
+</td>
+<td style="text-align:left;">
+Stable
+</td>
+<td style="text-align:left;">
+MAMMALIA
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Eira barbara
+</td>
+<td style="text-align:left;">
+Not Endemic
+</td>
+<td style="text-align:left;">
+Decreasing
+</td>
+<td style="text-align:left;">
+MAMMALIA
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Galictis vittata
+</td>
+<td style="text-align:left;">
+Not Endemic
+</td>
+<td style="text-align:left;">
+Stable
+</td>
+<td style="text-align:left;">
+MAMMALIA
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Herpailurus yagouaroundi
+</td>
+<td style="text-align:left;">
+Not Endemic
+</td>
+<td style="text-align:left;">
+Decreasing
+</td>
+<td style="text-align:left;">
+MAMMALIA
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Leopardus pardalis
+</td>
+<td style="text-align:left;">
+Not Endemic
+</td>
+<td style="text-align:left;">
+Decreasing
+</td>
+<td style="text-align:left;">
+MAMMALIA
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Nasua narica
+</td>
+<td style="text-align:left;">
+Not Endemic
+</td>
+<td style="text-align:left;">
+Decreasing
+</td>
+<td style="text-align:left;">
+MAMMALIA
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Procyon cancrivorus
+</td>
+<td style="text-align:left;">
+Not Endemic
+</td>
+<td style="text-align:left;">
+Decreasing
+</td>
+<td style="text-align:left;">
+MAMMALIA
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Procyon lotor
+</td>
+<td style="text-align:left;">
+Not Endemic
+</td>
+<td style="text-align:left;">
+Increasing
+</td>
+<td style="text-align:left;">
+MAMMALIA
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Proechimys semispinosus
+</td>
+<td style="text-align:left;">
+Not Endemic
+</td>
+<td style="text-align:left;">
+Stable
+</td>
+<td style="text-align:left;">
+MAMMALIA
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Puma concolor
+</td>
+<td style="text-align:left;">
+Not Endemic
+</td>
+<td style="text-align:left;">
+Decreasing
+</td>
+<td style="text-align:left;">
+MAMMALIA
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Sciurus granatensis
+</td>
+<td style="text-align:left;">
+Not Endemic
+</td>
+<td style="text-align:left;">
+Stable
+</td>
+<td style="text-align:left;">
+MAMMALIA
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Tamandua mexicana
+</td>
+<td style="text-align:left;">
+Not Endemic
+</td>
+<td style="text-align:left;">
+Unknown
+</td>
+<td style="text-align:left;">
+MAMMALIA
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(144, 238, 144, 255) !important;">Least Concern</span>
+</td>
+</tr>
+<tr>
 <td style="text-align:left;">
 Leopardus wiedii
 </td>
@@ -4131,9 +3504,6 @@ MAMMALIA
 </tr>
 <tr>
 <td style="text-align:left;">
-19
-</td>
-<td style="text-align:left;">
 Lontra longicaudis
 </td>
 <td style="text-align:left;">
@@ -4150,9 +3520,6 @@ MAMMALIA
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
-35
-</td>
 <td style="text-align:left;">
 Philander melanurus
 </td>
@@ -4171,8 +3538,22 @@ MAMMALIA
 </tr>
 <tr>
 <td style="text-align:left;">
-29
+Cebus imitator
 </td>
+<td style="text-align:left;">
+Not Endemic
+</td>
+<td style="text-align:left;">
+Decreasing
+</td>
+<td style="text-align:left;">
+MAMMALIA
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(255, 255, 0, 255) !important;">Vulnerable</span>
+</td>
+</tr>
+<tr>
 <td style="text-align:left;">
 Tayassu pecari
 </td>
@@ -4191,30 +3572,7 @@ MAMMALIA
 </tr>
 <tr>
 <td style="text-align:left;">
-34
-</td>
-<td style="text-align:left;">
-Cebus imitator
-</td>
-<td style="text-align:left;">
-Not Endemic
-</td>
-<td style="text-align:left;">
-Decreasing
-</td>
-<td style="text-align:left;">
-MAMMALIA
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(255, 255, 0, 255) !important;">Vulnerable</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-9
-</td>
-<td style="text-align:left;">
-Iguana iguana
+Apodidae
 </td>
 <td style="text-align:left;">
 NA
@@ -4230,69 +3588,6 @@ NA
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
-20
-</td>
-<td style="text-align:left;">
-Holcosus festivus
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(255, 255, 255, 255) !important;">Not Assessed</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-36
-</td>
-<td style="text-align:left;">
-Milvago chimachima
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(255, 255, 255, 255) !important;">Not Assessed</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-64
-</td>
-<td style="text-align:left;">
-Cyanocompsa cyanoides
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(255, 255, 255, 255) !important;">Not Assessed</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-68
-</td>
 <td style="text-align:left;">
 Bubulcus ibis
 </td>
@@ -4311,10 +3606,7 @@ NA
 </tr>
 <tr>
 <td style="text-align:left;">
-97
-</td>
-<td style="text-align:left;">
-Troglodytes aedon
+Cyanocompsa cyanoides
 </td>
 <td style="text-align:left;">
 NA
@@ -4330,149 +3622,6 @@ NA
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
-127
-</td>
-<td style="text-align:left;">
-Throglodytes musculus
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(255, 255, 255, 255) !important;">Not Assessed</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-142
-</td>
-<td style="text-align:left;">
-Picumnos olivaceus
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(255, 255, 255, 255) !important;">Not Assessed</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-143
-</td>
-<td style="text-align:left;">
-Xenops minutus
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(255, 255, 255, 255) !important;">Not Assessed</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-154
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(255, 255, 255, 255) !important;">Not Assessed</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-166
-</td>
-<td style="text-align:left;">
-Trochilidae
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(255, 255, 255, 255) !important;">Not Assessed</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-177
-</td>
-<td style="text-align:left;">
-Apodidae
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(255, 255, 255, 255) !important;">Not Assessed</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-194
-</td>
-<td style="text-align:left;">
-Hypsiboas rosenbergi
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(255, 255, 255, 255) !important;">Not Assessed</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-205
-</td>
 <td style="text-align:left;">
 Dendropsophus craugastor
 </td>
@@ -4491,10 +3640,177 @@ NA
 </tr>
 <tr>
 <td style="text-align:left;">
-215
+Diasporus sp
 </td>
 <td style="text-align:left;">
-Diasporus sp
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(255, 255, 255, 255) !important;">Not Assessed</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Holcosus festivus
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(255, 255, 255, 255) !important;">Not Assessed</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Hypsiboas rosenbergi
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(255, 255, 255, 255) !important;">Not Assessed</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Iguana iguana
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(255, 255, 255, 255) !important;">Not Assessed</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Milvago chimachima
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(255, 255, 255, 255) !important;">Not Assessed</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(255, 255, 255, 255) !important;">Not Assessed</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Picumnos olivaceus
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(255, 255, 255, 255) !important;">Not Assessed</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Throglodytes musculus
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(255, 255, 255, 255) !important;">Not Assessed</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Trochilidae
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(255, 255, 255, 255) !important;">Not Assessed</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Troglodytes aedon
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+<span style=" font-weight: bold;    color: black !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(255, 255, 255, 255) !important;">Not Assessed</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Xenops minutus
 </td>
 <td style="text-align:left;">
 NA
