@@ -90,8 +90,11 @@ data_folder <- drive_ls(path = as_id("1dnLGAUTC0IQ9dSzC4l354whRrBXLNOM1"), recur
 # Subset to just the datafolders
 data_folder <- data_folder[substr(data_folder$name,1,4)=="Piro",]
 
-# Remove the shortcut folders and replace them with the real file 
-data_folder <- data_folder[!(data_folder$name %in% c("Piro_Restoration_Experiment_BATBOX_DATABASE", "Piro_Restoration_Experiment_bird_counts_2025BASE")),]
+# Replace shortcuts
+data_folder <- data_folder %>%
+  filter(map_chr(drive_resource, ~ .x$mimeType) != "application/vnd.google-apps.shortcut")
+
+
 
 for(i in 1:nrow(data_folder))
 {
@@ -101,7 +104,7 @@ for(i in 1:nrow(data_folder))
 # Also grab the bird and batbox databases - as they are shortcuts
 
 # Birds
-drive_download(file = as_id("19xnEVq_EH3xkZe-Up3iK6hXROm3LUu9rITm7FCI1-9A"), path = paste0("data/", "Piro_Restoration_Experiment_bird_counts_2025BASE"), overwrite = TRUE)
+drive_download(file = as_id("19xnEVq_EH3xkZe-Up3iK6hXROm3LUu9rITm7FCI1-9A"), path = paste0("data/", "Piro_Restoration_Experiment_BIRD_DATABASE"), overwrite = TRUE)
 
 # Bats
 drive_download(file = as_id("1mI3RhnR0WiuaK3TFnnF46xugKDRttKR8xe-lNCpeeXA"), path = paste0("data/", "Piro_Restoration_Experiment_BATBOX_DATABASE"), overwrite = TRUE)
@@ -158,9 +161,6 @@ plot_master  <- read_excel("data/Piro_Restoration_Experiment_PLOT_MASTERLIST.xls
                       sheet="survey_locations")
 
 dep <- left_join(dep, plot_master[,c("plot_id", "simple_treatment")])
-
-
-
 ```
 
 The following map shows the locations of all the surveys included within this project to date, coloured by simplfied treatment category: active restoration; natural restoration and forest control. 
