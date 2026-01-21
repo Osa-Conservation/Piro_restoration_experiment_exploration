@@ -1,7 +1,8 @@
 tab:unnamed-chunk-6
 tab:unnamed-chunk-14
-tab:unnamed-chunk-28
 tab:unnamed-chunk-29
+tab:unnamed-chunk-30
+tab:unnamed-chunk-38
 introduction
 study-area-and-survey-locations
 historical-survey-timeline
@@ -15,7 +16,10 @@ survey-effort-through-time
 overall-bat-occupancy-through-time
 treatment-specific-occupancy-through-time
 amphibian-data
+comparison-with-historical-data
 small-mammal-data
 camera-trap-data
+spatial-plot-of-capture-rates
+species-of-conservation-concern
 vegetation-data
 prioritising-sites
