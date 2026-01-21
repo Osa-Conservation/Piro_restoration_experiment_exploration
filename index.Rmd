@@ -1284,8 +1284,6 @@ subplot(fig1, fig2, nrows = 1, shareY = TRUE, titleX = TRUE, widths = c(0.55, 0.
 
 ```
 
-
-
 # Small mammal data
 
 So far we have made `r length(unique(sherman_dep$deployment_id))` sherman trap deployments, across `r length(unique(sherman_dep$plot_id))` plots.
@@ -2003,13 +2001,6 @@ sp_all <- sp_all[duplicated(sp_all)==F,]
 
 
 # Merge the species recorded on surveys
-
-# CT registrations 
-sp_summary
-# Point counts
-
-# Amphibian surveys
-amphib_caps
 all_caps <- list()
 # Create a list of species detected
 all_caps[[1]] <- gsub("\\.", " ", sp_summary$sp)
@@ -2025,14 +2016,9 @@ iucn_all <- left_join(iucn, sp_all)
 
 iucn_all$IUCN_status[iucn_all$IUCN_status=="Not assessed"] <- "Not Assessed"
 
-table(iucn_all$IUCN_status)
-
 #Order
-iucn_all <- iucn_all[order(iucn_all$class_name, iucn_all$IUCN_status, iucn_all$Endemism),]
+iucn_all <- iucn_all[order(iucn_all$class_name, iucn_all$IUCN_status, iucn_all$Endemism, iucn_all$scientific_name),]
 
-library(dplyr)
-library(knitr)
-library(kableExtra)
 
 # Define IUCN colors including Not Assessed
 iucn_colors <- c(
@@ -2080,7 +2066,7 @@ iucn_formatted <- iucn_all %>%
 # Table 1: All species
 iucn_formatted %>%
   kable(format = "html", escape = FALSE,
-        caption = "IUCN status by taxon") %>%
+        caption = "IUCN status by taxon", row.names = FALSE) %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
                 full_width = FALSE) %>%
   row_spec(0, bold = TRUE, background = "#f5f5f5")
