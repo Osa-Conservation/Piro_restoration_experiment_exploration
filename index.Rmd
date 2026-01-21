@@ -1268,11 +1268,13 @@ tmp %>%
                 full_width = FALSE) %>%
   row_spec(0, bold = TRUE, background = "#f5f5f5") %>%
   row_spec(nrow(tmp), bold = TRUE, background = "#f5f5f5")
+
+
 ```
 
 # Camera trap data
 
-To date we have deployed `r nrow(dep)` cameras, at `r length(unique(dep$placename))` locations. Resulting in the capture of `r nrow(img[img$is_blank==0,])` wildlife images.
+To date we have deployed `r nrow(dep)` cameras, at `r length(unique(dep$placename))` locations. Resulting in the capture of `r nrow(img[img$is_blank==0,])` wildlife images of `r length(unique(img$common_name))` species.
 
 ```{r, cam_dat}
 # Set treatment order
@@ -1465,7 +1467,7 @@ img_sub <- img %>% filter(is_blank==0,                # Remove the blanks
 #table(img_sub$common_name)
 ```
 
-Which results in `r nrow(img_sub)` identifiable wildlife images.
+Which results in `r nrow(img_sub)` identifiable wildlife images of `r length(unique(img_sub$common_name))` species.
 
 ```{r}
 # Prep the analysis dataframes
@@ -1750,25 +1752,28 @@ forest_order <- capture_rates %>%
 # Add any species not detected in forest to the end
 forest_order <- c(forest_order, setdiff(top_20_species, forest_order))
 
+# Swap species names with common names 
+lookup <- img_sub[, c("sp", "common_name")]
+lookup <- lookup[duplicated(lookup) == FALSE, ]
+
+# Create common_name order based on forest_order
+common_name_order <- lookup$common_name[match(forest_order, lookup$sp)]
+
 # Filter to top 20 and set factor levels
 plot_data <- capture_rates %>%
   filter(species %in% top_20_species) %>%
+  left_join(lookup, by = c("species" = "sp")) %>%
   mutate(
     species = factor(species, levels = rev(forest_order)),
+    common_name = factor(common_name, levels = rev(common_name_order)),
     simple_treatment = factor(simple_treatment, 
                                levels = c("forest", "active_restoration", "passive_restoration")),
-    # Add small value to zeros for log scale, and adjust text color threshold
     capture_rate_log = capture_rate + 0.01,
     text_color = ifelse(capture_rate < 5, "white", "black")
   )
 
-# Create nicer species labels (replace . with space)
-plot_data <- plot_data %>%
-  mutate(species_label = gsub("\\.", " ", species),
-         species_label = factor(species_label, levels = gsub("\\.", " ", rev(forest_order))))
-
 # Create the heatmap with log scale
-ggplot(plot_data, aes(x = simple_treatment, y = species_label, fill = capture_rate_log)) +
+ggplot(plot_data, aes(x = simple_treatment, y = common_name, fill = capture_rate_log)) +
   geom_tile(color = "white") +
   geom_text(aes(label = round(capture_rate, 1), color = text_color), size = 3) +
   scale_fill_viridis_c(option = "plasma", 
@@ -1788,7 +1793,7 @@ ggplot(plot_data, aes(x = simple_treatment, y = species_label, fill = capture_ra
   theme_minimal() +
   theme(
     axis.text.x = element_text(angle = 45, hjust = 1, size = 12),
-    axis.text.y = element_text(size = 10, face = "italic"),
+    axis.text.y = element_text(size = 10),
     axis.title.x = element_text(size = 14),
     plot.title = element_text(size = 16)
   )
