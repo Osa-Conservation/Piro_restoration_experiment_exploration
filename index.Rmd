@@ -802,7 +802,7 @@ bat_counts_2025 <- bat_counts[as.numeric(substr(bat_counts$date_check,1,4))>2024
 
 bat_counts_2025$binary <- bat_counts_2025$presence_of_bats=="yes"
 
-colnames(bat_counts)
+
 
 ```
 
@@ -1024,7 +1024,7 @@ amphib_effort$plot_id <- as.factor(amphib_effort$plot_id)
 amphib_effort_2025 <- amphib_effort[amphib_effort$year==2025,]
 
 amphib_2025_sum <- amphib_effort_2025 %>% group_by(plot_id, .drop = FALSE) %>% summarise(visits=n(),)
-table(amphib_2025_sum$plot_id)
+
 # Left join the locations
 
 amphib_2025_sum <- left_join(plots_centroid, amphib_2025_sum)
@@ -1382,7 +1382,7 @@ dep <- dep[order(dep$placename),]
 
 # Get unique placenames
 placenames_unique <- unique(dep$placename)
-head(dep)
+
 #Get a list of unique locations
 locs <- dep[,c("placename", "longitude", "latitude")]
 locs <- locs[duplicated(locs)==F,]
@@ -1791,6 +1791,60 @@ ggplot(plot_data, aes(x = simple_treatment, y = common_name, fill = capture_rate
     axis.title.x = element_text(size = 14),
     plot.title = element_text(size = 16)
   )
+```
+
+## Spatial plot of capture rates
+
+The overall capture rate by camera trap location. 
+
+```{r}
+ total_obs <- left_join(total_obs, locs)
+ sp_list <- sp_summary$sp     
+      # Calculate overall capture rate (sum of all species)
+      overall_cr <- total_obs %>% 
+        mutate(
+          total_detections = rowSums(select(., all_of(sp_list)), na.rm = TRUE),
+          CaptureRate = total_detections / (days / 100)
+        )
+      
+      # Calculate min and max for legend
+      max_cr <- max(overall_cr$CaptureRate, na.rm = TRUE)
+      min_cr <- min(overall_cr$CaptureRate, na.rm = TRUE)
+      mid_cr <- min_cr + ((max_cr - min_cr)/2)
+      
+      # Create custom HTML legend
+      legend_html <- paste0(
+        '<div style="padding: 10px; background: white; border: 2px solid grey; border-radius: 5px;">',
+        '<strong>All Species</strong><br>',
+        '<strong>Capture Rate</strong><br>(per 100 days)<br><br>',
+        '<svg width="120" height="80">',
+        '<circle cx="15" cy="15" r="11" fill="rgba(0, 102, 204, 0.6)" />',
+        '<text x="35" y="20" font-size="12">High: ', round(max_cr, 2), '</text>',
+        '<circle cx="15" cy="40" r="7" fill="rgba(0, 102, 204, 0.6)" />',
+        '<text x="35" y="45" font-size="12">Med: ', round(mid_cr, 2), '</text>',
+        '<circle cx="15" cy="65" r="3" fill="rgba(0, 102, 204, 0.6)" />',
+        '<text x="35" y="70" font-size="12">Low: ', round(min_cr, 2), '</text>',
+        '</svg>',
+        '</div>'
+      )
+      
+      leaflet() %>%
+        addProviderTiles(providers$Esri.WorldImagery) %>%
+        addCircleMarkers(
+          data = overall_cr,
+          lng = ~longitude,
+          lat = ~latitude,
+          radius = ~(CaptureRate / max(CaptureRate, na.rm = TRUE) * 10) + 1,
+          color = "#FF00E1",
+          stroke = FALSE,
+          fillOpacity = 0.8,
+          popup = ~paste(placename, "<br>Total Detections:", total_detections, 
+                         "<br>Capture Rate:", round(CaptureRate, 2))
+        ) %>%   
+        addScaleBar(position = "topleft") %>%
+        addControl(html = legend_html, position = "bottomright")
+    
+    
 ```
 
 # Species of conservation concern 
