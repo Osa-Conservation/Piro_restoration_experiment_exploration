@@ -1,4 +1,7 @@
-tab:unnamed-chunk-10
+tab:unnamed-chunk-6
+tab:unnamed-chunk-14
+tab:unnamed-chunk-28
+tab:unnamed-chunk-29
 introduction
 study-area-and-survey-locations
 historical-survey-timeline
@@ -7,9 +10,11 @@ bird-surveys
 earthwatch-data
 historical
 bat-data
+earthwatch-data-only
 survey-effort-through-time
 overall-bat-occupancy-through-time
 treatment-specific-occupancy-through-time
+amphibian-data
 small-mammal-data
 camera-trap-data
 vegetation-data
