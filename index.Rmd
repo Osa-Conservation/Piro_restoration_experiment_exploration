@@ -167,16 +167,7 @@ The following map shows the locations of all the surveys included within this pr
 
 ```{r map4, echo=F, class.source="Rmain"}
 
-# # First, set a single categorical variable of interest from station covariates for summary graphs. If you do not have an appropriate category use "project_id".
-# category <- "feature_type"
-# 
-# # We first convert this category to a factor with discrete levels
-# dep[,category] <- factor(dep[,category])
-# # then use the turbo() function to assign each level a color
-# col.cat <- turbo(length(levels(dep[,category])))
-# # then we apply it to the dataframe
-# dep$colours <- col.cat[dep[,category]]
-
+# Set a colour variable
 plot_master$simple_treatment <- as.factor(plot_master$simple_treatment)
 
 # Create a color palette for the treatments
@@ -284,6 +275,9 @@ amphib_caps <- read_excel("data/Piro_Restoration_Experiment_AMPHIBIAN_DATABASE.x
                       sheet="capture_data", col_types = "text")
  
 amphib_caps$date <- as.Date(as.numeric(amphib_caps$date), origin = "1899-12-30")
+
+
+table(amphib_caps$code)
 
 
 # Rapid vegetation surveys ###############################################
@@ -1797,6 +1791,112 @@ ggplot(plot_data, aes(x = simple_treatment, y = common_name, fill = capture_rate
     axis.title.x = element_text(size = 14),
     plot.title = element_text(size = 16)
   )
+```
+
+# Species of conservation concern 
+Previous work by Arianna Basto created lists of mammal, bird and amphibian species in the Osa region which are of conservation concern. We will import these lists and extract any species detected thus far in our surveys. 
+
+```{r}
+# Birds
+drive_download(file = as_id("1MtXa2adHajT0hOuPNKd0JE2L-Qrp_U3T"), path = paste0("data/", "species_lists.xlsx"), overwrite = TRUE)
+
+sp_mam <- read_excel("data/species_lists.xlsx", sheet="mammals_list") 
+sp_amp <- read_excel("data/species_lists.xlsx", sheet="amphibians_list") 
+sp_bir <- read_excel("data/species_lists.xlsx", sheet="bird_list") 
+
+# Merge the list
+
+sp_all <- bind_rows(sp_mam[,c("scientific_name", "Endemism", "IUCN_status", "IUCN_population_trend", "class_name")],
+sp_amp[,c("scientific_name", "Endemism", "IUCN_status", "IUCN_population_trend", "class_name")],
+sp_bir[,c("scientific_name", "Endemism", "IUCN_status", "IUCN_population_trend", "class_name")])
+
+# Remove duplicates 
+sp_all <- sp_all[duplicated(sp_all)==F,]
+
+
+# Merge the species recorded on surveys
+
+# CT registrations 
+sp_summary
+# Point counts
+
+# Amphibian surveys
+amphib_caps
+all_caps <- list()
+# Create a list of species detected
+all_caps[[1]] <- gsub("\\.", " ", sp_summary$sp)
+all_caps[[2]] <- unique(bird_counts$species)
+all_caps[[3]] <- unique(amphib_caps$species[amphib_caps$code!="NA"])
+
+iucn <- data.frame("scientific_name"=unlist(all_caps))
+# Rwemove duplicated
+iucn$tmp <- 1
+iucn <- iucn[duplicated(iucn$scientific_name)==F,]
+iucn$tmp <- NULL
+iucn_all <- left_join(iucn, sp_all)
+
+iucn_all$IUCN_status[iucn_all$IUCN_status=="Not assessed"] <- "Not Assessed"
+
+table(iucn_all$IUCN_status)
+
+#Order
+iucn_all <- iucn_all[order(iucn_all$class_name, iucn_all$IUCN_status, iucn_all$Endemism),]
+
+library(dplyr)
+library(knitr)
+library(kableExtra)
+
+# Define IUCN colors including Not Assessed
+iucn_colors <- c(
+  "Least Concern" = "#90EE90",
+  "Near Threatened" = "#FFA500",
+  "Vulnerable" = "#FFFF00",
+  "Endangered" = "#FF6B6B",
+  "Critically Endangered" = "#8B0000",
+  "Data Deficient" = "#D3D3D3",
+  "Not Assessed" = "#FFFFFF",
+  "Unknown" = "#FFFFFF"
+)
+
+iucn_text_colors <- c(
+  "Least Concern" = "black",
+  "Near Threatened" = "black",
+  "Vulnerable" = "black",
+  "Endangered" = "black",
+  "Critically Endangered" = "white",
+  "Data Deficient" = "black",
+  "Not Assessed" = "black",
+  "Unknown" = "black"
+)
+
+# Create formatted version with NA handling
+iucn_formatted <- iucn_all %>%
+  mutate(
+    IUCN_status_clean = ifelse(is.na(IUCN_status), "Not Assessed", IUCN_status),
+    bg_color = ifelse(IUCN_status_clean %in% names(iucn_colors), 
+                      iucn_colors[IUCN_status_clean], 
+                      "#FFFFFF"),
+    text_color = ifelse(IUCN_status_clean %in% names(iucn_text_colors), 
+                        iucn_text_colors[IUCN_status_clean], 
+                        "black"),
+    IUCN_status_display = cell_spec(
+      IUCN_status_clean,
+      background = bg_color,
+      color = text_color,
+      bold = TRUE
+    )
+  ) %>%
+  select(-IUCN_status, -IUCN_status_clean, -bg_color, -text_color) %>%
+  rename(IUCN_status = IUCN_status_display)
+
+# Table 1: All species
+iucn_formatted %>%
+  kable(format = "html", escape = FALSE,
+        caption = "IUCN status by taxon") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
+                full_width = FALSE) %>%
+  row_spec(0, bold = TRUE, background = "#f5f5f5")
+
 ```
 
 
