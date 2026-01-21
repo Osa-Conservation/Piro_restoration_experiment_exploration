@@ -1151,6 +1151,140 @@ ggplot(plot_data, aes(x = simple_treatment, y = species, fill = detection_prob))
 
 ```
 
+## Comparison with historical data
+
+```{r}
+
+# Assuming your full amphibian captures data is called amphib_caps
+# and has a date column and species column
+
+# Convert date if needed
+amphib_caps$date <- as.Date(amphib_caps$date)
+amphib_caps$year <- year(amphib_caps$date)
+
+# Split into pre-2025 and 2025
+pre_2025 <- amphib_caps %>%
+  filter(year < 2025) %>%
+  count(species, name = "detections") %>%
+  arrange(detections) %>%
+  mutate(species = factor(species, levels = species))
+
+post_2025 <- amphib_caps %>%
+  filter(year >= 2025) %>%
+  count(species, name = "detections") %>%
+  arrange(detections) %>%
+  mutate(species = factor(species, levels = species))
+
+# Define colors
+plasma_colors <- viridis(2, option = "plasma", begin = 0.3, end = 0.7)
+
+# Plot 1: Pre-2025
+fig1 <- plot_ly(
+  data = pre_2025,
+  y = ~species,
+  x = ~detections,
+  type = "bar",
+  orientation = "h",
+  marker = list(color = plasma_colors[1]),
+  name = "Pre-2025"
+) %>%
+  layout(
+    title = "Amphibian Detections Pre-2025",
+    xaxis = list(title = "Number of Detections"),
+    yaxis = list(title = "", categoryorder = "total ascending")
+  )
+
+# Plot 2: 2025
+fig2 <- plot_ly(
+  data = post_2025,
+  y = ~species,
+  x = ~detections,
+  type = "bar",
+  orientation = "h",
+  marker = list(color = plasma_colors[2]),
+  name = "2025"
+) %>%
+  layout(
+    title = "Amphibian Detections 2025",
+    xaxis = list(title = "Number of Detections"),
+    yaxis = list(title = "", categoryorder = "total ascending")
+  )
+
+fig1
+fig2
+
+
+#######################
+
+
+# Combine data for consistent species ordering
+all_species <- union(pre_2025$species, post_2025$species)
+
+pre_2025_complete <- data.frame(species = all_species) %>%
+  left_join(pre_2025, by = "species") %>%
+  mutate(detections = ifelse(is.na(detections), 0, detections))
+
+post_2025_complete <- data.frame(species = all_species) %>%
+  left_join(post_2025, by = "species") %>%
+  mutate(detections = ifelse(is.na(detections), 0, detections))
+
+# Order by total detections
+species_order <- pre_2025_complete %>%
+  left_join(post_2025_complete, by = "species", suffix = c("_pre", "_post")) %>%
+  mutate(total = detections_pre + detections_post) %>%
+  arrange(total) %>%
+  pull(species)
+
+pre_2025_complete <- pre_2025_complete %>%
+  mutate(species = factor(species, levels = species_order))
+
+post_2025_complete <- post_2025_complete %>%
+  mutate(species = factor(species, levels = species_order))
+
+# Create subplots
+fig1 <- plot_ly(
+  data = pre_2025_complete,
+  y = ~species,
+  x = ~detections,
+  type = "bar",
+  orientation = "h",
+  marker = list(color = plasma_colors[1]),
+  showlegend = FALSE
+) %>%
+  layout(
+    xaxis = list(title = "Detections"),
+    yaxis = list(title = "", showticklabels = TRUE)
+  )
+
+fig2 <- plot_ly(
+  data = post_2025_complete,
+  y = ~species,
+  x = ~detections,
+  type = "bar",
+  orientation = "h",
+  marker = list(color = plasma_colors[2]),
+  showlegend = FALSE
+) %>%
+  layout(
+    xaxis = list(title = "Detections"),
+    yaxis = list(title = "", showticklabels = FALSE)
+  )
+
+subplot(fig1, fig2, nrows = 1, shareY = TRUE, titleX = TRUE, widths = c(0.55, 0.45)) %>%
+  layout(
+    title = list(text = "Amphibian Detections: Pre-2025 vs 2025", y = 0.98),
+    margin = list(l = 150, t = 80),  # Increase top margin too
+    annotations = list(
+      list(x = 0.25, y = 1.05, text = "<b>Pre-2025</b>", showarrow = FALSE, 
+           xref = "paper", yref = "paper", font = list(size = 14), xanchor = "center"),
+      list(x = 0.8, y = 1.05, text = "<b>2025</b>", showarrow = FALSE, 
+           xref = "paper", yref = "paper", font = list(size = 14), xanchor = "center")
+    )
+  )
+
+```
+
+
 
 # Small mammal data
 
