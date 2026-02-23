@@ -28,8 +28,6 @@ library(plotly)
 library(googledrive)
 library(purrr)
 library(readxl)
-library(leaflet.extras)
-library(tidyr)
 
 #drive_auth()
 googledrive::drive_auth(path = Sys.getenv("GOOGLE_AUTHENTICATION_CREDENTIALS"))
@@ -210,7 +208,7 @@ m <- leaflet(data = plot_master) %>%
     overlayGroups = c("plots", "trails", "survey_locs"),
     options = layersControlOptions(collapsed = FALSE)
   ) %>%
-  addFullscreenControl() %>%
+  #addFullscreenControl() %>%
   addScaleBar(position = "topright")
 
 m
