@@ -46,7 +46,8 @@ jobs:
         run: Rscript -e "install.packages('readxl')"
       - name: Install foreach
         run: Rscript -e "install.packages('foreach')"
-
+      - name: Install tidyr
+        run: Rscript -e "install.packages('tidyr')"
 
       - name: Render Book
         env: 

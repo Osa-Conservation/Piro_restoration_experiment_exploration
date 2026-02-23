@@ -18,6 +18,7 @@ editor_options:
 knitr::opts_chunk$set(echo = FALSE, message=F, warning=F)
 
 library(dplyr)
+library(tidyr)
 library(leaflet)
 library(units)
 library(sf)
@@ -248,7 +249,7 @@ bird_counts$site_date <- paste0(bird_counts$plot_id, "_", gsub("-", "", bird_cou
 bird_effort <- read_excel("data/Piro_Restoration_Experiment_BIRD_DATABASE.xlsx",
                       sheet="Visit_metadata")
 bird_effort <- bird_effort[is.na(bird_effort$date)==F,]
-table(substr(bird_effort$date,1,4))
+#table(substr(bird_effort$date,1,4))
 
 
 # Bats ############################################################
@@ -275,21 +276,21 @@ amphib_caps <- read_excel("data/Piro_Restoration_Experiment_AMPHIBIAN_DATABASE.x
 amphib_caps$date <- as.Date(as.numeric(amphib_caps$date), origin = "1899-12-30")
 
 
-table(amphib_caps$code)
+#table(amphib_caps$code)
 
 
 # Rapid vegetation surveys ###############################################
 veg_cover <- read_excel("data/Piro_Restoration_Experiment_VEGETATION_MONITORING.xlsx",
                       sheet="rapid_vegetation_survey", col_types = "guess")
 
-head(veg_cover)
+#head(veg_cover)
 
 # Flooding ################################
 
 flood_dat <- read_excel("data/Piro_Restoration_Experiment_FLOODING_MONITORING.xlsx",
                       sheet="Sheet1", col_types = "guess")
 
-head(flood_dat)
+#head(flood_dat)
 
 # Sherman trapping - 1Pr0X70oLGreYE3tnq7zkF3FN7kD0oBd71ldeA3_dkBI
 
