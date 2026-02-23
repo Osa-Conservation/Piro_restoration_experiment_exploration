@@ -240,7 +240,7 @@ bird_counts <- read_excel("data/Piro_Restoration_Experiment_BIRD_DATABASE.xlsx",
 bird_counts <- as.data.frame(bird_counts)
 
 bird_counts$date <- ymd(bird_counts$date)
-bird_counts <- bird_counts %>% na.omit(date)
+bird_counts <- bird_counts %>% drop_na(date)
 
 # Note that SOME OF THE bird data has a leading zero. We should remove that
 bird_counts$site_date <- paste0(bird_counts$plot_id, "_", gsub("-", "", bird_counts$date))
@@ -258,7 +258,7 @@ bat_counts <- read_excel("data/Piro_Restoration_Experiment_BATBOX_DATABASE.xlsx"
                       sheet="bat_monitoring")
 
 bat_counts$date_check <- ymd(bat_counts$date_check)
-bat_counts <- bat_counts %>% na.omit(date_check)
+bat_counts <- bat_counts %>% drop_na(date_check)
 # Remove NA;s
 bat_counts<- bat_counts[is.na(bat_counts$plot)==F,]
 
@@ -268,7 +268,7 @@ amphib_effort <- read_excel("data/Piro_Restoration_Experiment_AMPHIBIAN_DATABASE
                       sheet="visit_data", col_types = "text")
 
 amphib_effort$date <- as.Date(as.numeric(amphib_effort$date), origin = as.Date("1899-12-30"))
-amphib_effort <- amphib_effort %>% na.omit(date)
+amphib_effort <- amphib_effort %>% drop_na(date)
 
 amphib_caps <- read_excel("data/Piro_Restoration_Experiment_AMPHIBIAN_DATABASE.xlsx",
                       sheet="capture_data", col_types = "text")
