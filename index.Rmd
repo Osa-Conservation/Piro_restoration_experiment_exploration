@@ -5,7 +5,7 @@ author:
 site: bookdown::test-bookdown
 output: bookdown::gitbook
     css: styles.css
-    date: '`r paste("Updated on", Sys.Date())`'
+date: '`r paste("Updated on", Sys.Date())`'
 documentclass: book
 biblio-style: apalike
 link-citations: yes
