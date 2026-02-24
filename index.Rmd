@@ -4,7 +4,8 @@ author:
   - Osa Conservation Wildlife Team and Earthwatch
 site: bookdown::test-bookdown
 output: bookdown::gitbook
-date: '`r paste("Updated on", Sys.Date())`'
+    css: styles.css
+    date: '`r paste("Updated on", Sys.Date())`'
 documentclass: book
 biblio-style: apalike
 link-citations: yes
@@ -1042,7 +1043,7 @@ amphib_caps_2025 <- amphib_caps[substr(amphib_caps$date,1,4)=="2025",]
 In 2025 we conducted a total of `r nrow(amphib_effort[amphib_effort$year==2025,])` amphibian surveys. They were distributed as follows:
 
 ```{r}
-library(RColorBrewer)
+#library(RColorBrewer)
 
 # Assuming be_2025_sum is already loaded as an sf dataframe
 
@@ -1253,7 +1254,7 @@ So far we have made `r length(unique(sherman_dep$deployment_id))` sherman trap d
 The deployments we distributed as follows:
 
 ```{r}
-library(RColorBrewer)
+#library(RColorBrewer)
 sherman_dep <- left_join(sherman_dep, plot_master[,c("plot_id", "simple_treatment")], by=c("plot_id"))
 sherman_cap$plot_id <- substr(sherman_cap$deployment_id,1,3)
 sherman_cap <- left_join(sherman_cap, plot_master[,c("plot_id", "simple_treatment")], by=c("plot_id"))
@@ -1308,7 +1309,7 @@ leaflet(data = sherman_sf) %>%
 
 ```
 
-THe survey effort by treatment was as follows:
+The survey effort by treatment was as follows:
 
 ```{r}
 tmp <- sherman_dep[, c("plot_id", "simple_treatment")][duplicated(sherman_dep[, c("plot_id", "simple_treatment")])==F,]
