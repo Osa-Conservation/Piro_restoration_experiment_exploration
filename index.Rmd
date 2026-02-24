@@ -3,13 +3,14 @@ title: "Osa Conservation: Piro Restoration Experiment"
 author:
   - Osa Conservation Wildlife Team and Earthwatch
 site: bookdown::test-bookdown
-output: bookdown::gitbook
+output:
+  bookdown::gitbook:
     css: styles.css
 date: '`r paste("Updated on", Sys.Date())`'
 documentclass: book
 biblio-style: apalike
 link-citations: yes
-editor_options: 
+editor_options:
   chunk_output_type: console
 ---
 
