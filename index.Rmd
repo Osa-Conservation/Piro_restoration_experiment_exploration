@@ -2850,10 +2850,10 @@ ggplot(Piro2_overall, aes(x = Sampling, y = biomass_2024)) +
     box.padding = 0.5,
     point.padding = 0.5
   )
-
+head(Piro2_overall)
 
 # Create the plot with three violin plots
-ggplot(Piro2_overall, aes(x = Sampling, y = Delta)) +
+ggplot(Piro2_overall, aes(x = Sampling, y = delta)) +
   geom_violin(alpha = 0.3) +
   theme_minimal() +
   labs(x = "Sampling Group", y = "Delta Biomass 2017-2024")+
