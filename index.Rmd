@@ -2428,7 +2428,7 @@ leaflet(canopy_sf) %>%
 ```
 
 
-### Prioritising sites
+## Prioritising sites
 
 Finally if we create a plot of grass vs. leaf litter, this should give us a good idea of where trees are coming back well:
 
@@ -2472,10 +2472,9 @@ fig
 ```
 
 
-How do these sites relate to flooded areas?
+How do these sites relate to flooded areas? This is an interesting question we can test with tour data.
 
 ```{r}
-head(flood_dat)
 
 flood_sum <- flood_dat %>% group_by(plot_id) %>% summarize("samples"=n())
 
@@ -2677,8 +2676,6 @@ To do so, we checked first the survey locations of bats, amphibians and birds
 Piro2<-delta_biomass2 %>% 
   filter(simple_treatment!="forest")
 
-head(Piro2)
-
 ##########################################3
 # Create color palettes for each variable
 pal_amphibians <- colorNumeric(palette = "Reds", domain = Piro2$Amphibians)
@@ -2788,19 +2785,19 @@ map <- leaflet(Piro2) %>%
     fillColor = "#FF8C00", # Dark orange
     fillOpacity = 0.9,
     weight = 3,
-    group = "Selected Plots (Yes)",
+    group = "Selected Plots",
     label = ~paste0("SELECTED: ", plot_id)
   ) %>%
   
   # Add layer controls
   addLayersControl(
     baseGroups = c("Satellite", "Street Map"),
-    overlayGroups = c("Base Locations", "Amphibians", "Bats", "Birds", "Selected Plots (Yes)"),
+    overlayGroups = c("Base Locations", "Amphibians", "Bats", "Birds", "Selected Plots"),
     options = layersControlOptions(collapsed = FALSE)
   ) %>%
   
   # Hide some layers by default
-  hideGroup(c("Amphibians", "Bats", "Birds")) %>%
+  hideGroup(c("Amphibians", "Bats", "Birds", "Selected Plots")) %>%
   
   # Add legends
   addLegend("bottomright", pal = pal_amphibians, values = ~Amphibians,
@@ -2857,7 +2854,6 @@ ggplot(Piro2_overall, aes(x = Sampling, y = biomass_2024)) +
     box.padding = 0.5,
     point.padding = 0.5
   )
-head(Piro2_overall)
 
 # Create the plot with three violin plots
 ggplot(Piro2_overall, aes(x = Sampling, y = delta)) +
