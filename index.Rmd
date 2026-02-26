@@ -31,6 +31,8 @@ library(plotly)
 library(googledrive)
 library(purrr)
 library(readxl)
+library(RColorBrewer)
+library(scales)
 
 #drive_auth()
 googledrive::drive_auth(path = Sys.getenv("GOOGLE_AUTHENTICATION_CREDENTIALS"))
@@ -162,6 +164,12 @@ plot_master  <- read_excel("data/Piro_Restoration_Experiment_PLOT_MASTERLIST.xls
                       sheet="survey_locations")
 
 dep <- left_join(dep, plot_master[,c("plot_id", "simple_treatment")])
+
+#Download de biomass database
+
+timeseries_results <- read.csv("data/Piro_Planet_timeseries_AGB_update_2014-2024.csv", header=T)
+
+
 ```
 
 The following map shows the locations of all the surveys included within this project to date, coloured by simplfied treatment category: active restoration; natural restoration and forest control. 
@@ -2143,13 +2151,9 @@ plot_ly(grass_cover_filtered, x = ~simple_treatment, y = ~grass_cover,
   )
 ```
 
-Some sites have low grass cover, but it doesnt appear to be linked to the original restoration methodology (L,M,H, N). High seems to be the worst, and medium the best!
-
-
+Some sites have low grass cover, but it doesn't appear to be linked to the original restoration methodology (L,M,H,N). High seems to be the worst, and medium the best!
 
 ```{r}
-
-library(RColorBrewer)
 
 # Add the site locations
 grass_sf <- left_join(plots_centroid[,c("plot_id", "geometry")], grass_cover_filtered)
@@ -2247,7 +2251,7 @@ leaflet(ll_sf) %>%
     color = ~pal(leaf_cover), 
     stroke = FALSE, 
     fillOpacity = 0.8,
-    popup = ~paste(plot_id, "<br> Leaflitter cover:", leaf_cover)
+    popup = ~paste(plot_id, "<br> Leaflitter cover:", round(leaf_cover,3))
   ) %>% 
   addLegend(
     pal = pal, 
@@ -2483,6 +2487,437 @@ flood_sum <- flood_sum %>%
 
 ```
 
+#Summarizing data for next steps:
+
+Our monitoring process from the first 8 years of the restoration provide a robust information about the responses of wildlife on the first  most-critical moment on recovery. 
+
+From now on, the surveys can be performed in fewer plots, covering the current trends of recovery.
+
+##We can see the trends from satellite imagery.
+Based on Planet's satellite capabilities, we can use biomass and other satellite imagery to monitor restoration recovery by establishing a historical baseline and tracking changes over time. High-frequency, daily imagery from satellites allows for the continuous observation of vegetation regrowth of specific recovery areas, providing quantifiable evidence of restoration success.
+
+For example, if we compare the biomass per site through time, we can clearly see the biomass increase since 2017, when the restoration began, but it is still lower than the biomass in pristine forest.
+
+```{r}
+#Biomass Time Series
+
+#fit plot_id 
+timeseries_results <- timeseries_results %>%
+  mutate(plot_id = case_when(
+    # For L, H, M, N codes that are 2 characters (letter + single digit)
+    grepl("^[LHMN][1-9]$", plot_id) ~ paste0(substr(plot_id, 1, 1), "0", substr(plot_id, 2, 2)),
+    # For L, H, M, N codes that are 3 characters (letter + two digits)
+    grepl("^[LHMN]10$", plot_id) ~ plot_id,
+    # Keep everything else as is
+    TRUE ~ plot_id
+  ))
+
+# Reshape for plotting
+ts_long <- timeseries_results %>%
+  pivot_longer(
+    cols = c(biomass, canopy_cover, canopy_height),
+    names_to = "metric",
+    values_to = "value"
+  ) %>% 
+ # Add Morpho column
+  mutate(
+    Area = case_when(
+      grepl("^P", plot_id) ~ "Forest",
+      grepl("^F", plot_id) ~ "Forest",
+      grepl("^N", plot_id) ~ "Restoration",
+      grepl("^L", plot_id) ~ "Restoration",
+      grepl("^H", plot_id) ~ "Restoration",
+      grepl("^M", plot_id) ~ "Restoration",
+      TRUE ~ "Other"
+    ))
+
+###############################################
+
+# Create interactive plot
+p1 <- ts_long[ts_long$metric == "biomass", ] %>%
+  plot_ly(
+    x = ~year,
+    y = ~value,
+    color = ~Area,
+    colors = c("forestgreen", "sienna"),
+    split = ~plot_id,  # This creates separate lines for each plot_id
+    type = 'scatter',
+    mode = 'lines+markers',
+    text = ~paste('Plot:', plot_id, '<br>Year:', year, '<br>Value:', round(value, 2)),
+    hoverinfo = 'text',
+    line = list(width = 2),  # Consistent line width
+    marker = list(size = 4)   # Consistent marker size
+  ) %>%
+  layout(
+    title = "Biomass (Mg/ha) - All Areas",
+    xaxis = list(title = "Year"),
+    yaxis = list(title = "Value"),
+    showlegend = FALSE
+  )
+p1
+```
+
+Lets make a close-up to the restoration sites. See that the trends are not related to our initial classification H-M-L-N
+
+```{r}
+# Create second interactive plot (Restoration only)
+p2 <- ts_long %>%
+  filter(metric == "biomass", Area == "Restoration") %>%
+  plot_ly(
+    x = ~year,
+    y = ~value,
+    color = ~plot_id,
+    colors = 'viridis',
+    type = 'scatter',
+    mode = 'lines+markers',
+    text = ~paste('Plot:', plot_id, '<br>Year:', year, '<br>Value:', round(value, 2)),
+    hoverinfo = 'text'
+  ) %>%
+  layout(
+    title = "Biomass (Mg/ha) - Restoration Only",
+    xaxis = list(title = "Year"),
+    yaxis = list(title = "Value"),
+    showlegend = FALSE
+  )
+
+p2
+
+```
+
+##How the Biomass spread along our study area?
+
+```{r}
+#============================================
+# CALCULATE DELTA BIOMASS (2020 to 2023)
+# ============================================
+
+# Get 2020 values
+biomass_2017 <- timeseries_results %>%
+  filter(year == 2017) %>%
+  select(plot_id, biomass_2017 = biomass)
+
+# Get 2023 values
+biomass_2024 <- timeseries_results %>%
+  filter(year == 2024) %>%
+  select(plot_id, biomass_2024 = biomass)
+
+# Calculate delta
+delta_biomass <- biomass_2017 %>%
+  inner_join(biomass_2024, by = "plot_id") %>%
+  mutate(
+    delta = biomass_2024 - biomass_2017,
+    pct_change = (delta / biomass_2017) * 100
+  )
+
+delta_biomass2<-delta_biomass %>% 
+  left_join(plot_master, by="plot_id")
+
+###############################################
+ # Calculate min and max for legend
+max_bm <- max(delta_biomass2$delta, na.rm = TRUE)
+min_bm <- min(delta_biomass2$delta, na.rm = TRUE)
+mid_bm <- min_cr + ((max_bm - min_bm)/2)
+      
+# Create custom HTML legend
+legend_html <- paste0(
+        '<div style="padding: 10px; background: white; border: 2px solid grey; border-radius: 5px;">',
+        '<strong>Biomass</strong><br>',
+        '<strong>(Mg/ha)</strong><br><br>',
+        '<svg width="120" height="80">',
+        '<circle cx="15" cy="15" r="11" fill="rgba(0, 102, 204, 0.6)" />',
+        '<text x="35" y="20" font-size="12">High: ', round(max_bm, 2), '</text>',
+        '<circle cx="15" cy="40" r="7" fill="rgba(0, 102, 204, 0.6)" />',
+        '<text x="35" y="45" font-size="12">Med: ', round(mid_bm, 2), '</text>',
+        '<circle cx="15" cy="65" r="3" fill="rgba(0, 102, 204, 0.6)" />',
+        '<text x="35" y="70" font-size="12">Low: ', round(min_bm, 2), '</text>',
+        '</svg>',
+        '</div>'
+      )
+      
+
+leaflet() %>%
+  addProviderTiles(providers$Esri.WorldImagery, group = "Satellite") %>%
+  addProviderTiles(providers$OpenStreetMap, group = "Street Map") %>%
+  addCircleMarkers(
+    data = delta_biomass2,
+    lng = ~longitude,
+    lat = ~latitude,
+    radius = ~(biomass_2024 / max(biomass_2024, na.rm = TRUE) * 10) + 1,
+    color = "#7AE69C",
+    stroke = FALSE,
+    fillOpacity = 0.8,
+    popup = ~paste(plot_id, 
+                   "<br>Biomass 2017:", round(biomass_2017, 2),
+                   "<br>Biomass 2024:", round(biomass_2024,2))
+    ) %>%
+  addScaleBar(position = "bottomright") %>%
+    # Add layer controls
+  addLayersControl(
+    baseGroups = c("Satellite", "Street Map"),
+    options = layersControlOptions(collapsed = FALSE)
+  ) %>%
+  addControl(html = legend_html, position = "topright")
+    
+```
+
+##Final sites selection
+Once the current trends were well established, we can reduce the number of restoration plots to be assessed from now on. Whit this selection, we can perform more effective sampling surveys for the ongoing years.
+
+To do so, we checked first the survey locations of bats, amphibians and birds
+
+```{r}
+Piro2<-delta_biomass2 %>% 
+  filter(simple_treatment!="forest")
+
+head(Piro2)
+
+##########################################3
+# Create color palettes for each variable
+pal_amphibians <- colorNumeric(palette = "Reds", domain = Piro2$Amphibians)
+pal_bats <- colorNumeric(palette = "Blues", domain = Piro2$Bats, na.color = "#808080")
+pal_birds <- colorNumeric(palette = "Greens", domain = Piro2$Birds)
+
+# For categorical Select variable, use colorFactor with transparent for "No"
+pal_select <- colorFactor(
+  palette = c("#00000000", "#FF8C00"), # Transparent for "No", dark orange for "Yes"
+  domain = Piro2$Select
+)
+
+# Create base map
+map <- leaflet(Piro2) %>%
+  addProviderTiles(providers$Esri.WorldImagery, group = "Satellite") %>%
+  addProviderTiles(providers$OpenStreetMap, group = "Street Map") %>%
+  
+  # Base location markers (shows all points with basic info)
+  addCircleMarkers(
+    lng = ~longitude,
+    lat = ~latitude,
+    popup = ~paste0(
+      "<b>Plot:</b> ", plot_id, "<br>",
+      "<b>Amphibians:</b> ", sprintf("%.0f", Amphibians), "<br>",
+      "<b>Bats:</b> ", ifelse(is.na(Bats), "NA", sprintf("%.0f", Bats)), "<br>",
+      "<b>Birds:</b> ", sprintf("%.0f", Birds), "<br>",
+      "<b>Select:</b> ", Select
+    ),
+    radius = 3,
+    color = "black",
+    fillColor = "white",
+    fillOpacity = 0.3,
+    weight = 1,
+    group = "Base Locations",
+    label = ~plot_id
+  ) %>%
+  
+  # Amphibians layer (only show counts as integers)
+  addCircleMarkers(
+    lng = ~longitude,
+    lat = ~latitude,
+    popup = ~paste0(
+      "<b>Amphibians:</b> ", sprintf("%.0f", Amphibians), "<br>",
+      "<b>Plot:</b> ", plot_id, "<br>",
+      "<b>Select:</b> ", Select
+    ),
+    radius = ~rescale(Amphibians, to = c(5, 20)),
+    color = "black",
+    fillColor = ~pal_amphibians(Amphibians),
+    fillOpacity = 0.7,
+    weight = 1,
+    group = "Amphibians",
+    label = ~paste0("Amphibians surveys: ", sprintf(Amphibians))
+  ) %>%
+  
+  # Bats layer (handle NAs and show as integers)
+  addCircleMarkers(
+    lng = ~longitude,
+    lat = ~latitude,
+    popup = ~paste0(
+      "<b>Bats Surveys:</b> ", ifelse(is.na(Bats), "NA", sprintf( Bats)), "<br>",
+      "<b>Plot:</b> ", plot_id, "<br>",
+      "<b>Select:</b> ", plot_id
+    ),
+    radius = ~ifelse(is.na(Bats), 3, rescale(Bats, to = c(5, 20))),
+    color = "black",
+    fillColor = ~pal_bats(Bats),
+    fillOpacity = 0.7,
+    weight = 1,
+    group = "Bats",
+    label = ~paste0("Bats: ", ifelse(is.na(Bats), "NA", sprintf("%.0f", Bats)))
+  ) %>%
+  
+  # Birds layer (show as integers)
+  addCircleMarkers(
+    lng = ~longitude,
+    lat = ~latitude,
+    popup = ~paste0(
+      "<b>Birds:</b> ", sprintf("%.0f", Birds), "<br>",
+      "<b>Plot:</b> ", plot_id, "<br>",
+      "<b>Select:</b> ", Select
+    ),
+    radius = ~rescale(Birds, to = c(5, 20)),
+    color = "black",
+    fillColor = ~pal_birds(Birds),
+    fillOpacity = 0.7,
+    weight = 1,
+    group = "Birds",
+    label = ~paste0("Birds: ", sprintf("%.0f", Birds))
+  ) %>%
+  
+  # Select layer (only show "Yes" points prominently)
+  addCircleMarkers(
+    data = Piro2 %>% filter(Select == "Yes"),
+    lng = ~longitude,
+    lat = ~latitude,
+    popup = ~paste0(
+      "<b>SELECTED PLOT</b><br>",
+      "<b>Plot:</b> ", plot_id, "<br>",
+      "<b>Amphibians:</b> ", sprintf("%.0f", Amphibians), "<br>",
+      "<b>Bats:</b> ", ifelse(is.na(Bats), "NA", sprintf("%.0f", Bats)), "<br>",
+      "<b>Birds:</b> ", sprintf("%.0f", Birds), "<br>",
+      "<b>Select:</b> ", Select
+    ),
+    radius = 10,
+    color = "black",
+    fillColor = "#FF8C00", # Dark orange
+    fillOpacity = 0.9,
+    weight = 3,
+    group = "Selected Plots (Yes)",
+    label = ~paste0("SELECTED: ", plot_id)
+  ) %>%
+  
+  # Add layer controls
+  addLayersControl(
+    baseGroups = c("Satellite", "Street Map"),
+    overlayGroups = c("Base Locations", "Amphibians", "Bats", "Birds", "Selected Plots (Yes)"),
+    options = layersControlOptions(collapsed = FALSE)
+  ) %>%
+  
+  # Hide some layers by default
+  hideGroup(c("Amphibians", "Bats", "Birds")) %>%
+  
+  # Add legends
+  addLegend("bottomright", pal = pal_amphibians, values = ~Amphibians,
+            title = "Amphibians", opacity = 0.7, group = "Amphibians") %>%
+  addLegend("bottomright", pal = pal_bats, values = ~Bats,
+            title = "Bats", opacity = 0.7, group = "Bats") %>%
+  addLegend("bottomright", pal = pal_birds, values = ~Birds,
+            title = "Birds", opacity = 0.7, group = "Birds") %>%
+  addLegend("bottomright", 
+            colors = "#FF8C00", 
+            labels = "Selected Plots (Yes)", 
+            title = "Selection", 
+            opacity = 0.9, 
+            group = "Selected Plots (Yes)")
+
+# Display the map
+map
+
+###########################################################
 
 
+```
+
+
+
+
+```{r}
+# Create the plot with three violin plots
+# Create a modified version of the dataset with "Overall" as a new Sampling category
+
+Piroselected<-Piro2 %>% 
+  filter(Select != "No") %>% 
+  mutate(Sampling = "Selected") 
+
+Piro2_overall <- Piro2 %>%
+  filter(simple_treatment !="forest") %>% 
+  mutate(Sampling = "Overall") %>% 
+  bind_rows(Piroselected)
+
+pos <- position_jitter(width = 0.2, height = 0, seed = 123)
+
+# Create the plot with three violin plots
+ggplot(Piro2_overall, aes(x = Sampling, y = biomass_2024)) +
+  geom_violin(alpha = 0.3) +
+  theme_minimal() +
+  labs(x = "Sampling Group", y = "Biomass 2024")+
+  geom_point(aes(color = Select),position = pos, size = 3) +
+  ggrepel::geom_text_repel(
+    aes(label = plot_id),
+    size = 3,
+    position = pos,  # Use the same position
+    max.overlaps = 20,  # Adjust this based on your data density
+    force = 0.5,
+    segment.size = 0.2,
+    segment.alpha = 0.5,
+    box.padding = 0.5,
+    point.padding = 0.5
+  )
+
+
+# Create the plot with three violin plots
+ggplot(Piro2_overall, aes(x = Sampling, y = Delta)) +
+  geom_violin(alpha = 0.3) +
+  theme_minimal() +
+  labs(x = "Sampling Group", y = "Delta Biomass 2017-2024")+
+  geom_point(aes(color = Select),position = pos, size = 3) +
+  ggrepel::geom_text_repel(
+    aes(label = ID),
+    size = 3,
+    position = pos,  # Use the same position
+    max.overlaps = 20,  # Adjust this based on your data density
+    force = 0.5,
+    segment.size = 0.2,
+    segment.alpha = 0.5,
+    box.padding = 0.5,
+    point.padding = 0.5
+  )
+
+################################################3
+# Create the violin plot with points
+plot_ly(Piro2_overall, 
+        x = ~Sampling, 
+        y = ~biomass_2024,
+        type = 'violin',
+        box = list(visible = TRUE),  # Add box plot inside violin
+        meanline = list(visible = TRUE),  # Add mean line
+        points = FALSE,  # Don't show points in the violin
+        spanmode = "hard",  # Keep violins within data range
+        name = "Distribution",
+        color = I("#A9A9A9"),  # Light gray color
+        alpha = 0.3,
+        hoverinfo = 'x+y',
+        showlegend = FALSE) %>%
+  
+  # Add points colored by Select
+  add_trace(x = ~Sampling, 
+            y = ~biomass_2024,
+            type = 'scatter',
+            mode = 'markers',
+            marker = list(size = 8),
+            color = ~Select,
+            colors = c("firebrick", "forestgreen", "steelblue"),  # Adjust colors as needed
+            name = ~Select,
+            text = ~paste('Plot:', plot_id, '<br>Biomass:', round(biomass_2024, 2)),
+            hoverinfo = 'text',
+            showlegend = TRUE) %>%
+  
+  # Layout customization
+  layout(
+    title = "Biomass 2024 Distribution by Sampling Group",
+    xaxis = list(title = "Sampling Group"),
+    yaxis = list(title = "Biomass 2024"),
+    violingap = 0.3,  # Gap between violins from different x categories
+    violingroupgap = 0.1,  # Gap between violins within the same x category
+    violinmode = 'group',  # 'group' for side-by-side, 'overlay' for overlapping
+    legend = list(
+      title = list(text = "Select"),
+      orientation = 'h',  # Horizontal legend
+      y = -0.2,  # Position below the plot
+      x = 0.5,
+      xanchor = 'center'
+    ),
+    hovermode = 'closest'
+  )
+
+
+```
 

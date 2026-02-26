@@ -46,6 +46,12 @@ jobs:
         run: Rscript -e "install.packages('readxl')"
       - name: Install foreach
         run: Rscript -e "install.packages('foreach')"
+      - name: Install viridis
+        run: Rscript -e "install.packages('viridis')"
+      - name: Install RColorBrewer
+        run: Rscript -e "install.packages('RColorBrewer')"
+      - name: Install scales
+        run: Rscript -e "install.packages('scales')
       - name: Install tidyr
         run: Rscript -e "install.packages('tidyr')"
 
