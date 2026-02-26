@@ -2811,12 +2811,10 @@ map <- leaflet(Piro2) %>%
 # Display the map
 map
 
-###########################################################
-
 
 ```
 
-
+ Now we have the final version
 
 
 ```{r}
