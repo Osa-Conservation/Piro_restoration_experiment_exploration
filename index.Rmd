@@ -2428,67 +2428,6 @@ leaflet(canopy_sf) %>%
 ```
 
 
-## Prioritising sites
-
-Finally if we create a plot of grass vs. leaf litter, this should give us a good idea of where trees are coming back well:
-
-```{r}
-
-
-veg_final <- left_join(plots_centroid[,c("plot_id", "geometry")],shrub_cover_filtered) 
-veg_final <- left_join(veg_final,grass_cover_filtered) 
-veg_final <- left_join(veg_final,leaflitter_cover_filtered) 
-#head(veg_final)
-# Fill in the blanks
-# Little loop to fill in the blanks
-i <-4
-for(i in 1:nrow(veg_final))
-{
-  if((is.na(veg_final$shrub_cover[i])+ is.na(veg_final$grass_cover[i]) + is.na(veg_final$leaf_cover[i]))<3){
-      veg_final$shrub_cover[i][is.na(veg_final$shrub_cover[i])==T] <- 0
-      veg_final$grass_cover[i][is.na(veg_final$grass_cover[i])==T] <- 0
-      veg_final$leaf_cover[i][is.na(veg_final$leaf_cover[i])==T] <- 0
-  }
-    
-}
-veg_final_df <- as.data.frame(veg_final)
-
-fig <- plot_ly(data = veg_final_df, 
-               x = ~jitter(grass_cover), 
-               y = ~jitter(leaf_cover), 
-               type = 'scatter', 
-               text = ~paste("Plot ID:", plot_id), 
-               hoverinfo = 'text')
-
-# Layout adjustments
-fig <- fig %>% layout(
-  title = "Grass Cover vs Leaf Litter Cover",
-  xaxis = list(title = "Grass Cover"),
-  yaxis = list(title = "Leaf Litter Cover")
-)
-
-# Display the plot
-fig
-```
-
-
-How do these sites relate to flooded areas? This is an interesting question we can test with tour data.
-
-```{r}
-
-flood_sum <- flood_dat %>% group_by(plot_id) %>% summarize("samples"=n())
-
-table(plots_centroid$plot_id)
-
-flood_sum <- left_join(plots_centroid, flood_sum)
-
-# Assuming flood_sum is already loaded and is an sf object
-flood_sum <- flood_sum %>% 
-  mutate(sample_status = ifelse(is.na(samples), "Not Surveyed", "Surveyed"))
-
-```
-
-
 # Summarizing data for next steps:
 
 Our monitoring process from the first 8 years of the restoration provide a robust information about the responses of wildlife on the first  most-critical moment on recovery. 
@@ -2590,7 +2529,7 @@ p2
 ```
 
 
-## Lets take a look on hw the Biomass spread along our study area?
+## Lets take a look on how the Biomass spread along our study area
 
 
 ```{r}
