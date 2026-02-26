@@ -51,7 +51,7 @@ jobs:
       - name: Install RColorBrewer
         run: Rscript -e "install.packages('RColorBrewer')"
       - name: Install scales
-        run: Rscript -e "install.packages('scales')
+        run: Rscript -e "install.packages('scales')"
       - name: Install tidyr
         run: Rscript -e "install.packages('tidyr')"
 
