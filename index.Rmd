@@ -2348,6 +2348,7 @@ leaflet(shrub_sf) %>%
 
 ```
 
+
 Canopy cover
 
 ```{r}
@@ -2488,6 +2489,7 @@ flood_sum <- flood_sum %>%
 
 ```
 
+
 #Summarizing data for next steps:
 
 Our monitoring process from the first 8 years of the restoration provide a robust information about the responses of wildlife on the first  most-critical moment on recovery. 
@@ -2495,6 +2497,7 @@ Our monitoring process from the first 8 years of the restoration provide a robus
 From now on, the surveys can be performed in fewer plots, covering the current trends of recovery.
 
 ##We can see the trends from satellite imagery.
+
 Based on Planet's satellite capabilities, we can use biomass and other satellite imagery to monitor restoration recovery by establishing a historical baseline and tracking changes over time. High-frequency, daily imagery from satellites allows for the continuous observation of vegetation regrowth of specific recovery areas, providing quantifiable evidence of restoration success.
 
 For example, if we compare the biomass per site through time, we can clearly see the biomass increase since 2017, when the restoration began, but it is still lower than the biomass in pristine forest.
@@ -2585,7 +2588,9 @@ p2
 
 ```
 
+
 ##How the Biomass spread along our study area?
+
 
 ```{r}
 #============================================
@@ -2661,7 +2666,9 @@ leaflet() %>%
     
 ```
 
+
 ##Final sites selection
+
 Once the current trends were well established, we can reduce the number of restoration plots to be assessed from now on. Whit this selection, we can perform more effective sampling surveys for the ongoing years.
 
 To do so, we checked first the survey locations of bats, amphibians and birds
