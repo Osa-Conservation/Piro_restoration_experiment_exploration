@@ -2723,7 +2723,7 @@ map <- leaflet(Piro2) %>%
     fillOpacity = 0.7,
     weight = 1,
     group = "Amphibians",
-    label = ~paste0("Amphibians surveys: ", sprintf(Amphibians))
+    label = ~paste0("Amphibians surveys: ", sprintf("%.0f", Amphibians))
   ) %>%
   
   # Bats layer (handle NAs and show as integers)
@@ -2731,7 +2731,7 @@ map <- leaflet(Piro2) %>%
     lng = ~longitude,
     lat = ~latitude,
     popup = ~paste0(
-      "<b>Bats Surveys:</b> ", ifelse(is.na(Bats), "NA", sprintf( Bats)), "<br>",
+      "<b>Bats Surveys:</b> ", ifelse(is.na(Bats), "NA", sprintf("%.0f", Bats)), "<br>",
       "<b>Plot:</b> ", plot_id, "<br>",
       "<b>Select:</b> ", plot_id
     ),
