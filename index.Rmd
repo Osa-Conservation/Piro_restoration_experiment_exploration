@@ -2859,7 +2859,7 @@ ggplot(Piro2_overall, aes(x = Sampling, y = delta)) +
   labs(x = "Sampling Group", y = "Delta Biomass 2017-2024")+
   geom_point(aes(color = Select),position = pos, size = 3) +
   ggrepel::geom_text_repel(
-    aes(label = ID),
+    aes(label = plot_id),
     size = 3,
     position = pos,  # Use the same position
     max.overlaps = 20,  # Adjust this based on your data density
