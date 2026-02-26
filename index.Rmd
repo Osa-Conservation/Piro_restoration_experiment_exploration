@@ -2672,7 +2672,7 @@ leaflet() %>%
 
 Once the current trends were well established, we can reduce the number of restoration plots to be assessed from now on. Whit this selection, we can perform more effective sampling surveys for the ongoing years.
 
-To do so, we checked first the survey locations of bats, amphibians and birds
+But, what plots should be keep monitoring? To do so, we checked first the survey locations of bats, amphibians and birds.
 
 ```{r}
 Piro2<-delta_biomass2 %>% 
@@ -2680,15 +2680,14 @@ Piro2<-delta_biomass2 %>%
 
 ##########################################3
 # Create color palettes for each variable
-pal_amphibians <- colorNumeric(palette = "Reds", domain = Piro2$Amphibians)
-pal_bats <- colorNumeric(palette = "Blues", domain = Piro2$Bats, na.color = "#808080")
-pal_birds <- colorNumeric(palette = "Greens", domain = Piro2$Birds)
+pal_amphibians <- colorFactor(palette = "Reds", domain = Piro2$Amphibians)
+pal_bats <- colorFactor(palette = "Blues", domain = Piro2$Bats, na.color = "#808080")
+pal_birds <- colorFactor(palette = "Greens", domain = Piro2$Birds)
 
 # For categorical Select variable, use colorFactor with transparent for "No"
 pal_select <- colorFactor(
   palette = c("#00000000", "#FF8C00"), # Transparent for "No", dark orange for "Yes"
-  domain = Piro2$Select
-)
+  domain = Piro2$Select)
 
 # Create base map
 map <- leaflet(Piro2) %>%
@@ -2703,8 +2702,7 @@ map <- leaflet(Piro2) %>%
       "<b>Plot:</b> ", plot_id, "<br>",
       "<b>Amphibians:</b> ", sprintf("%.0f", Amphibians), "<br>",
       "<b>Bats:</b> ", ifelse(is.na(Bats), "NA", sprintf("%.0f", Bats)), "<br>",
-      "<b>Birds:</b> ", sprintf("%.0f", Birds), "<br>",
-      "<b>Select:</b> ", Select
+      "<b>Birds:</b> ", sprintf("%.0f", Birds), "<br>"
     ),
     radius = 3,
     color = "black",
@@ -2721,10 +2719,9 @@ map <- leaflet(Piro2) %>%
     lat = ~latitude,
     popup = ~paste0(
       "<b>Amphibians:</b> ", sprintf("%.0f", Amphibians), "<br>",
-      "<b>Plot:</b> ", plot_id, "<br>",
-      "<b>Select:</b> ", Select
+      "<b>Plot:</b> ", plot_id, "<br>"
     ),
-    radius = ~rescale(Amphibians, to = c(5, 20)),
+    radius = 8,
     color = "black",
     fillColor = ~pal_amphibians(Amphibians),
     fillOpacity = 0.7,
@@ -2739,10 +2736,9 @@ map <- leaflet(Piro2) %>%
     lat = ~latitude,
     popup = ~paste0(
       "<b>Bats Surveys:</b> ", ifelse(is.na(Bats), "NA", sprintf("%.0f", Bats)), "<br>",
-      "<b>Plot:</b> ", plot_id, "<br>",
-      "<b>Select:</b> ", plot_id
+      "<b>Plot:</b> ", plot_id, "<br>"
     ),
-    radius = ~ifelse(is.na(Bats), 3, rescale(Bats, to = c(5, 20))),
+    radius = ~ifelse(is.na(Bats), 3, 7),
     color = "black",
     fillColor = ~pal_bats(Bats),
     fillOpacity = 0.7,
@@ -2760,7 +2756,7 @@ map <- leaflet(Piro2) %>%
       "<b>Plot:</b> ", plot_id, "<br>",
       "<b>Select:</b> ", Select
     ),
-    radius = ~rescale(Birds, to = c(5, 20)),
+    radius = 6,
     color = "black",
     fillColor = ~pal_birds(Birds),
     fillOpacity = 0.7,
@@ -2769,37 +2765,15 @@ map <- leaflet(Piro2) %>%
     label = ~paste0("Birds: ", sprintf("%.0f", Birds))
   ) %>%
   
-  # Select layer (only show "Yes" points prominently)
-  addCircleMarkers(
-    data = Piro2 %>% filter(Select == "Yes"),
-    lng = ~longitude,
-    lat = ~latitude,
-    popup = ~paste0(
-      "<b>SELECTED PLOT</b><br>",
-      "<b>Plot:</b> ", plot_id, "<br>",
-      "<b>Amphibians:</b> ", sprintf("%.0f", Amphibians), "<br>",
-      "<b>Bats:</b> ", ifelse(is.na(Bats), "NA", sprintf("%.0f", Bats)), "<br>",
-      "<b>Birds:</b> ", sprintf("%.0f", Birds), "<br>",
-      "<b>Select:</b> ", Select
-    ),
-    radius = 10,
-    color = "black",
-    fillColor = "#FF8C00", # Dark orange
-    fillOpacity = 0.9,
-    weight = 3,
-    group = "Selected Plots",
-    label = ~paste0("SELECTED: ", plot_id)
-  ) %>%
-  
   # Add layer controls
   addLayersControl(
     baseGroups = c("Satellite", "Street Map"),
-    overlayGroups = c("Base Locations", "Amphibians", "Bats", "Birds", "Selected Plots"),
+    overlayGroups = c("Base Locations", "Amphibians", "Bats", "Birds"),
     options = layersControlOptions(collapsed = FALSE)
   ) %>%
   
   # Hide some layers by default
-  hideGroup(c("Amphibians", "Bats", "Birds", "Selected Plots")) %>%
+  hideGroup(c("Amphibians", "Bats", "Birds")) %>%
   
   # Add legends
   addLegend("bottomright", pal = pal_amphibians, values = ~Amphibians,
@@ -2807,13 +2781,7 @@ map <- leaflet(Piro2) %>%
   addLegend("bottomright", pal = pal_bats, values = ~Bats,
             title = "Bats", opacity = 0.7, group = "Bats") %>%
   addLegend("bottomright", pal = pal_birds, values = ~Birds,
-            title = "Birds", opacity = 0.7, group = "Birds") %>%
-  addLegend("bottomright", 
-            colors = "#FF8C00", 
-            labels = "Selected Plots (Yes)", 
-            title = "Selection", 
-            opacity = 0.9, 
-            group = "Selected Plots (Yes)")
+            title = "Birds", opacity = 0.7, group = "Birds") 
 
 # Display the map
 map
@@ -2821,11 +2789,11 @@ map
 
 ```
 
- Now we have the final version
+
+As you can see, not all surveys were done always in the same locations, so the selected plots can cover the entire recovery and sampling scenarios. 
 
 
 ```{r}
-# Create the plot with three violin plots
 # Create a modified version of the dataset with "Overall" as a new Sampling category
 
 Piroselected<-Piro2 %>% 
@@ -2925,3 +2893,146 @@ plot_ly(Piro2_overall,
 
 ```
 
+Lets see the location of the selected plots.
+
+
+```{r}
+Piro2<-delta_biomass2 %>% 
+  filter(simple_treatment!="forest")
+
+##########################################3
+# For categorical Select variable, use colorFactor with transparent for "No"
+# Transparent for "No", dark orange for "Yes"
+
+pal_select <- colorFactor(palette = c("#00000000", "#FF8C00"), 
+  domain = Piro2$Select)
+
+# Create base map
+map2 <- leaflet(Piro2) %>%
+  addProviderTiles(providers$Esri.WorldImagery, group = "Satellite") %>%
+  addProviderTiles(providers$OpenStreetMap, group = "Street Map") %>%
+  
+  # Base location markers (shows all points with basic info)
+  addCircleMarkers(
+    lng = ~longitude,
+    lat = ~latitude,
+    popup = ~paste0(
+      "<b>Plot:</b> ", plot_id, "<br>",
+      "<b>Amphibians:</b> ", sprintf("%.0f", Amphibians), "<br>",
+      "<b>Bats:</b> ", ifelse(is.na(Bats), "NA", sprintf("%.0f", Bats)), "<br>",
+      "<b>Birds:</b> ", sprintf("%.0f", Birds), "<br>",
+      "<b>Select:</b> ", Select
+    ),
+    radius = 3,
+    color = "black",
+    fillColor = "white",
+    fillOpacity = 0.3,
+    weight = 1,
+    group = "Base Locations",
+    label = ~plot_id
+  ) %>%
+  
+  # Amphibians layer (only show counts as integers)
+  addCircleMarkers(
+    lng = ~longitude,
+    lat = ~latitude,
+    popup = ~paste0(
+      "<b>Amphibians:</b> ", sprintf("%.0f", Amphibians), "<br>",
+      "<b>Plot:</b> ", plot_id, "<br>",
+      "<b>Select:</b> ", Select
+    ),
+    radius = ~8,
+    color = "black",
+    fillColor = ~pal_amphibians(Amphibians),
+    fillOpacity = 0.7,
+    weight = 1,
+    group = "Amphibians",
+    label = ~paste0("Amphibians surveys: ", sprintf("%.0f", Amphibians))
+  ) %>%
+  
+  # Bats layer (handle NAs and show as integers)
+  addCircleMarkers(
+    lng = ~longitude,
+    lat = ~latitude,
+    popup = ~paste0(
+      "<b>Bats Surveys:</b> ", ifelse(is.na(Bats), "NA", sprintf("%.0f", Bats)), "<br>",
+      "<b>Plot:</b> ", plot_id, "<br>",
+      "<b>Select:</b> ", plot_id
+    ),
+    radius = ~ifelse(is.na(Bats), 3, 7),
+    color = "black",
+    fillColor = ~pal_bats(Bats),
+    fillOpacity = 0.7,
+    weight = 1,
+    group = "Bats",
+    label = ~paste0("Bats: ", ifelse(is.na(Bats), "NA", sprintf("%.0f", Bats)))
+  ) %>%
+  
+  # Birds layer (show as integers)
+  addCircleMarkers(
+    lng = ~longitude,
+    lat = ~latitude,
+    popup = ~paste0(
+      "<b>Birds:</b> ", sprintf("%.0f", Birds), "<br>",
+      "<b>Plot:</b> ", plot_id, "<br>",
+      "<b>Select:</b> ", Select
+    ),
+    radius = 6,
+    color = "black",
+    fillColor = ~pal_birds(Birds),
+    fillOpacity = 0.7,
+    weight = 1,
+    group = "Birds",
+    label = ~paste0("Birds: ", sprintf("%.0f", Birds))
+  ) %>%
+  
+  # Select layer (only show "Yes" points prominently)
+  addCircleMarkers(
+    data = Piro2 %>% filter(Select == "Yes"),
+    lng = ~longitude,
+    lat = ~latitude,
+    popup = ~paste0(
+      "<b>SELECTED PLOT</b><br>",
+      "<b>Plot:</b> ", plot_id, "<br>",
+      "<b>Amphibians:</b> ", sprintf("%.0f", Amphibians), "<br>",
+      "<b>Bats:</b> ", ifelse(is.na(Bats), "NA", sprintf("%.0f", Bats)), "<br>",
+      "<b>Birds:</b> ", sprintf("%.0f", Birds), "<br>",
+      "<b>Select:</b> ", Select
+    ),
+    radius = 10,
+    color = "black",
+    fillColor = "#FF8C00", # Dark orange
+    fillOpacity = 0.9,
+    weight = 3,
+    group = "Selected Plots",
+    label = ~paste0("SELECTED: ", plot_id)
+  ) %>%
+  
+  # Add layer controls
+  addLayersControl(
+    baseGroups = c("Satellite", "Street Map"),
+    overlayGroups = c("Base Locations", "Amphibians", "Bats", "Birds", "Selected Plots"),
+    options = layersControlOptions(collapsed = FALSE)
+  ) %>%
+  
+  # Hide some layers by default
+  hideGroup(c("Amphibians", "Bats", "Birds", "Selected Plots")) %>%
+  
+  # Add legends
+  addLegend("bottomleft", pal = pal_amphibians, values = ~Amphibians,
+            title = "Amphibians", opacity = 0.7, group = "Amphibians") %>%
+  addLegend("bottomleft", pal = pal_bats, values = ~Bats,
+            title = "Bats", opacity = 0.7, group = "Bats") %>%
+  addLegend("bottomleft", pal = pal_birds, values = ~Birds,
+            title = "Birds", opacity = 0.7, group = "Birds") %>%
+  addLegend("bottomleft", 
+            colors = "#FF8C00", 
+            labels = "Selected Plots", 
+            title = "Selection", 
+            opacity = 0.9, 
+            group = "Selected Plots")
+
+# Display the map
+map2
+
+```
