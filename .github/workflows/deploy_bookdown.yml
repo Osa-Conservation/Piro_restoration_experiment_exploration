@@ -54,6 +54,8 @@ jobs:
         run: Rscript -e "install.packages('scales')"
       - name: Install tidyr
         run: Rscript -e "install.packages('tidyr')"
+      - name: Install ggrepel
+        run: Rscript -e "install.packages('ggrepel')"
 
       - name: Render Book
         env: 

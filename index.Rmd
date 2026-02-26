@@ -33,6 +33,7 @@ library(purrr)
 library(readxl)
 library(RColorBrewer)
 library(scales)
+library(ggrepel)
 
 #drive_auth()
 googledrive::drive_auth(path = Sys.getenv("GOOGLE_AUTHENTICATION_CREDENTIALS"))
