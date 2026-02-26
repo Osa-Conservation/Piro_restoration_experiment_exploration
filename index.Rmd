@@ -2790,7 +2790,10 @@ map
 ```
 
 
-As you can see, not all surveys were done always in the same locations, so the selected plots can cover the entire recovery and sampling scenarios. 
+
+As you can see, not all surveys were done always in the same locations, so the selected plots must cover the entire recovery and sampling scenarios. 
+
+Here you can compare the Biomass trends between the overall and the selected plots, on Biomass for 2024 and biomass change between 2017 and 2024.
 
 
 ```{r}
@@ -2843,55 +2846,8 @@ ggplot(Piro2_overall, aes(x = Sampling, y = delta)) +
     point.padding = 0.5
   )
 
-################################################3
-# Create the violin plot with points
-plot_ly(Piro2_overall, 
-        x = ~Sampling, 
-        y = ~biomass_2024,
-        type = 'violin',
-        box = list(visible = TRUE),  # Add box plot inside violin
-        meanline = list(visible = TRUE),  # Add mean line
-        points = FALSE,  # Don't show points in the violin
-        spanmode = "hard",  # Keep violins within data range
-        name = "Distribution",
-        color = I("#A9A9A9"),  # Light gray color
-        alpha = 0.3,
-        hoverinfo = 'x+y',
-        showlegend = FALSE) %>%
-  
-  # Add points colored by Select
-  add_trace(x = ~Sampling, 
-            y = ~biomass_2024,
-            type = 'scatter',
-            mode = 'markers',
-            marker = list(size = 8),
-            color = ~Select,
-            colors = c("firebrick", "forestgreen", "steelblue"),  # Adjust colors as needed
-            name = ~Select,
-            text = ~paste('Plot:', plot_id, '<br>Biomass:', round(biomass_2024, 2)),
-            hoverinfo = 'text',
-            showlegend = TRUE) %>%
-  
-  # Layout customization
-  layout(
-    title = "Biomass 2024 Distribution by Sampling Group",
-    xaxis = list(title = "Sampling Group"),
-    yaxis = list(title = "Biomass 2024"),
-    violingap = 0.3,  # Gap between violins from different x categories
-    violingroupgap = 0.1,  # Gap between violins within the same x category
-    violinmode = 'group',  # 'group' for side-by-side, 'overlay' for overlapping
-    legend = list(
-      title = list(text = "Select"),
-      orientation = 'h',  # Horizontal legend
-      y = -0.2,  # Position below the plot
-      x = 0.5,
-      xanchor = 'center'
-    ),
-    hovermode = 'closest'
-  )
-
-
 ```
+
 
 Lets see the location of the selected plots.
 
@@ -3036,3 +2992,5 @@ map2 <- leaflet(Piro2) %>%
 map2
 
 ```
+
+Now, we are ready for our ongoing surveys!
