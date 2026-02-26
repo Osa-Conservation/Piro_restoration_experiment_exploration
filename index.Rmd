@@ -2150,6 +2150,7 @@ plot_ly(grass_cover_filtered, x = ~simple_treatment, y = ~grass_cover,
     ),
     yaxis = list(title = "Grass Cover Score (0-4)")
   )
+
 ```
 
 Some sites have low grass cover, but it doesn't appear to be linked to the original restoration methodology (L,M,H,N). High seems to be the worst, and medium the best!
@@ -2231,13 +2232,14 @@ plot_ly(leaflitter_cover_filtered, x = ~treatment, y = ~leaf_cover, type = "box"
     yaxis = list(title = "Leaflitter Cover Value"),
     showlegend = TRUE
   )
+
 ```
 
 
 ```{r}
 
 ll_sf <- left_join(plots_centroid[,c("plot_id", "geometry")], leaflitter_cover_filtered, by="plot_id")
-colnames(plots_centroid)
+#colnames(plots_centroid)
 
 # Define a color palette for the leaf_cover column
 pal <- colorBin(palette = "YlOrRd", domain = ll_sf$leaf_cover, bins = 10, pretty = TRUE)
@@ -2397,6 +2399,8 @@ shrub_cover_filtered$shrub_cover_jitter <- NULL
 grass_cover_filtered$grass_cover_jitter <- NULL
 leaflitter_cover_filtered$leaf_cover_jitter <- NULL
 ```
+
+
 
 ```{r}
 
