@@ -22,8 +22,7 @@ camera-trap-data
 spatial-plot-of-capture-rates
 species-of-conservation-concern
 vegetation-data
-prioritising-sites
 summarizing-data-for-next-steps
 we-can-see-the-trends-from-satellite-imagery.
-lets-take-a-look-on-hw-the-biomass-spread-along-our-study-area
+lets-take-a-look-on-how-the-biomass-spread-along-our-study-area
 final-sites-selection
