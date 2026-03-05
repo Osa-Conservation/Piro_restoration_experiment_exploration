@@ -34,6 +34,7 @@ library(readxl)
 library(RColorBrewer)
 library(scales)
 library(ggrepel)
+library(stringr)
 
 #drive_auth()
 googledrive::drive_auth(path = Sys.getenv("GOOGLE_AUTHENTICATION_CREDENTIALS"))
@@ -504,8 +505,6 @@ be_2025_sum <- left_join(be_2025_sum, plot_master)
 bird_counts_2025 <- bird_counts[bird_counts$date>ymd("2025-01-01"),]
 bird_counts_2025 <- left_join(bird_counts_2025, plot_master)
 
-#
-
 ```
 
 Since January 2025, we have visited `r nrow(be_2025_sum[be_2025_sum$Visits>0,])` unique survey locations and performed `r nrow(bird_effort_2025)` point counts, and recorded `r length(unique(bird_counts_2025$common_name))` different species classifications. The mean number of visits was `r round(mean(be_2025_sum$Visits),1)`, minimum = `r min(be_2025_sum$Visits)` max = `r max(be_2025_sum$Visits)`. 
@@ -513,8 +512,6 @@ Since January 2025, we have visited `r nrow(be_2025_sum[be_2025_sum$Visits>0,])`
 The distribution of survey effort is as follows:
 
 ```{r}
-library(RColorBrewer)
-
 # Assuming be_2025_sum is already loaded as an sf dataframe
 
 # Define a color palette for the Visits column using discrete values
@@ -764,6 +761,7 @@ bird_effort$year <- year(bird_effort$date)
 tmp <- bird_effort %>% group_by(year) %>% summarise(plots_visited=n_distinct(plot_id), total_point_counts=n(), )
 
 knitr::kable(tmp,align = "lrr" ,caption = "Bird survey effort through time")
+
 ```
 
 The frequency distributions of the species detected are as follows:
@@ -844,6 +842,7 @@ bat_first <- bat_locs[duplicated(bat_locs$plot)==F,]
 
 # Setup the date column
 bat_counts$date_check <- ymd(bat_counts$date_check)
+
 ```
 
 We have been collecting bat data from `r length(unique(bat_counts$plot))` bat boxes, and visited these locations `r max(tmp$visits)` times. They are distributed as follows:
@@ -854,8 +853,8 @@ We have been collecting bat data from `r length(unique(bat_counts$plot))` bat bo
 
 leaflet(data = bat_first) %>%
   addPolygons(data=plots, popup=plots$plot_id, group="plots") %>%
-  addTiles() %>%
-  addCircleMarkers(
+  addProviderTiles(providers$Esri.WorldImagery, group = "Satellite") %>%
+  addProviderTiles(providers$OpenStreetMap, group = "Street Map") %>%  addCircleMarkers(
     lng = ~longitude,
     lat = ~latitude,
     radius = 3,
@@ -863,7 +862,11 @@ leaflet(data = bat_first) %>%
     fill = TRUE,
     fillOpacity = 0.5,
     popup = ~paste("Plot ID:", plot)
-  ) 
+  ) %>% 
+  addLayersControl(
+    baseGroups = c("Satellite", "Street Map"),
+    options = layersControlOptions(collapsed = FALSE)
+  )
   
 # Remove the shit location data
 bat_counts$latitude <- NULL
@@ -877,7 +880,6 @@ bat_counts <-  left_join(bat_counts, plot_master, by=c("plot"="plot_id"))
 bat_counts_2025 <- bat_counts[as.numeric(substr(bat_counts$date_check,1,4))>2024,]
 
 bat_counts_2025$binary <- bat_counts_2025$presence_of_bats=="yes"
-
 
 
 ```
@@ -911,12 +913,15 @@ bat_summary <- bat_counts_2025 %>%
     age_class = factor(age_class, levels = c("adult", "pup"),
                        labels = c("Adult", "Pup"))
   )
+
 ```
 
 
 In 2025 we checked the bat boxes on `r nrow(bat_counts_2025)` occasions encountering `r sum(bat_summary$count)` individuals. On average the bat boxes were occupied `r round(sum(bat_counts_2025$binary)/nrow(bat_counts_2025),2)*100`% of the time.
 
+
 ```{r}
+
 # Define colors
 plasma_colors <- viridis(2, option = "plasma", begin = 0.2, end = 0.8)
 
@@ -936,12 +941,14 @@ plot_ly(
     barmode = "group",
     legend = list(title = list(text = "Age Class"))
   )
+
 ```
 
 
 ## Survey effort through time
 
 ```{r}
+
 plot_types <- data.frame(locs = unique(bat_counts$plot), id=1:length(unique(bat_counts$plot)))
 
 # Order
@@ -969,7 +976,6 @@ for(i in 1:nrow(plot_types))
         marker = list(size = 5),
         name = plot_types$locs[i]
       )
-  
 }
 
 fig
@@ -1003,7 +1009,6 @@ plot_ly(
     xaxis = list(title = "Date"),
     yaxis = list(title = "Occupancy",range = c(0, 1))
   )
-
 
 ```
 
@@ -1113,13 +1118,11 @@ amphib_caps <- left_join(amphib_caps,plot_master[,c("plot_id", "simple_treatment
 
 amphib_caps_2025 <- amphib_caps[substr(amphib_caps$date,1,4)=="2025",]
 
-
 ```
 
 In 2025 we conducted a total of `r nrow(amphib_effort[amphib_effort$year==2025,])` amphibian surveys. They were distributed as follows:
 
 ```{r}
-#library(RColorBrewer)
 
 # Assuming be_2025_sum is already loaded as an sf dataframe
 
@@ -1132,7 +1135,8 @@ pal <- colorFactor(
 
 # Create the leaflet map
 leaflet(amphib_2025_sum) %>% 
-  addTiles() %>% 
+  addProviderTiles(providers$Esri.WorldImagery, group = "Satellite") %>%
+  addProviderTiles(providers$OpenStreetMap, group = "Street Map") %>%
   addCircleMarkers(
     radius = 7, 
     color = ~pal(visits), 
@@ -1146,7 +1150,12 @@ leaflet(amphib_2025_sum) %>%
     title = "Number of Visits", 
     opacity = 1
   ) %>%
+  addLayersControl(
+    baseGroups = c("Satellite", "Street Map"),
+    options = layersControlOptions(collapsed = FALSE)
+  ) %>% 
   addScaleBar(position = "topright")
+
 ```
 
 In total, we detected `r sum(amphib_caps_2025$count)` individuals of `r length(unique(amphib_caps_2025$species))` different species. The distribution of species detected was as follows: 
@@ -1243,12 +1252,15 @@ pre_2025 <- amphib_caps %>%
   filter(year < 2025) %>%
   count(species, name = "detections") %>%
   arrange(detections) %>%
+  filter(species!="NA") %>% 
+  filter(species!="Dendropsophus craugastor") %>% 
   mutate(species = factor(species, levels = species))
 
 post_2025 <- amphib_caps %>%
   filter(year >= 2025) %>%
   count(species, name = "detections") %>%
   arrange(detections) %>%
+  filter(species!="NA") %>% 
   mutate(species = factor(species, levels = species))
 
 
@@ -1279,48 +1291,52 @@ pre_2025_complete <- pre_2025_complete %>%
 post_2025_complete <- post_2025_complete %>%
   mutate(species = factor(species, levels = species_order))
 
-# Create subplots
-fig1 <- plot_ly(
-  data = pre_2025_complete,
-  y = ~species,
-  x = ~detections,
-  type = "bar",
-  orientation = "h",
-  marker = list(color = plasma_colors[1]),
-  showlegend = FALSE,
-  height = 800
-) %>%
-  layout(
-    xaxis = list(title = "Detections"),
-    yaxis = list(title = "", showticklabels = TRUE)
-  )
 
-fig2 <- plot_ly(
-  data = post_2025_complete,
-  y = ~species,
-  x = ~detections,
-  type = "bar",
-  orientation = "h",
-  marker = list(color = plasma_colors[2]),
-  showlegend = FALSE, height = 800
-) %>%
-  layout(
-    xaxis = list(title = "Detections"),
-    yaxis = list(title = "", showticklabels = FALSE)
-  )
+# Prepare data for butterfly chart
+pre_data <- pre_2025_complete %>%
+  mutate(detections_butterfly = -detections,  # Negative for left side
+         period = "Pre-2025")
 
-subplot(fig1, fig2, nrows = 1, shareY = TRUE, titleX = TRUE, widths = c(0.55, 0.45)) %>%
+post_data <- post_2025_complete %>%
+  mutate(detections_butterfly = detections,
+         period = "2025")
+
+# Combine data
+butterfly_data <- bind_rows(pre_data, post_data)
+
+# Create butterfly chart
+plot_ly(butterfly_data,
+        y = ~species,
+        x = ~detections_butterfly,
+        color = ~period,
+        type = "bar",
+        orientation = "h",
+        colors = setNames(plasma_colors[1:2], c("Pre-2025", "2025")),
+        height = 800) %>%
   layout(
-    title = list(text = "Amphibian Detections: Pre-2025 vs 2025", y = 0.98),
-    margin = list(l = 150, t = 80),
-    # Adjust this value as needed (default is ~450)
-    annotations = list(
-      list(x = 0.25, y = 0.95, text = "<b>Pre-2025</b>", showarrow = FALSE, 
-           xref = "paper", yref = "paper", font = list(size = 14), xanchor = "center"),
-      list(x = 0.8, y = 0.95, text = "<b>2025</b>", showarrow = FALSE, 
-           xref = "paper", yref = "paper", font = list(size = 14), xanchor = "center")
+    title = list(text = "Amphibian Detections: Pre-2025 vs 2025", 
+                 y = 0.98),
+    xaxis = list(
+      title = "Detections",
+      tickvals = seq(-max(abs(butterfly_data$detections_butterfly)), 
+                     max(abs(butterfly_data$detections_butterfly)), 
+                     length.out = 5),
+      ticktext = abs(seq(-max(abs(butterfly_data$detections_butterfly)), 
+                         max(abs(butterfly_data$detections_butterfly)), 
+                         length.out = 5))
+    ),
+    yaxis = list(title = "Species"),
+    barmode = "overlay",
+    margin = list(l = 150, t = 80, r = 50),
+    legend = list(orientation = "h", x = 0.5, xanchor = "center", y = 1.02),
+    shapes = list(
+      list(type = "line",
+           x0 = 0, x1 = 0, y0 = 0, y1 = 1,
+           xref = "x", yref = "paper",
+           line = list(color = "black", width = 1))
     )
   )
+
 ```
 
 # Small mammal data
@@ -1330,7 +1346,6 @@ So far we have made `r length(unique(sherman_dep$deployment_id))` sherman trap d
 The deployments we distributed as follows:
 
 ```{r}
-#library(RColorBrewer)
 sherman_dep <- left_join(sherman_dep, plot_master[,c("plot_id", "simple_treatment")], by=c("plot_id"))
 sherman_cap$plot_id <- substr(sherman_cap$deployment_id,1,3)
 sherman_cap <- left_join(sherman_cap, plot_master[,c("plot_id", "simple_treatment")], by=c("plot_id"))
@@ -1351,8 +1366,9 @@ treatment_colors <- colorFactor(
 )
 
 # Create the leaflet map
-leaflet(data = sherman_sf) %>% 
-  addTiles(group = "Base") %>%
+leaflet(data = sherman_sf) %>%
+  addProviderTiles(providers$Esri.WorldImagery, group = "Satellite") %>%
+  addProviderTiles(providers$OpenStreetMap, group = "Street Map") %>%
   addProviderTiles(providers$Esri.WorldImagery, group = "Satellite") %>%
   addPolygons(data = plots, popup = plots$plot_id, group = "plots",
               weight = 3, fillOpacity = 0.05) %>% 
@@ -1377,7 +1393,7 @@ leaflet(data = sherman_sf) %>%
   addScaleBar(position = "topright") %>%
   addLayersControl(
     position = "topleft",
-    baseGroups = c("Base", "Satellite"),
+    baseGroups = c("Satellite", "Street Map"),
     overlayGroups = c("plots", "traps"),
     options = layersControlOptions(collapsed = FALSE)
   )
@@ -1455,8 +1471,8 @@ treatment_colors <- colorFactor(
 
 # Create the leaflet map
 m <- leaflet(data = dep) %>%
-  addProviderTiles(providers$Esri.WorldImagery, group = "Satellite") %>%  
-  addTiles(group = "Base") %>%
+  addProviderTiles(providers$Esri.WorldImagery, group = "Satellite") %>%
+  addProviderTiles(providers$OpenStreetMap, group = "Street Map") %>%
   addPolygons(data = plots, popup = plots$plot_id, group = "plots",
               weight = 3, fillOpacity = 0.05) %>%
   addCircleMarkers(
@@ -1483,7 +1499,7 @@ m <- leaflet(data = dep) %>%
   addScaleBar(position = "topright") %>%
   addLayersControl(
     position = "topleft",
-    baseGroups = c("Base", "Satellite"),
+    baseGroups = c("Satellite", "Street Map"),
     overlayGroups = c("plots", "cameras"),
     options = layersControlOptions(collapsed = FALSE)
   )
@@ -1531,13 +1547,9 @@ for(i in seq_along(levels(dep$placename)))
   }
 # Add a categorical y axis
  p <- p %>%   layout(yaxis = list(
-
       ticktext = as.list(levels(dep$placename)), 
-
       tickvals = as.list(1:length(levels(dep$placename))),
-
       tickmode = "array"))
-
 
 p
 ```
@@ -1678,9 +1690,6 @@ img_tmp <- img_sub %>%
               group_by(deployment_id, sp) %>%   # Group species together
               mutate(duration = int_length(timestamp %--% lag(timestamp))) # Calculate the gap bet
 
-
-
-library(stringr)
 # Give a random value to all cells
 img_tmp$event_id <- 9999
 
@@ -1714,8 +1723,6 @@ for (i in 2:nrow(img_tmp)) {
 # remove the duration column
 img_tmp$duration <- NULL
  
-
-
  # find out the last and the first of the time in the group
   top <- img_tmp %>% group_by(event_id) %>% top_n(1,timestamp) %>% dplyr::select(event_id, timestamp)
   bot <- img_tmp %>% group_by(event_id) %>% top_n(-1,timestamp) %>% dplyr::select(event_id, timestamp)
@@ -2109,6 +2116,96 @@ iucn_formatted %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
                 full_width = FALSE) %>%
   row_spec(0, bold = TRUE, background = "#f5f5f5")
+
+
+
+###########
+iucn_for_grouping <- iucn_all %>%
+  mutate(
+    IUCN_status_clean = ifelse(is.na(IUCN_status), "Not Assessed", IUCN_status),
+    bg_color = ifelse(IUCN_status_clean %in% names(iucn_colors), 
+                      iucn_colors[IUCN_status_clean], 
+                      "#FFFFFF"),
+    text_color = ifelse(IUCN_status_clean %in% names(iucn_text_colors), 
+                        iucn_text_colors[IUCN_status_clean], 
+                        "black")
+  )
+# Make sure iucn_statuses is defined
+status_order <- c("Critically Endangered", "Endangered", "Vulnerable", 
+                  "Near Threatened", "Least Concern", "Data Deficient", 
+                  "Not Assessed", "Unknown")
+
+iucn_statuses <- intersect(status_order, unique(iucn_for_grouping$IUCN_status_clean))
+
+# Create HTML with collapsible sections
+html_output <- "<div style='font-family: Arial, sans-serif;'>"
+
+for(status in iucn_statuses) {
+  
+  # Filter data for this status
+  status_data <- iucn_for_grouping %>%
+    filter(IUCN_status_clean == status) %>%
+    select(scientific_name, Endemism, class_name, IUCN_population_trend)
+  
+  if(nrow(status_data) == 0) next
+  
+  # Get colors
+  bg_color <- iucn_colors[status]
+  text_color <- iucn_text_colors[status]
+  
+  # Create collapsible section
+  html_output <- paste0(html_output, "
+    <details style='margin-bottom: 10px; border: 1px solid #ddd; border-radius: 5px;'>
+      <summary style='
+        background-color: ", bg_color, ";
+        color: ", text_color, ";
+        padding: 12px;
+        font-weight: bold;
+        font-size: 16px;
+        cursor: pointer;
+        border-radius: 5px 5px 0 0;
+      '>
+        ", status, " <span style='float: right;'>(", nrow(status_data), " species) ▼</span>
+      </summary>
+      <div style='padding: 15px; background-color: white;'>")
+  
+  # Create table for this section
+  status_table <- status_data %>%
+    mutate(
+      IUCN_population_trend = cell_spec(
+        IUCN_population_trend,
+        background = case_when(
+          IUCN_population_trend == "Increasing" ~ "#e8f5e8",
+          IUCN_population_trend == "Stable" ~ "#fff3e0",
+          IUCN_population_trend == "Decreasing" ~ "#ffe8e8",
+          TRUE ~ "white"
+        ),
+        color = case_when(
+          IUCN_population_trend == "Increasing" ~ "#2e7d32",
+          IUCN_population_trend == "Stable" ~ "#b26a00",
+          IUCN_population_trend == "Decreasing" ~ "#c62828",
+          TRUE ~ "black"
+        )
+      )
+    ) %>%
+    kable(format = "html", escape = FALSE,
+          col.names = c("Scientific Name", "Endemism", "Class", "Population Trend"),
+          align = c("l", "l", "l", "c")) %>%
+    kable_styling(bootstrap_options = c("striped", "hover"), 
+                  full_width = TRUE, position = "left") %>%
+    row_spec(0, bold = TRUE, background = "#f5f5f5")
+  
+  html_output <- paste0(html_output, as.character(status_table), "
+      </div>
+    </details>
+  ")
+}
+
+html_output <- paste0(html_output, "</div>")
+
+# Display
+cat(html_output)
+
 
 ```
 
