@@ -404,7 +404,10 @@ fig %>%
          title = "2025 Survey Data"))
 ```
 
+
+
 And a summary of the number of different surveys conducted by year:
+
 
 ```{r}
 
@@ -523,7 +526,8 @@ pal <- colorFactor(
 
 # Create the leaflet map
 leaflet(be_2025_sum) %>% 
-  addTiles() %>% 
+  addProviderTiles(providers$Esri.WorldImagery, group = "Satellite") %>%
+  addProviderTiles(providers$OpenStreetMap, group = "Street Map") %>%
   addCircleMarkers(
     radius = 7, 
     color = ~pal(Visits), 
@@ -536,8 +540,13 @@ leaflet(be_2025_sum) %>%
     values = ~Visits, 
     title = "Number of Visits", 
     opacity = 1
+  ) %>% 
+  addLayersControl(
+    baseGroups = c("Street Map","Satellite"),
+    options = layersControlOptions(collapsed = FALSE)
   ) %>%
   addScaleBar(position = "topright")
+
 ```
 
 The distributions of species detected is as follows:
@@ -552,28 +561,56 @@ plot_height <- max(400, num_species * 18)  # Minimum height 400px, scales with s
 
 ```{r, out.height=plot_height}
 # Create a Plotly bar chart
-plot <- bc_2025_sum %>%
-  arrange(desc(sample_frequency)) %>%  # Sort by frequency
+#plot <- bc_2025_sum %>%
+#  arrange(desc(sample_frequency)) %>%  # Sort by frequency
+#  plot_ly(
+#    x = ~sample_frequency, 
+#    y = ~common_name, 
+#    type = 'bar',
+#    orientation = 'h',
+#    marker = list(color = 'steelblue',
+#    width = "100%", 
+#    height = plot_height)
+#  ) %>%
+#  layout(
+#    title = "Species Detection Frequency",
+#    xaxis = list(title = "Detection Frequency"),
+#    yaxis = list(title = "Species", categoryorder = "total ascending",
+#                 tickfont = list(size = 10)),
+#    barmode = 'group'
+#  )
+
+# Display the plot
+#plot
+
+
+#table(bc_2025_sum$sample_frequency==1)/nrow(bc_2025_sum)
+
+# Create a treemap
+plot_treemap <- bc_2025_sum %>%
+  arrange(desc(sample_frequency)) %>%
   plot_ly(
-    x = ~sample_frequency, 
-    y = ~common_name, 
-    type = 'bar',
-    orientation = 'h',
-    marker = list(color = 'steelblue',
-    height = plot_height)
+    type = "treemap",
+    labels = ~common_name,
+    values = ~sample_frequency,
+    parents = NA,  # No hierarchy, just flat structure
+    textinfo = "label+value+percent root",
+    texttemplate = "<b>%{label}</b><br>Frequency: %{value}<br>%{percentRoot:.1%}",
+    hovertemplate = "<b>%{label}</b><br>Detection Frequency: %{value}<br>Percentage: %{percentRoot:.1%}<extra></extra>",
+    marker = list(
+      colors = ~sample_frequency,
+      colorscale = "Blues",
+      showscale = FALSE,
+      colorbar = list(title = "Detection Frequency")
+    )
   ) %>%
   layout(
     title = "Species Detection Frequency",
-    xaxis = list(title = "Detection Frequency"),
-    yaxis = list(title = "Species", categoryorder = "total ascending",
-                 tickfont = list(size = 10)),
-    barmode = 'group'
+    margin = list(l = 0, r = 0, b = 0, t = 50)
   )
 
-# Display the plot
-plot
-
-#table(bc_2025_sum$sample_frequency==1)/nrow(bc_2025_sum)
+# Display the treemap
+plot_treemap
 
 ```
 
@@ -733,26 +770,54 @@ The frequency distributions of the species detected are as follows:
 
 ```{r, out.height=plot_height}
 # Create a Plotly bar chart
-plot <- bc_sum %>%
-  arrange(desc(sample_frequency)) %>%  # Sort by frequency
+#plot <- bc_sum %>%
+#  arrange(desc(sample_frequency)) %>%  # Sort by frequency
+#  plot_ly(
+#    x = ~sample_frequency, 
+#    y = ~common_name, 
+#    type = 'bar',
+#    orientation = 'h',
+#    marker = list(color = 'steelblue',
+#    height = plot_height)
+#  ) %>%
+#  layout(
+#    title = "Species Detection Frequency",
+#    xaxis = list(title = "Detection Frequency"),
+#    yaxis = list(title = "Species", categoryorder = "total ascending",
+#                 tickfont = list(size = 10)),
+#    barmode = 'group'
+#  )
+
+# Display the plot
+#plot
+
+# Create a treemap
+plot_treemap <- bc_sum %>%
+  arrange(desc(sample_frequency)) %>%
   plot_ly(
-    x = ~sample_frequency, 
-    y = ~common_name, 
-    type = 'bar',
-    orientation = 'h',
-    marker = list(color = 'steelblue',
-    height = plot_height)
+    type = "treemap",
+    labels = ~common_name,
+    values = ~sample_frequency,
+    parents = NA,  # No hierarchy, just flat structure
+    textinfo = "label+value+percent root",
+    texttemplate = "<b>%{label}</b><br>Frequency: %{value}<br>%{percentRoot:.1%}",
+    hovertemplate = "<b>%{label}</b><br>Detection Frequency: %{value}<br>Percentage: %{percentRoot:.1%}<extra></extra>",
+    marker = list(
+      colors = ~sample_frequency,
+      colorscale = "Blues",
+      showscale = FALSE,
+      colorbar = list(title = "Detection Frequency")
+    )
   ) %>%
   layout(
     title = "Species Detection Frequency",
-    xaxis = list(title = "Detection Frequency"),
-    yaxis = list(title = "Species", categoryorder = "total ascending",
-                 tickfont = list(size = 10)),
-    barmode = 'group'
+    margin = list(l = 0, r = 0, b = 0, t = 50)
   )
 
-# Display the plot
-plot
+# Display the treemap
+plot_treemap
+
+
 ```
 
 
