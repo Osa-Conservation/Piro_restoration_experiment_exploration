@@ -2054,7 +2054,7 @@ all_caps[[2]] <- unique(bird_counts$species)
 all_caps[[3]] <- unique(amphib_caps$species[amphib_caps$code!="NA"])
 
 iucn <- data.frame("scientific_name"=unlist(all_caps))
-# Rwemove duplicated
+# Remove duplicated
 iucn$tmp <- 1
 iucn <- iucn[duplicated(iucn$scientific_name)==F,]
 iucn$tmp <- NULL
@@ -2066,6 +2066,9 @@ iucn_all$IUCN_status[iucn_all$IUCN_status=="Not assessed"] <- "Not Assessed"
 iucn_all <- iucn_all[order(iucn_all$class_name, iucn_all$IUCN_status, iucn_all$Endemism, iucn_all$scientific_name),]
 
 
+iucn_all<-iucn_all   %>%
+  filter(!is.na(IUCN_status))
+
 # Define IUCN colors including Not Assessed
 iucn_colors <- c(
   "Least Concern" = "#90EE90",
@@ -2074,138 +2077,56 @@ iucn_colors <- c(
   "Endangered" = "#FF6B6B",
   "Critically Endangered" = "#8B0000",
   "Data Deficient" = "#D3D3D3",
-  "Not Assessed" = "#FFFFFF",
+  "Not Assessed" = "#D5E3F3",
   "Unknown" = "#FFFFFF"
 )
+############### WAFFLE PLOT
 
-iucn_text_colors <- c(
-  "Least Concern" = "black",
-  "Near Threatened" = "black",
-  "Vulnerable" = "black",
-  "Endangered" = "black",
-  "Critically Endangered" = "white",
-  "Data Deficient" = "black",
-  "Not Assessed" = "black",
-  "Unknown" = "black"
-)
-
-# Create formatted version with NA handling
-iucn_formatted <- iucn_all %>%
+# Prepare data with grid positions
+waffle_hover <- iucn_all %>%
+  mutate(IUCN_status = ifelse(is.na(IUCN_status), "Not Assessed", IUCN_status)) %>%
+  group_by(class_name) %>%
   mutate(
-    IUCN_status_clean = ifelse(is.na(IUCN_status), "Not Assessed", IUCN_status),
-    bg_color = ifelse(IUCN_status_clean %in% names(iucn_colors), 
-                      iucn_colors[IUCN_status_clean], 
-                      "#FFFFFF"),
-    text_color = ifelse(IUCN_status_clean %in% names(iucn_text_colors), 
-                        iucn_text_colors[IUCN_status_clean], 
-                        "black"),
-    IUCN_status_display = cell_spec(
-      IUCN_status_clean,
-      background = bg_color,
-      color = text_color,
-      bold = TRUE
+    # Create grid within each class
+    row_num = (row_number() - 1) %/% 40 + 1,
+    col_num = (row_number() - 1) %% 40 + 1,
+    # Create hover text
+    hover_text = paste(
+      "Species:", scientific_name,
+      "<br>Endemism:", Endemism,
+      "<br>Population Trend:", IUCN_population_trend,
+      "<br>IUCN Status:", IUCN_status
     )
   ) %>%
-  select(-IUCN_status, -IUCN_status_clean, -bg_color, -text_color) %>%
-  rename(IUCN_status = IUCN_status_display)
+  ungroup()
 
-# Table 1: All species
-iucn_formatted %>%
-  kable(format = "html", escape = FALSE,
-        caption = "IUCN status by taxon", row.names = FALSE) %>%
-  kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
-                full_width = FALSE) %>%
-  row_spec(0, bold = TRUE, background = "#f5f5f5")
-
-
-
-###########
-iucn_for_grouping <- iucn_all %>%
-  mutate(
-    IUCN_status_clean = ifelse(is.na(IUCN_status), "Not Assessed", IUCN_status),
-    bg_color = ifelse(IUCN_status_clean %in% names(iucn_colors), 
-                      iucn_colors[IUCN_status_clean], 
-                      "#FFFFFF"),
-    text_color = ifelse(IUCN_status_clean %in% names(iucn_text_colors), 
-                        iucn_text_colors[IUCN_status_clean], 
-                        "black")
+# Create static ggplot
+p <- ggplot(waffle_hover, aes(x = col_num, y = row_num, fill = IUCN_status, text = hover_text)) +
+  geom_tile(color = "white", size = 0.3) +
+  facet_wrap(~class_name, scales = "free_y", ncol = 1) +
+  scale_fill_manual(values = iucn_colors, name = "IUCN Status") +
+  coord_equal() +
+  theme_minimal() +
+  theme(
+    panel.grid = element_blank(),
+    axis.text = element_blank(),
+    axis.title = element_blank(),
+    strip.text = element_text(face = "bold", size = 12),
+    legend.position = "bottom"
+  ) +
+  labs(
+    title = "IUCN Status Distribution by Class",
+    subtitle = "Each square represents one species. Hover for details."
   )
-# Make sure iucn_statuses is defined
-status_order <- c("Critically Endangered", "Endangered", "Vulnerable", 
-                  "Near Threatened", "Least Concern", "Data Deficient", 
-                  "Not Assessed", "Unknown")
 
-iucn_statuses <- intersect(status_order, unique(iucn_for_grouping$IUCN_status_clean))
+# Convert to interactive plotly
+ggplotly(p, tooltip = "text") %>%
+  layout(
+    hoverlabel = list(bgcolor = "white", font = list(size = 11)),
+    legend = list(orientation = "h", y = -0.1)
+  )
 
-# Create HTML with collapsible sections
-html_output <- "<div style='font-family: Arial, sans-serif;'>"
-
-for(status in iucn_statuses) {
-  
-  # Filter data for this status
-  status_data <- iucn_for_grouping %>%
-    filter(IUCN_status_clean == status) %>%
-    select(scientific_name, Endemism, class_name, IUCN_population_trend)
-  
-  if(nrow(status_data) == 0) next
-  
-  # Get colors
-  bg_color <- iucn_colors[status]
-  text_color <- iucn_text_colors[status]
-  
-  # Create collapsible section
-  html_output <- paste0(html_output, "
-    <details style='margin-bottom: 10px; border: 1px solid #ddd; border-radius: 5px;'>
-      <summary style='
-        background-color: ", bg_color, ";
-        color: ", text_color, ";
-        padding: 12px;
-        font-weight: bold;
-        font-size: 16px;
-        cursor: pointer;
-        border-radius: 5px 5px 0 0;
-      '>
-        ", status, " <span style='float: right;'>(", nrow(status_data), " species) ▼</span>
-      </summary>
-      <div style='padding: 15px; background-color: white;'>")
-  
-  # Create table for this section
-  status_table <- status_data %>%
-    mutate(
-      IUCN_population_trend = cell_spec(
-        IUCN_population_trend,
-        background = case_when(
-          IUCN_population_trend == "Increasing" ~ "#e8f5e8",
-          IUCN_population_trend == "Stable" ~ "#fff3e0",
-          IUCN_population_trend == "Decreasing" ~ "#ffe8e8",
-          TRUE ~ "white"
-        ),
-        color = case_when(
-          IUCN_population_trend == "Increasing" ~ "#2e7d32",
-          IUCN_population_trend == "Stable" ~ "#b26a00",
-          IUCN_population_trend == "Decreasing" ~ "#c62828",
-          TRUE ~ "black"
-        )
-      )
-    ) %>%
-    kable(format = "html", escape = FALSE,
-          col.names = c("Scientific Name", "Endemism", "Class", "Population Trend"),
-          align = c("l", "l", "l", "c")) %>%
-    kable_styling(bootstrap_options = c("striped", "hover"), 
-                  full_width = TRUE, position = "left") %>%
-    row_spec(0, bold = TRUE, background = "#f5f5f5")
-  
-  html_output <- paste0(html_output, as.character(status_table), "
-      </div>
-    </details>
-  ")
-}
-
-html_output <- paste0(html_output, "</div>")
-
-# Display
-cat(html_output)
-
+p
 
 ```
 
