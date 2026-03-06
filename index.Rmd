@@ -2077,7 +2077,7 @@ iucn_colors <- c(
   "Endangered" = "#FF6B6B",
   "Critically Endangered" = "#8B0000",
   "Data Deficient" = "#D3D3D3",
-  "Not Assessed" = "#D5E3F3",
+  "Not Assessed" = "#D5E3D3",
   "Unknown" = "#FFFFFF"
 )
 ############### WAFFLE PLOT
@@ -2103,7 +2103,7 @@ waffle_hover <- iucn_all %>%
 # Create static ggplot
 p <- ggplot(waffle_hover, aes(x = col_num, y = row_num, fill = IUCN_status, text = hover_text)) +
   geom_tile(color = "white", size = 0.3) +
-  facet_wrap(~class_name, scales = "free_y", ncol = 1) +
+  facet_wrap(~class_name, scales = "fixed", ncol = 1) +
   scale_fill_manual(values = iucn_colors, name = "IUCN Status") +
   coord_equal() +
   theme_minimal() +
@@ -2126,7 +2126,6 @@ ggplotly(p, tooltip = "text") %>%
     legend = list(orientation = "h", y = -0.1)
   )
 
-p
 
 ```
 
