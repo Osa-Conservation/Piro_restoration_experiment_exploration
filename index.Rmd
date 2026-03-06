@@ -2076,8 +2076,8 @@ iucn_colors <- c(
   "Vulnerable" = "#FFFF00",
   "Endangered" = "#FF6B6B",
   "Critically Endangered" = "#8B0000",
-  "Data Deficient" = "#D3D3D3",
-  "Not Assessed" = "#D5E3D3",
+  "Data Deficient" = "#999999",
+  "Not Assessed" = "#EEEEEE",
   "Unknown" = "#FFFFFF"
 )
 ############### WAFFLE PLOT
