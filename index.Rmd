@@ -36,7 +36,6 @@ library(scales)
 library(ggrepel)
 library(stringr)
 
-
 #drive_auth()
 googledrive::drive_auth(path = Sys.getenv("GOOGLE_AUTHENTICATION_CREDENTIALS"))
 data_path <- "data"
