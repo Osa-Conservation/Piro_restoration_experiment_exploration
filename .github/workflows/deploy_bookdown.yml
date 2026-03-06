@@ -17,9 +17,8 @@ jobs:
       - uses: r-lib/actions/setup-pandoc@v2
       - name: Install TinyTeX
         uses: r-lib/actions/setup-tinytex@v2
-        env:
-          # install full prebuilt version
-          TINYTEX_INSTALLER: TinyTeX
+        with:
+          tinytex-version: "latest"
       - name: Install rmarkdown
         run: Rscript -e 'install.packages(c("rmarkdown","bookdown"))'
       - name: Install units
